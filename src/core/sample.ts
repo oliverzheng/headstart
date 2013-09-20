@@ -1,0 +1,1 @@
+import inf = require('interfaces');

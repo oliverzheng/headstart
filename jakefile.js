@@ -12,6 +12,7 @@ var TSC = 'node_modules/.bin/tsc';
 var TSD = 'node_modules/.bin/tsd';
 var RED_COLOR = '\033[31m';
 var RESET_COLOR = '\033[0m';
+var AMD = true;
 
 function isFileTs(path) {
 	return path.match(/.ts$/);
@@ -103,7 +104,14 @@ file(LIB_DIR, srcFiles, {async: true}, function() {
 	}
 	process.stdout.write('Compiling... ');
 	var outDir = (testTs && testTs.length > 0) ? LIB_DIR : LIBSRC_DIR;
-	var cmd = TSC + ' --module commonjs --outDir ' + outDir + ' ' + tsFiles.join(' ');
+	var cmd = TSC + ' --noImplicitAny';
+	if (AMD) {
+		cmd += ' -m amd --outDir ' + outDir;
+	} else {
+		cmd += ' -m commonjs --outDir ' + outDir;
+	}
+	cmd += ' ' + tsFiles.join(' ');
+
 	var ex = jake.createExec(cmd);
 	ex.addListener('error', function(msg) {
 		console.log(RED_COLOR + 'Failed.' + RESET_COLOR);
@@ -174,8 +182,6 @@ deleteFolderRecursive = function(path) {
 task('clean', function() {
 	console.log('Removing compilation...');
 	deleteFolderRecursive('lib');
-	console.log('Removing binary...');
-	deleteFolderRecursive('bin');
 });
 
 task('superclean', ['clean'], function() {
