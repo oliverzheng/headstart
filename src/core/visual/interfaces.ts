@@ -132,6 +132,24 @@ export var vert = Direction.VERTICAL;
 export var directions = [noDirection, horiz, vert];
 
 
+export enum OVERFLOW {
+	/** Overflown children go to the next line. Only for alignment != center. */
+	WRAP,
+
+	/** Overflown children are visible. */
+	SHOW,
+
+	/** Overflown children are hidden. */
+	HIDDEN,
+}
+
+export var wrap = OVERFLOW.WRAP;
+export var show = OVERFLOW.SHOW;
+export var hidden = OVERFLOW.HIDDEN;
+
+export var overflows = [wrap, show, hidden];
+
+
 /**
  * How children should be aligned for a given direction.
  *
@@ -172,6 +190,22 @@ export interface Rect extends Position {
 	w: number;
 	h: number;
 }
+
+export enum UserManaged {
+	/* Not user managed. */
+	NONE,
+
+	/* Only inline text will be used as content. */
+	TEXT,
+
+	/* Arbitrary DOM elements will be used as children. */
+	CHILDREN,
+
+	/* The bounding box of this box must be a DOM node. */
+	BORDER,
+}
+
+export var defaultUserManaged = UserManaged.NONE;
 
 
 export interface Box {
@@ -221,7 +255,7 @@ export interface Box {
 	/**
 	 * External content to be used here.
 	 */
-	userManaged?: boolean;
+	userManaged?: UserManaged;
 
 	children?: Box[];
 }

@@ -1,5 +1,5 @@
-import inf = require('../core/interfaces');
-import l = require('../core/layout');
+import inf = require('../core/visual/interfaces');
+import l = require('../core/visual/layout');
 
 export var BoxComponent = React.createClass({
 	onClick(event: any) {

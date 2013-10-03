@@ -1,4 +1,4 @@
-import inf = require('../core/interfaces');
+import inf = require('../core/visual/interfaces');
 import box = require('./box');
 
 export var LayoutComponent = React.createClass({

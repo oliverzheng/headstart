@@ -1,6 +1,6 @@
 import lc = require('./layout');
-import inf = require('../core/interfaces');
-import l = require('../core/layout');
+import inf = require('../core/visual/interfaces');
+import l = require('../core/visual/layout');
 import detail = require('./detail');
 import add = require('./add');
 
