@@ -178,9 +178,6 @@ export interface Box {
 	/** Must be unique among its tree. */
 	id?: string;
 
-	/** Id of the extracted layer. */
-	layerId?: string;
-
 	/** Human readable name */
 	name?: string;
 
@@ -204,7 +201,7 @@ export interface Box {
 		b?: Length;
 	};
 
-	/** How children should flow. */
+	/** Which way children stack. */
 	direction?: Direction;
 
 	/**
@@ -222,20 +219,9 @@ export interface Box {
 	crossAlignment?: Alignment;
 
 	/**
-	 * A string of text to use as child. If used, children must be null.
-	 *
-	 * Each word is treated like a child collateral.
+	 * External content to be used here.
 	 */
-	text?: {
-		value: string;
-	};
+	userManaged?: boolean;
 
 	children?: Box[];
-
-	/**
-	 * Whether or not this was created by this system.
-	 *
-	 * By default, this should be false, for boxes imported from a design.
-	 */
-	generated?: boolean;
 }

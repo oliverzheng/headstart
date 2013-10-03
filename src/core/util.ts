@@ -199,9 +199,11 @@ export function getBoundingRect(rects: inf.Rect[]): inf.Rect {
  * Whether or not this box is rendered with any content, including bitmaps,
  * gradients, text, etc.
  */
+/*
 export function hasContent(box: inf.Box): boolean {
 	return !box.generated;
 }
+*/
 
 /**
  * Returns box1 - box2.
