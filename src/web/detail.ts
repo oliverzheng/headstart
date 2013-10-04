@@ -70,6 +70,11 @@ export var DetailComponent = React.createClass({
 		this.props.onBoxChanged(this.props.box);
 	},
 
+	changeUserManagement(management: inf.UserManagement) {
+		this.props.box.userManagement = management;
+		this.props.onBoxChanged(this.props.box);
+	},
+
 	changeAlignment(alignment: inf.Alignment) {
 		this.props.box.alignment = alignment;
 		this.props.onBoxChanged(this.props.box);
@@ -123,6 +128,22 @@ export var DetailComponent = React.createClass({
 			}
 		});
 
+		var managements = inf.userManagements.map((management) => {
+			if (management === (box.userManagement || inf.defaultUserManagement)) {
+				return React.DOM.strong(
+					{className: 'userManagement', key: management},
+					inf.UserManagement[management]
+				);
+			} else {
+				return React.DOM.a(
+					{className: 'userManagement', key: management, href: '#', onClick: (event: any) => {
+						this.changeUserManagement(management);
+					}},
+					inf.UserManagement[management]
+				);
+			}
+		});
+
 		var alignments = inf.alignments.map((alignment) => {
 			if (alignment === (box.alignment || inf.defaultAlignment)) {
 				return React.DOM.strong(
@@ -154,6 +175,10 @@ export var DetailComponent = React.createClass({
 			React.DOM.div(null,
 				React.DOM.strong(null, 'Height: '),
 				this.transferPropsTo(LengthComponent({len: box.h, isRoot: isRoot}))
+			),
+			React.DOM.div({},
+				React.DOM.strong(null, 'User Management:'),
+				React.DOM.span(null, managements)
 			),
 			React.DOM.hr(null),
 			parent,

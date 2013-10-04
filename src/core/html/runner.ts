@@ -40,27 +40,36 @@ export class NoRulesError {
 	}
 }
 
-export function runRules(layout: l.Layout, box: vinf.Box = null): inf.DOMNode[] {
-	var box = box || layout.root;
-	for (var i = 0; i < availableRules.length; ++i) {
-		var rule = availableRules[i];
-		if (rule.applies(layout, box)) {
-			var node: inf.DOMNode;
-			if (rule.getNode) {
-				node = rule.getNode(layout, box);
-			}
-			if (node) {
-				var children = box.children || <vinf.Box[]>[];
-				node.children = (<inf.DOMNode[]>[]).concat.apply([], children.map((child) => {
-					return runRules(layout, child);
-				}));
-				return [node];
-			} else {
-				return rule.getChildrenNodes(layout, box);
+export class Runner {
+	rules: inf.Rule[];
+	layout: l.Layout;
+
+	constructor(layout: l.Layout) {
+		this.layout = layout;
+		this.rules = [
+			new rules.RootRule(layout),
+		];
+	}
+
+	toNodes(box: vinf.Box = null): inf.DOMNode[] {
+		var box = box || this.layout.root;
+		for (var i = 0; i < this.rules.length; ++i) {
+			var rule = this.rules[i];
+			if (rule.applies(box)) {
+				var node = rule.getNode(box);
+				if (node) {
+					var children = box.children || <vinf.Box[]>[];
+					node.children = (<inf.DOMNode[]>[]).concat.apply([], children.map((child) => {
+						return this.toNodes(child);
+					}));
+					return [node];
+				} else {
+					return rule.getChildrenNodes(box);
+				}
 			}
 		}
+		throw new NoRulesError(box);
 	}
-	throw new NoRulesError(box);
 }
 
 export function nodeToHtml(node: inf.DOMNode): string {
@@ -71,7 +80,22 @@ export function nodeToHtml(node: inf.DOMNode): string {
 	} else if (node.children) {
 		inside = nodesToHtml(node.children);
 	}
-	return '<' + node.tag + '>' + inside + '</' + node.tag + '>';
+	var attrs = '';
+	if (node.styles) {
+		attrs += ' style="';
+		for (var name in node.styles) {
+			if (node.styles.hasOwnProperty(name)) {
+				attrs += name + ': ' + node.styles[name] + '; ';
+			}
+		}
+		attrs += '"';
+	}
+	if (node.classes) {
+		attrs += ' class="';
+		attrs += node.classes.join(' ');
+		attrs += '"';
+	}
+	return '<' + node.tag + attrs + '>' + inside + '</' + node.tag + '>';
 }
 
 export function nodesToHtml(nodes: inf.DOMNode[]): string {

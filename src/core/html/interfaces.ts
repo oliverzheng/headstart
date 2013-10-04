@@ -5,12 +5,26 @@ export interface DOMNode {
 	tag: string;
 	content?: string;
 	children?: DOMNode[];
+	classes?: string[];
+	styles?: {[styleName: string]: string;};
 }
 
-export interface Rule {
-	applies(layout: l.Layout, box: inf.Box): boolean;
+export class Rule {
+	layout: l.Layout;
 
-	getNode?(layout: l.Layout, box: inf.Box): DOMNode;
+	constructor(layout: l.Layout) {
+		this.layout = layout;
+	}
 
-	getChildrenNodes?(layout: l.Layout, box: inf.Box): DOMNode[];
+	applies(box: inf.Box): boolean {
+		return false;
+	}
+
+	getNode(box: inf.Box): DOMNode {
+		return null;
+	}
+
+	getChildrenNodes(box: inf.Box): DOMNode[] {
+		return [];
+	}
 }

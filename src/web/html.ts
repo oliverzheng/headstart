@@ -9,7 +9,8 @@ var HTMLComponent = React.createClass({
 	render() {
 		var layout = <l.Layout>this.props.layout;
 		try {
-			var nodes = runner.runRules(layout);
+			var r = new runner.Runner(layout);
+			var nodes = r.toNodes();
 			var html = runner.nodesToHtml(nodes);
 			return React.DOM.div(null,
 				React.DOM.strong(null, 'HTML: '),

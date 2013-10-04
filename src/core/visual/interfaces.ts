@@ -191,7 +191,7 @@ export interface Rect extends Position {
 	h: number;
 }
 
-export enum UserManaged {
+export enum UserManagement {
 	/* Not user managed. */
 	NONE,
 
@@ -202,10 +202,16 @@ export enum UserManaged {
 	CHILDREN,
 
 	/* The bounding box of this box must be a DOM node. */
-	BORDER,
+	BOX,
 }
+export var userManagements = [
+	UserManagement.NONE,
+	UserManagement.TEXT,
+	UserManagement.CHILDREN,
+	UserManagement.BOX,
+];
 
-export var defaultUserManaged = UserManaged.NONE;
+export var defaultUserManagement = UserManagement.NONE;
 
 
 export interface Box {
@@ -255,7 +261,7 @@ export interface Box {
 	/**
 	 * External content to be used here.
 	 */
-	userManaged?: UserManaged;
+	userManagement?: UserManagement;
 
 	children?: Box[];
 }

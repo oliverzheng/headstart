@@ -7,7 +7,7 @@ export function createBox(width: number = 40, height: number = 40): inf.Box {
 		id: (boxCounter++).toString(),
 		w: inf.px(width),
 		h: inf.px(height),
-		direction: inf.horiz
+		direction: inf.vert
 	};
 }
 
