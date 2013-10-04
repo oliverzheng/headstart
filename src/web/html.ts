@@ -8,17 +8,20 @@ import runner = require('../core/html/runner');
 var HTMLComponent = React.createClass({
 	render() {
 		var layout = <l.Layout>this.props.layout;
-		try {
-			var r = new runner.Runner(layout);
-			var nodes = r.toNodes();
+		var r = new runner.Runner(layout);
+		var nodes = r.toNodes();
+		assert(nodes.length === 1);
+		var boxesNotUsed = runner.boxesNotUsed(nodes[0], layout);
+		if (boxesNotUsed.length !== 0) {
+			return React.DOM.div(null,
+				'Cannot generate HTML for boxes: ' +
+					boxesNotUsed.map((box) => '#' + box.id).join(', ')
+			);
+		} else {
 			var html = runner.nodesToHtml(nodes);
 			return React.DOM.div(null,
 				React.DOM.strong(null, 'HTML: '),
 				html
-			);
-		} catch (ex) {
-			return React.DOM.div(null,
-				'Cannot generate HTML for box id: ' + ex.box.id
 			);
 		}
 	}

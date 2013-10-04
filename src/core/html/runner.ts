@@ -1,6 +1,7 @@
 /// <reference path='../../../d.ts/typings.d.ts' />
 import assert = require('assert');
 
+import gen = require('../visual/generator');
 import inf = require('./interfaces');
 import vinf = require('../visual/interfaces');
 import l = require('../visual/layout');
@@ -48,10 +49,11 @@ export class Runner {
 		this.layout = layout;
 		this.rules = [
 			new rules.RootRule(layout),
+			new rules.FixedUserManagedBoxRule(layout),
 		];
 	}
 
-	toNodes(box: vinf.Box = null): inf.DOMNode[] {
+	toNodes(box: vinf.Box = null): inf.Node[] {
 		var box = box || this.layout.root;
 		for (var i = 0; i < this.rules.length; ++i) {
 			var rule = this.rules[i];
@@ -59,7 +61,7 @@ export class Runner {
 				var node = rule.getNode(box);
 				if (node) {
 					var children = box.children || <vinf.Box[]>[];
-					node.children = (<inf.DOMNode[]>[]).concat.apply([], children.map((child) => {
+					node.children = (<inf.Node[]>[]).concat.apply([], children.map((child) => {
 						return this.toNodes(child);
 					}));
 					return [node];
@@ -68,11 +70,11 @@ export class Runner {
 				}
 			}
 		}
-		throw new NoRulesError(box);
+		return [];
 	}
 }
 
-export function nodeToHtml(node: inf.DOMNode): string {
+export function nodeToHtml(node: inf.Node): string {
 	assert(!(node.content && node.children));
 	var inside = '';
 	if (node.content) {
@@ -83,11 +85,7 @@ export function nodeToHtml(node: inf.DOMNode): string {
 	var attrs = '';
 	if (node.styles) {
 		attrs += ' style="';
-		for (var name in node.styles) {
-			if (node.styles.hasOwnProperty(name)) {
-				attrs += name + ': ' + node.styles[name] + '; ';
-			}
-		}
+		attrs += node.styles.map((style) => style.name + ': ' + style.value + ';').join(' ');
 		attrs += '"';
 	}
 	if (node.classes) {
@@ -98,6 +96,38 @@ export function nodeToHtml(node: inf.DOMNode): string {
 	return '<' + node.tag + attrs + '>' + inside + '</' + node.tag + '>';
 }
 
-export function nodesToHtml(nodes: inf.DOMNode[]): string {
+export function nodesToHtml(nodes: inf.Node[]): string {
 	return nodes.map(nodeToHtml).join('');
+}
+
+function getNodesForBox(node: inf.Node, box: vinf.Box): inf.Node[] {
+	var nodes: inf.Node[] = [];
+	var boxUsed = false;
+	if (node.becauseOf === box) {
+		boxUsed = true;
+	}
+	if (!boxUsed && node.styles) {
+		node.styles.forEach((style) => {
+			if (style.becauseOf === box) {
+				boxUsed = true;
+			}
+		});
+	}
+	if (boxUsed) {
+		nodes.push(node);
+	}
+	if (node.children) {
+		nodes.push.apply(nodes,
+			[].concat.apply(
+				[],
+				node.children.map((child) => getNodesForBox(child, box))
+			)
+		);
+	}
+	return nodes;
+}
+
+export function boxesNotUsed(rootNode: inf.Node, layout: l.Layout): vinf.Box[] {
+	var depthFirst = new gen.DepthFirst(layout.root);
+	return depthFirst.filter((box) => getNodesForBox(rootNode, box).length === 0).toArray();
 }

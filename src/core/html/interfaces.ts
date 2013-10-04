@@ -1,12 +1,19 @@
 import inf = require('../visual/interfaces');
 import l = require('../visual/layout');
 
-export interface DOMNode {
+export interface Style {
+	name: string;
+	value: string;
+	becauseOf: inf.Box;
+}
+
+export interface Node {
 	tag: string;
 	content?: string;
-	children?: DOMNode[];
+	children?: Node[];
 	classes?: string[];
-	styles?: {[styleName: string]: string;};
+	styles?: Style[];
+	becauseOf: inf.Box;
 }
 
 export class Rule {
@@ -20,11 +27,11 @@ export class Rule {
 		return false;
 	}
 
-	getNode(box: inf.Box): DOMNode {
+	getNode(box: inf.Box): Node {
 		return null;
 	}
 
-	getChildrenNodes(box: inf.Box): DOMNode[] {
+	getChildrenNodes(box: inf.Box): Node[] {
 		return [];
 	}
 }
