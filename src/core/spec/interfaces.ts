@@ -191,27 +191,48 @@ export interface Rect extends Position {
 	h: number;
 }
 
-export enum UserManagement {
+export enum Content {
 	/* Not user managed. */
 	NONE,
 
-	/* Only inline text will be used as content. */
-	TEXT,
+	/* Static content like text / images will be here */
+	STATIC,
 
-	/* Arbitrary DOM elements will be used as children. */
-	CHILDREN,
+	/* User can update DOM elements later */
+	DYNAMIC,
 
-	/* The bounding box of this box must be a DOM node. */
-	BOX,
+	/* The bound of the box will be retained */
+	DYNAMIC_BOX,
 }
-export var userManagements = [
-	UserManagement.NONE,
-	UserManagement.TEXT,
-	UserManagement.CHILDREN,
-	UserManagement.BOX,
+
+export var contents = [
+	Content.NONE,
+	Content.STATIC,
+	Content.DYNAMIC,
+	Content.DYNAMIC_BOX,
 ];
 
-export var defaultUserManagement = UserManagement.NONE;
+export var defaultContent = Content.NONE;
+
+
+export interface StaticText {
+	value: string;
+	font: string;
+}
+
+export interface StaticBackground {
+	color?: string;
+	images?: {
+		resource: string;
+		repeatX: boolean;
+		repeatY: boolean;
+	}[];
+}
+
+export interface StaticContent {
+	texts?: StaticText[];
+	backgrounds?: StaticBackground[];
+}
 
 
 export interface Box {
@@ -261,7 +282,12 @@ export interface Box {
 	/**
 	 * External content to be used here.
 	 */
-	userManagement?: UserManagement;
+	content?: Content;
+
+	/**
+	 * Used only if content is static.
+	 */
+	staticContent?: StaticContent;
 
 	children?: Box[];
 }

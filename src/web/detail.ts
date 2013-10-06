@@ -1,4 +1,4 @@
-import inf = require('../core/visual/interfaces');
+import inf = require('../core/spec/interfaces');
 import add = require('./add');
 import HTMLComponent = require('./html');
 
@@ -70,8 +70,8 @@ export var DetailComponent = React.createClass({
 		this.props.onBoxChanged(this.props.box);
 	},
 
-	changeUserManagement(management: inf.UserManagement) {
-		this.props.box.userManagement = management;
+	changeContent(content: inf.Content) {
+		this.props.box.content = content;
 		this.props.onBoxChanged(this.props.box);
 	},
 
@@ -128,18 +128,18 @@ export var DetailComponent = React.createClass({
 			}
 		});
 
-		var managements = inf.userManagements.map((management) => {
-			if (management === (box.userManagement || inf.defaultUserManagement)) {
+		var contents = inf.contents.map((content) => {
+			if (content === (box.content || inf.defaultContent)) {
 				return React.DOM.strong(
-					{className: 'userManagement', key: management},
-					inf.UserManagement[management]
+					{className: 'content', key: content},
+					inf.Content[content]
 				);
 			} else {
 				return React.DOM.a(
-					{className: 'userManagement', key: management, href: '#', onClick: (event: any) => {
-						this.changeUserManagement(management);
+					{className: 'content', key: content, href: '#', onClick: (event: any) => {
+						this.changeContent(content);
 					}},
-					inf.UserManagement[management]
+					inf.Content[content]
 				);
 			}
 		});
@@ -177,8 +177,8 @@ export var DetailComponent = React.createClass({
 				this.transferPropsTo(LengthComponent({len: box.h, isRoot: isRoot}))
 			),
 			React.DOM.div({},
-				React.DOM.strong(null, 'User Management:'),
-				React.DOM.span(null, managements)
+				React.DOM.strong(null, 'Content:'),
+				React.DOM.span(null, contents)
 			),
 			React.DOM.hr(null),
 			parent,
