@@ -24,13 +24,13 @@ export class Runner {
 		depthFirst.forEach((box) => {
 			for (var ii = 0; ii < allRules.length; ++ii) {
 				var rule = allRules[ii];
-				var result = rule(this.layout, box);
+				var result = rule(this.layout, this.dom, box);
 				if (!result)
 					continue;
 
 				if (result.isNode && !this.dom.getNodeForBox(box)) {
 					var node: inf.NodeFromBox = {
-						becauseOf: box,
+						becauseOf: [box],
 					};
 					this.dom.nodes.push(node);
 				}
@@ -39,18 +39,14 @@ export class Runner {
 						var node = this.dom.getNodeForBox(boxStyle.box);
 						if (!node) {
 							var node = {
-								becauseOf: boxStyle.box,
+								becauseOf: [boxStyle.box],
 							};
 							this.dom.nodes.push(node);
 						}
 						if (!node.styles) {
 							node.styles = [];
 						}
-						node.styles.push({
-							name: boxStyle.style.name,
-							value: boxStyle.style.value,
-							becauseOf: boxStyle.box,
-						});
+						node.styles.push(boxStyle.style);
 					});
 				}
 			}

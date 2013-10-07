@@ -1,22 +1,20 @@
 import sinf = require('../spec/interfaces');
 import l = require('../spec/layout');
+import d = require('./dom');
 
 export interface Style {
 	name: string;
 	value: string;
-}
-
-export interface StyleFromBox extends Style {
-	becauseOf: sinf.Box;
+	becauseOf: sinf.Box[];
 }
 
 export interface Node {
 	children?: Node[];
-	styles?: StyleFromBox[];
+	styles?: Style[];
 }
 
 export interface NodeFromBox extends Node {
-	becauseOf: sinf.Box;
+	becauseOf: sinf.Box[];
 }
 
 export interface BoxStyle {
@@ -30,5 +28,5 @@ export interface RuleResult {
 }
 
 export interface Rule {
-	(layout: l.Layout, box: sinf.Box): RuleResult;
+	(layout: l.Layout, dom: d.Dom, box: sinf.Box): RuleResult;
 }

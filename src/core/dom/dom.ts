@@ -12,7 +12,7 @@ export class Dom {
 	nodes: inf.NodeFromBox[] = [];
 
 	private getNodesForBox(box: sinf.Box): inf.NodeFromBox[] {
-		return this.nodes.filter((node) => node.becauseOf === box);
+		return this.nodes.filter((node) => node.becauseOf.indexOf(box) !== -1);
 	}
 
 	getNodeForBox(box: sinf.Box): inf.NodeFromBox {
@@ -27,8 +27,8 @@ export class Dom {
 			(node) => !!node.styles
 		);
 		var nodeStyles: NodeStyle[][] = nodesWithStyles.map((node: inf.NodeFromBox) => {
-			var stylesBecauseOf: inf.StyleFromBox[] = node.styles.filter(
-				(style) => style.becauseOf === box
+			var stylesBecauseOf: inf.Style[] = node.styles.filter(
+				(style) => style.becauseOf.indexOf(box) !== -1
 			);
 			return stylesBecauseOf.map((style) => {
 				return {
