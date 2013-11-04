@@ -3,7 +3,7 @@
 }
 
 
-.detail {
+.rightSide {
 	width: 600px;
 	position: absolute;
 	left: 640px;
@@ -48,4 +48,7 @@
 	margin-top: -1px;
 	margin-left: -1px;
 	position: relative;
+}
+
+.components {
 }

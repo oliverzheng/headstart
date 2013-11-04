@@ -1,5 +1,5 @@
 import Attributes = require('../Attributes');
-import Length = require('Length');
+import Length = require('./Length');
 
 export class SizeAttribute extends Attributes.BaseAttribute {
 	private width: Length.Length;

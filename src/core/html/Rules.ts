@@ -1,5 +1,5 @@
-import Component = require('Component');
-import Attributes = require('Attributes');
+import Component = require('./Component');
+import Attributes = require('./Attributes');
 
 export interface RuleResult {
 	component: Component;

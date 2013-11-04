@@ -1,5 +1,5 @@
 import Component = require('../Component');
-import sinf = require('../spec/interfaces');
+import sinf = require('../../spec/interfaces');
 
 function dynamicBoxPattern(component: Component): sinf.Box {
 	var boxAttr = component.boxAttr();

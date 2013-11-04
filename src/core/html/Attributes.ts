@@ -36,8 +36,12 @@ export enum Type {
 export class BaseAttribute {
 	getType(): Type {
 		throw new Error(
-			'Type not specified for ' + (<any>this).constructor.name
+			'Type not specified for ' + this.getName()
 		);
+	}
+
+	getName(): string {
+		return (<any>this).constructor.name;
 	}
 
 	equals(attribute: BaseAttribute): boolean {

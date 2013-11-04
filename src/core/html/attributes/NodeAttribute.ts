@@ -6,6 +6,10 @@ class NodeAttribute extends Attributes.BaseAttribute {
 	getType() {
 		return Attributes.Type.NODE;
 	}
+
+	equals(attribute: Attributes.BaseAttribute) {
+		return this.isSameAttrType(attribute);
+	}
 }
 
 export = NodeAttribute;

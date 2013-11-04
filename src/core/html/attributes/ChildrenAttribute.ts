@@ -26,6 +26,16 @@ class ChildrenAttribute extends Attributes.BaseAttribute {
 	getChildren(): Component[] {
 		return this.children;
 	}
+
+	breadthFirst(callback: (component: Component) => void) {
+		this.children.forEach(callback);
+		this.children.forEach((child) => {
+			var childrenAttr = child.childrenAttr();
+			if (childrenAttr) {
+				childrenAttr.breadthFirst(callback);
+			}
+		});
+	}
 }
 
 export = ChildrenAttribute;

@@ -3,6 +3,8 @@ import inf = require('../core/spec/interfaces');
 import l = require('../core/spec/layout');
 import detail = require('./detail');
 import add = require('./add');
+import comp = require('./component');
+import Component = require('../core/html/Component');
 
 var PageComponent = React.createClass({
 	getInitialState() {
@@ -33,12 +35,18 @@ var PageComponent = React.createClass({
 					onBoxClicked: this.onBoxClicked,
 					selectedBox: this.state.selectedBox,
 				}),
-				detail.DetailComponent({
-					layout: this.state.layout,
-					box: this.state.selectedBox,
-					onBoxChanged: this.onBoxChanged,
-					updateSelectedBox: this.onBoxClicked,
-				})
+				React.DOM.div({className: 'rightSide'},
+					detail.DetailComponent({
+						layout: this.state.layout,
+						box: this.state.selectedBox,
+						onBoxChanged: this.onBoxChanged,
+						updateSelectedBox: this.onBoxClicked,
+					}),
+					React.DOM.hr(),
+					comp.RootComponent({
+						component: Component.fromBox(this.state.layout.root),
+					})
+				)
 			)
 		);
 	}
