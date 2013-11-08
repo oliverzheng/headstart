@@ -4,7 +4,7 @@ import NodeAttribute = require('./attributes/NodeAttribute');
 import ChildrenAttribute = require('./attributes/ChildrenAttribute');
 import sinf = require('../spec/interfaces');
 
-class Component {
+export class Component {
 	attributes: Attributes.BaseAttribute[] = [];
 
 	static fromBox(root: sinf.Box): Component {
@@ -32,6 +32,17 @@ class Component {
 		return null;
 	}
 
+	deleteAttr(type: Attributes.Type) {
+		for (var ii = 0; ii < this.attributes.length; ++ii) {
+			var attr = this.attributes[ii];
+			if (attr.getType() === type) {
+				this.attributes.splice(ii, 1);
+				return;
+			}
+		}
+		throw new Error('Could not delete attribute of type ' + type);
+	}
+
 	// Returns true if any rule was added because it was new or it replaced
 	// another rule.
 	addAttributes(attrs: Attributes.BaseAttribute[]): boolean {
@@ -48,6 +59,17 @@ class Component {
 		return added;
 	}
 
+	replaceAttributes(attrs: Attributes.BaseAttribute[]) {
+		attrs.forEach((attr) => {
+			var existingAttr = this.getAttr(attr.getType());
+			if (!existingAttr) {
+				throw new Error('Cannot replace attr that does not exist.');
+			}
+			this.deleteAttr(attr.getType());
+			this.attributes.push(attr);
+		});
+	}
+
 	// Specific attributes
 
 	boxAttr(): BoxAttribute {
@@ -61,6 +83,11 @@ class Component {
 	childrenAttr(): ChildrenAttribute {
 		return <ChildrenAttribute>this.getAttr(Attributes.Type.CHILDREN);
 	}
-}
 
-export = Component;
+	repr(): Attributes.Repr {
+		return {
+			title: 'Component',
+			children: this.attributes.map((attr) => attr.repr()),
+		};
+	}
+}

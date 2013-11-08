@@ -4,7 +4,7 @@ import l = require('../core/spec/layout');
 import detail = require('./detail');
 import add = require('./add');
 import comp = require('./component');
-import Component = require('../core/html/Component');
+import c = require('../core/html/Component');
 
 var PageComponent = React.createClass({
 	getInitialState() {
@@ -44,7 +44,7 @@ var PageComponent = React.createClass({
 					}),
 					React.DOM.hr(),
 					comp.RootComponent({
-						component: Component.fromBox(this.state.layout.root),
+						component: c.Component.fromBox(this.state.layout.root),
 					})
 				)
 			)

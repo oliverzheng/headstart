@@ -34,9 +34,9 @@ export function boxFromJSON(box: inf.Box): inf.Box {
  */
 export function lengthEquals(first: inf.Length, second: inf.Length): boolean {
 	if (!first)
-		first = inf.defaultLength;
+		first = defaultFixedLength;
 	if (!second)
-		second = inf.defaultLength;
+		second = defaultFixedLength;
 
 	if (first.unit === second.unit) {
 		if (first.unit === inf.LengthUnit.EXPAND ||
@@ -47,6 +47,75 @@ export function lengthEquals(first: inf.Length, second: inf.Length): boolean {
 	}
 
 	return false;
+}
+
+var fixedUnits = [inf.LengthUnit.PIXELS, inf.LengthUnit.PERCENT];
+var defaultFixedLength = inf.px(0);
+
+export function fixedLengthsEqual(
+		first: inf.Length,
+		second: inf.Length
+	): boolean {
+	first = first || defaultFixedLength;
+	second = second || defaultFixedLength;
+
+	if (fixedUnits.indexOf(first.unit) === -1 ||
+		fixedUnits.indexOf(second.unit) === -1) {
+		return false;
+	}
+
+	if (fixedUnits.indexOf(first.unit) !== -1 &&
+		fixedUnits.indexOf(second.unit) !== -1 &&
+		first.value === 0 && second.value === 0) {
+		return true;
+	}
+	return lengthEquals(first, second);
+}
+
+export function addFixedLengths(
+		first: inf.Length,
+		second: inf.Length
+	): inf.Length {
+	first = first || inf.px(0);
+	second = second || inf.px(0);
+	if (fixedUnits.indexOf(first.unit) === -1 ||
+		fixedUnits.indexOf(second.unit) === -1) {
+		return null;
+	}
+	var unit: inf.LengthUnit;
+	if (first.unit === second.unit) {
+		unit = first.unit;
+	} else {
+		if (first.value === 0) {
+			unit = second.unit;
+		} else if (second.value === 0) {
+			unit = first.unit;
+		} else {
+			return null;
+		}
+	}
+	return {
+		unit: unit,
+		value: first.value + second.value,
+	};
+}
+
+export function serializeLength(length: inf.Length): string {
+	var value: string;
+	var unit: string;
+	switch (length.unit) {
+		case inf.LengthUnit.PIXELS:
+			value = length.value.toString();
+			unit = 'px';
+			break;
+		case inf.LengthUnit.PERCENT:
+			value = length.value.toString();
+			unit = '%';
+			break;
+		default:
+			return null;
+	}
+	return value + unit;
 }
 
 /**

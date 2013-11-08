@@ -33,6 +33,11 @@ export enum Type {
 	//PADDING,
 }
 
+export interface Repr {
+	title: string;
+	children?: Repr[];
+}
+
 export class BaseAttribute {
 	getType(): Type {
 		throw new Error(
@@ -50,5 +55,16 @@ export class BaseAttribute {
 
 	isSameAttrType(attribute: BaseAttribute): boolean {
 		return (<any>this).constructor === (<any>attribute).constructor;
+	}
+
+	merge(attribute: BaseAttribute): BaseAttribute {
+		return null;
+	}
+
+	repr(): Repr {
+		// I miss python.
+		return {
+			title: this.getName(),
+		};
 	}
 }

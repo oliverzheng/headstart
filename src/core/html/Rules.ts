@@ -1,11 +1,12 @@
-import Component = require('./Component');
+import c = require('./Component');
 import Attributes = require('./Attributes');
 
 export interface RuleResult {
-	component: Component;
-	attributes: Attributes.BaseAttribute[];
+	component: c.Component;
+	attributes?: Attributes.BaseAttribute[];
+	replaceAttributes?: Attributes.BaseAttribute[];
 }
 
 export interface Rule {
-	(component: Component): RuleResult[];
+	(component: c.Component): RuleResult[];
 }

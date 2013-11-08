@@ -1,10 +1,10 @@
-import Component = require('../Component');
+import c = require('../Component');
 import Attributes = require('../Attributes');
 
 class ChildrenAttribute extends Attributes.BaseAttribute {
-	private children: Component[];
+	private children: c.Component[];
 
-	constructor(children: Component[]) {
+	constructor(children: c.Component[]) {
 		super();
 		this.children = children;
 	}
@@ -23,11 +23,11 @@ class ChildrenAttribute extends Attributes.BaseAttribute {
 		);
 	}
 
-	getChildren(): Component[] {
+	getChildren(): c.Component[] {
 		return this.children;
 	}
 
-	breadthFirst(callback: (component: Component) => void) {
+	breadthFirst(callback: (component: c.Component) => void) {
 		this.children.forEach(callback);
 		this.children.forEach((child) => {
 			var childrenAttr = child.childrenAttr();
@@ -35,6 +35,13 @@ class ChildrenAttribute extends Attributes.BaseAttribute {
 				childrenAttr.breadthFirst(callback);
 			}
 		});
+	}
+
+	repr(): Attributes.Repr {
+		return {
+			title: 'Children',
+			children: this.children.map((child) => child.repr()),
+		};
 	}
 }
 

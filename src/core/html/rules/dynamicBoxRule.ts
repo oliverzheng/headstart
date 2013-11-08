@@ -1,12 +1,11 @@
 import Attributes = require('../Attributes');
-import Component = require('../Component');
+import c = require('../Component');
 import Rules = require('../Rules');
 import NodeAttribute = require('../attributes/NodeAttribute');
-import dynamicBoxPattern = require('../patterns/dynamicBoxPattern');
+import getDynamicBox = require('../patterns/getDynamicBox');
 
-var dynamicBoxRule: Rules.Rule = function(component: Component): Rules.RuleResult[] {
-	var box = dynamicBoxPattern(component);
-	if (!box) {
+var dynamicBoxRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+	if (!getDynamicBox(component)) {
 		return;
 	}
 

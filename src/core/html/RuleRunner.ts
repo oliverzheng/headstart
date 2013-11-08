@@ -1,7 +1,10 @@
 import Rules = require('./Rules');
-import Component = require('./Component');
+import c = require('./Component');
 
 import dynamicBoxRule = require('./rules/dynamicBoxRule');
+import percentChildRule = require('./rules/percentChildRule');
+import coalesceSpacesRule = require('./rules/coalesceSpacesRule');
+import emptySpaceRule = require('./rules/emptySpaceRule');
 
 export class RuleRunner {
 	private rules: Rules.Rule[];
@@ -10,7 +13,7 @@ export class RuleRunner {
 		this.rules = rules;
 	}
 
-	start(component: Component) {
+	start(component: c.Component) {
 		var updated: boolean;
 		do {
 			updated = this.runRulesOn(component);
@@ -24,7 +27,7 @@ export class RuleRunner {
 		} while (updated);
 	}
 
-	private runRulesOn(component: Component): boolean {
+	private runRulesOn(component: c.Component): boolean {
 		var updated = false;
 		for (var ii = 0; ii < this.rules.length; ++ii) {
 			var rule = this.rules[ii];
@@ -33,7 +36,13 @@ export class RuleRunner {
 				attrsForComponents.forEach((attrsForComponent) => {
 					var component = attrsForComponent.component;
 					var attrs = attrsForComponent.attributes;
-					updated = component.addAttributes(attrs) || updated;
+					if (attrs) {
+						updated = component.addAttributes(attrs) || updated;
+					}
+					var replaceAttrs = attrsForComponent.replaceAttributes;
+					if (replaceAttrs) {
+						updated = component.replaceAttributes(replaceAttrs) || updated;
+					}
 				});
 			}
 		}
@@ -45,6 +54,9 @@ export class DefaultRuleRunner extends RuleRunner {
 	constructor() {
 		super([
 			dynamicBoxRule,
+			percentChildRule,
+			coalesceSpacesRule,
+			emptySpaceRule,
 		]);
 	}
 }

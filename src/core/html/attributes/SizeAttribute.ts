@@ -1,9 +1,10 @@
 import Attributes = require('../Attributes');
-import Length = require('./Length');
+import sinf = require('../../spec/interfaces');
 
+/*
 export class SizeAttribute extends Attributes.BaseAttribute {
-	private width: Length.Length;
-	private height: Length.Length;
+	private width: sinf.Length;
+	private height: sinf.Length;
 
 	constructor(width: Length.Length, height: Length.Length) {
 		super();
@@ -23,3 +24,4 @@ export class SizeAttribute extends Attributes.BaseAttribute {
 		return true;
 	}
 }
+*/

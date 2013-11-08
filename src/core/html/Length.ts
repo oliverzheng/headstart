@@ -1,15 +1,18 @@
 export enum LengthUnit {
 	PIXELS,
 	PERCENT,
+	//AUTO,
 }
 
 export class Length {
-	private value: number;
-	private unit: LengthUnit;
+	unit: LengthUnit;
+	value: number;
 
-	constructor(value: number, unit: LengthUnit) {
-		this.value = value;
+	constructor(unit: LengthUnit, value?: number) {
 		this.unit = unit;
+		if (value != null) {
+			this.value = value;
+		}
 	}
 }
 
@@ -20,3 +23,5 @@ export function px(value: number): Length {
 export function pct(value: number): Length {
 	return new Length(value, LengthUnit.PERCENT);
 }
+
+//export var auto = new Length(LengthUnit.AUTO);

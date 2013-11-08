@@ -1,5 +1,5 @@
 import Attributes = require('../Attributes');
-import Length = require('./Length');
+//import Length = require('./Length');
 
 export enum Position {
 	RELATIVE,
