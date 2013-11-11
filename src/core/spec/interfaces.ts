@@ -218,6 +218,7 @@ export var defaultContent = Content.NONE;
 export interface StaticText {
 	value: string;
 	font: string;
+	singleLine: boolean;
 }
 
 export interface StaticBackground {
@@ -230,8 +231,8 @@ export interface StaticBackground {
 }
 
 export interface StaticContent {
-	texts?: StaticText[];
-	backgrounds?: StaticBackground[];
+	text?: StaticText;
+	background?: StaticBackground;
 }
 
 
@@ -280,7 +281,8 @@ export interface Box {
 	crossAlignment?: Alignment;
 
 	/**
-	 * External content to be used here.
+	 * External content to be used here. Children should not be used if there is
+	 * content.
 	 */
 	content?: Content;
 

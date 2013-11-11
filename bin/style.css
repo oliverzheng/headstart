@@ -12,7 +12,8 @@
 .detail .lengthUnit,
 .detail .direction,
 .detail .alignment,
-.detail .content {
+.detail .content,
+.detail .staticContent {
 	margin: 0 10px;
 }
 
@@ -51,4 +52,11 @@
 }
 
 .components {
+}
+
+.disabled {
+	font-style: italic;
+	text-decoration: none;
+	cursor: not-allowed;
+	color: black;
 }

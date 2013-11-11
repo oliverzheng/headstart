@@ -80,6 +80,11 @@ export var DetailComponent = React.createClass({
 		this.props.onBoxChanged(this.props.box);
 	},
 
+	changeStaticContent(staticContent: inf.StaticContent) {
+		this.props.box.staticContent = staticContent;
+		this.props.onBoxChanged(this.props.box);
+	},
+
 	render() {
 		var box: inf.Box = this.props.box;
 		var html = React.DOM.div(null,
@@ -112,22 +117,6 @@ export var DetailComponent = React.createClass({
 			}, 'parent'));
 		}
 
-		var directions = inf.directions.map((direction) => {
-			if (direction === (box.direction || inf.noDirection)) {
-				return React.DOM.strong(
-					{className: 'direction', key: direction},
-					inf.Direction[direction]
-				);
-			} else {
-				return React.DOM.a(
-					{className: 'direction', key: direction, href: '#', onClick: (event: any) => {
-						this.changeDirection(direction);
-					}},
-					inf.Direction[direction]
-				);
-			}
-		});
-
 		var contents = inf.contents.map((content) => {
 			if (content === (box.content || inf.defaultContent)) {
 				return React.DOM.strong(
@@ -135,30 +124,104 @@ export var DetailComponent = React.createClass({
 					inf.Content[content]
 				);
 			} else {
+				var classNames = 'content';
+				var disabled = children.length > 0 && content !== inf.Content.NONE;
+				if (disabled) {
+					classNames += ' disabled';
+				}
 				return React.DOM.a(
-					{className: 'content', key: content, href: '#', onClick: (event: any) => {
-						this.changeContent(content);
+					{className: classNames, key: content, href: '#', onClick: (event: any) => {
+						if (!disabled) {
+							this.changeContent(content);
+						}
 					}},
 					inf.Content[content]
 				);
 			}
 		});
 
-		var alignments = inf.alignments.map((alignment) => {
-			if (alignment === (box.alignment || inf.defaultAlignment)) {
-				return React.DOM.strong(
-					{className: 'alignment', key: alignment},
-					inf.Alignment[alignment]
+		var childrenMarkup: any = null;
+		if (!box.content) {
+			var directions = inf.directions.map((direction) => {
+				if (direction === (box.direction || inf.noDirection)) {
+					return React.DOM.strong(
+						{className: 'direction', key: direction},
+						inf.Direction[direction]
+					);
+				} else {
+					return React.DOM.a(
+						{className: 'direction', key: direction, href: '#', onClick: (event: any) => {
+							this.changeDirection(direction);
+						}},
+						inf.Direction[direction]
+					);
+				}
+			});
+
+			var alignments = inf.alignments.map((alignment) => {
+				if (alignment === (box.alignment || inf.defaultAlignment)) {
+					return React.DOM.strong(
+						{className: 'alignment', key: alignment},
+						inf.Alignment[alignment]
+					);
+				} else {
+					return React.DOM.a(
+						{className: 'alignment', key: alignment, href: '#', onClick: (event: any) => {
+							this.changeAlignment(alignment);
+						}},
+						inf.Alignment[alignment]
+					);
+				}
+			});
+
+			childrenMarkup = [
+				React.DOM.button({onClick: this.addChild}, 'Add Child'),
+				React.DOM.div({},
+					React.DOM.strong(null, 'Direction:'),
+					React.DOM.span(null, directions)
+				),
+				React.DOM.div({},
+					React.DOM.strong(null, 'Alignment:'),
+					React.DOM.span(null, alignments)
+				),
+				React.DOM.div({}, children),
+			];
+
+		} else if (box.content === inf.Content.STATIC) {
+			var isSingleLine = (
+				box.staticContent &&
+				box.staticContent.text &&
+				box.staticContent.text.singleLine
+			);
+			if (isSingleLine) {
+				var staticText = React.DOM.div({className: 'staticContent'},
+					React.DOM.strong(null, 'Static Content: '),
+					React.DOM.strong({className: 'staticContent'}, 'Single Line'),
+					React.DOM.a(
+						{href: '#', onClick: (event: any) => {
+							this.changeStaticContent({
+								text: { singleLine: false }
+							});
+						}, className: 'staticContent' },
+						'Multi line'
+					)
 				);
 			} else {
-				return React.DOM.a(
-					{className: 'alignment', key: alignment, href: '#', onClick: (event: any) => {
-						this.changeAlignment(alignment);
-					}},
-					inf.Alignment[alignment]
+				var staticText = React.DOM.div({className: 'staticContent'},
+					React.DOM.strong(null, 'Static Content: '),
+					React.DOM.a(
+						{href: '#', onClick: (event: any) => {
+							this.changeStaticContent({
+								text: { singleLine: true }
+							});
+						}, className: 'staticContent' },
+						'Single line'
+					),
+					React.DOM.strong({className: 'staticContent'}, 'Multi Line')
 				);
 			}
-		});
+			childrenMarkup = staticText;
+		}
 
 		var isRoot = box === this.props.layout.root;
 		return React.DOM.div(
@@ -182,16 +245,7 @@ export var DetailComponent = React.createClass({
 			),
 			React.DOM.hr(null),
 			parent,
-			React.DOM.button({onClick: this.addChild}, 'Add Child'),
-			React.DOM.div({},
-				React.DOM.strong(null, 'Direction:'),
-				React.DOM.span(null, directions)
-			),
-			React.DOM.div({},
-				React.DOM.strong(null, 'Alignment:'),
-				React.DOM.span(null, alignments)
-			),
-			React.DOM.div({}, children),
+			childrenMarkup,
 			React.DOM.hr(null),
 			(box !== this.props.layout.root)
 				? React.DOM.button({onClick: this.deleteBox}, 'Delete Box')
