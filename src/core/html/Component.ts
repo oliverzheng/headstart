@@ -3,6 +3,7 @@ import BoxAttribute = require('./attributes/BoxAttribute');
 import NodeAttribute = require('./attributes/NodeAttribute');
 import ChildrenAttribute = require('./attributes/ChildrenAttribute');
 import sinf = require('../spec/interfaces');
+import assert = require('assert');
 
 export class Component {
 	attributes: Attributes.BaseAttribute[] = [];
@@ -43,8 +44,7 @@ export class Component {
 		throw new Error('Could not delete attribute of type ' + type);
 	}
 
-	// Returns true if any rule was added because it was new or it replaced
-	// another rule.
+	// Returns true if any rule was added because it was new
 	addAttributes(attrs: Attributes.BaseAttribute[]): boolean {
 		var added = false;
 		attrs.forEach((attr) => {
@@ -53,21 +53,32 @@ export class Component {
 				this.attributes.push(attr);
 				added = true;
 			} else if (!existingAttr.equals(attr)) {
-				throw new Error('Cannot replace an existing attr!');
+				var mergeAttr = existingAttr.merge(attr);
+				if (!mergeAttr) {
+					throw new Error('Cannot merge to an existing attr!');
+				}
+				assert(this.replaceAttributes([mergeAttr]));
+				added = true;
 			}
 		});
 		return added;
 	}
 
-	replaceAttributes(attrs: Attributes.BaseAttribute[]) {
+	// Returns true if any rule was added because it actually replaced others
+	replaceAttributes(attrs: Attributes.BaseAttribute[]): boolean {
+		var replaced = false;
 		attrs.forEach((attr) => {
 			var existingAttr = this.getAttr(attr.getType());
 			if (!existingAttr) {
 				throw new Error('Cannot replace attr that does not exist.');
 			}
-			this.deleteAttr(attr.getType());
-			this.attributes.push(attr);
+			if (!existingAttr.equals(attr)) {
+				replaced = true;
+				this.deleteAttr(attr.getType());
+				this.attributes.push(attr);
+			}
 		});
+		return replaced;
 	}
 
 	// Specific attributes

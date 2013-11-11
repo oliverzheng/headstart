@@ -5,6 +5,8 @@ import dynamicBoxRule = require('./rules/dynamicBoxRule');
 import percentChildRule = require('./rules/percentChildRule');
 import coalesceSpacesRule = require('./rules/coalesceSpacesRule');
 import emptySpaceRule = require('./rules/emptySpaceRule');
+import verticalRule = require('./rules/verticalRule');
+import foldChildrenRule = require('./rules/foldChildrenRule');
 
 export class RuleRunner {
 	private rules: Rules.Rule[];
@@ -57,6 +59,8 @@ export class DefaultRuleRunner extends RuleRunner {
 			percentChildRule,
 			coalesceSpacesRule,
 			emptySpaceRule,
+			verticalRule,
+			foldChildrenRule,
 		]);
 	}
 }
