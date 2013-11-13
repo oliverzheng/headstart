@@ -26,11 +26,16 @@ export enum Type {
 	// Space outside this component (not CSS margins, as they collapse)
 	SPACING,
 
+	ALIGNMENT,
+
 	// Relative or absolute positioning
 	POSITION,
 
 	// Space inside this component
 	//PADDING,
+
+	// Don't modify this component anymore.
+	SEALED,
 }
 
 export interface Repr {

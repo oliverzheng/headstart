@@ -27,9 +27,12 @@ class ChildrenAttribute extends Attributes.BaseAttribute {
 		return this.children;
 	}
 
-	breadthFirst(callback: (component: c.Component) => void) {
-		this.children.forEach(callback);
-		this.children.forEach((child) => {
+	breadthFirst(callback: (component: c.Component) => any) {
+		var stopRecursion: any[] = this.children.map(callback);
+		this.children.forEach((child, i) => {
+			if (stopRecursion[i]) {
+				return;
+			}
 			var childrenAttr = child.childrenAttr();
 			if (childrenAttr) {
 				childrenAttr.breadthFirst(callback);

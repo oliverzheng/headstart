@@ -1,4 +1,5 @@
 import Rules = require('./Rules');
+import Attributes = require('./Attributes');
 import c = require('./Component');
 
 import dynamicBoxRule = require('./rules/dynamicBoxRule');
@@ -7,6 +8,7 @@ import coalesceSpacesRule = require('./rules/coalesceSpacesRule');
 import emptySpaceRule = require('./rules/emptySpaceRule');
 import verticalRule = require('./rules/verticalRule');
 import foldChildrenRule = require('./rules/foldChildrenRule');
+import alignmentRule = require('./rules/alignmentRule');
 
 export class RuleRunner {
 	private rules: Rules.Rule[];
@@ -18,11 +20,17 @@ export class RuleRunner {
 	start(component: c.Component) {
 		var updated: boolean;
 		do {
+			if (component.getAttr(Attributes.Type.SEALED)) {
+				break;
+			}
 			updated = this.runRulesOn(component);
 
 			var childrenAttr = component.childrenAttr();
 			if (childrenAttr) {
 				childrenAttr.breadthFirst((child) => {
+					if (child.getAttr(Attributes.Type.SEALED)) {
+						return true; // stop recursion;
+					}
 					updated = this.runRulesOn(child) || updated;
 				});
 			}
@@ -61,6 +69,7 @@ export class DefaultRuleRunner extends RuleRunner {
 			emptySpaceRule,
 			verticalRule,
 			foldChildrenRule,
+			alignmentRule,
 		]);
 	}
 }

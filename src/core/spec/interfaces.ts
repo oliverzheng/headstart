@@ -175,6 +175,10 @@ export var alignments = [
 	Alignment.FAR,
 ];
 
+export var near = Alignment.NEAR;
+export var center = Alignment.CENTER;
+export var far = Alignment.FAR;
+
 export var defaultAlignment = Alignment.NEAR;
 
 
