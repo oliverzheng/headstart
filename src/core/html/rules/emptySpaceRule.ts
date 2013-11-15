@@ -46,16 +46,16 @@ var emptySpaceRule: Rules.Rule = function(component: c.Component): Rules.RuleRes
 			component: capture.previous,
 			attributes: [
 				direction === sinf.horiz
-				? SpacingAttribute.SpacingAttribute.right(size)
-				: SpacingAttribute.SpacingAttribute.bottom(size)
+				? SpacingAttribute.right(size)
+				: SpacingAttribute.bottom(size)
 			],
 		});
 		results.push({
 			component: capture.next,
 			attributes: [
 				direction === sinf.horiz
-				? SpacingAttribute.SpacingAttribute.left(size)
-				: SpacingAttribute.SpacingAttribute.top(size)
+				? SpacingAttribute.left(size)
+				: SpacingAttribute.top(size)
 			],
 		});
 		emptyComponents.push(capture.space);

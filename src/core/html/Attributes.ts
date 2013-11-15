@@ -36,6 +36,8 @@ export enum Type {
 
 	// Don't modify this component anymore.
 	SEALED,
+
+	CSS,
 }
 
 export interface Repr {

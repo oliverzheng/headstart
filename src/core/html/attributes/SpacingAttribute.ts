@@ -1,8 +1,9 @@
 import Attributes = require('../Attributes');
+import c = require('../Component');
 import sinf = require('../../spec/interfaces');
 import sutil = require('../../spec/util');
 
-export class SpacingAttribute extends Attributes.BaseAttribute {
+class SpacingAttribute extends Attributes.BaseAttribute {
 	top: sinf.Length = null;
 	bottom: sinf.Length = null;
 	left: sinf.Length = null;
@@ -36,6 +37,10 @@ export class SpacingAttribute extends Attributes.BaseAttribute {
 
 	static right(right: sinf.Length): SpacingAttribute {
 		return new SpacingAttribute(null, null, null, right);
+	}
+
+	static getFrom(component: c.Component): SpacingAttribute {
+		return <SpacingAttribute>(component.getAttr(Attributes.Type.SPACING));
 	}
 
 	getType() {
@@ -85,3 +90,5 @@ export class SpacingAttribute extends Attributes.BaseAttribute {
 		}
 	}
 }
+
+export = SpacingAttribute;

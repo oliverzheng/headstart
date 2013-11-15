@@ -11,6 +11,9 @@ import foldChildrenRule = require('./rules/foldChildrenRule');
 import alignmentRule = require('./rules/alignmentRule');
 import middleAlignmentRule = require('./rules/middleAlignmentRule');
 
+import cssMarginRule = require('./rules/cssMarginRule');
+
+
 export class RuleRunner {
 	private rules: Rules.Rule[];
 
@@ -61,7 +64,7 @@ export class RuleRunner {
 	}
 }
 
-export class DefaultRuleRunner extends RuleRunner {
+export class LayoutRuleRunner extends RuleRunner {
 	constructor() {
 		super([
 			dynamicBoxRule,
@@ -73,5 +76,27 @@ export class DefaultRuleRunner extends RuleRunner {
 			alignmentRule,
 			middleAlignmentRule,
 		]);
+	}
+}
+
+export class CSSRuleRunner extends RuleRunner {
+	constructor() {
+		super([
+			cssMarginRule,
+		]);
+	}
+}
+
+export class DefaultRuleRunner extends RuleRunner {
+	private layoutRuleRunner = new LayoutRuleRunner;
+	private cssRuleRunner = new CSSRuleRunner;
+
+	constructor() {
+		super([]);
+	}
+
+	start(component: c.Component) {
+		this.layoutRuleRunner.start(component);
+		this.cssRuleRunner.start(component);
 	}
 }
