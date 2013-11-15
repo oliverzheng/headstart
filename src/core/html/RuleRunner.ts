@@ -9,6 +9,7 @@ import emptySpaceRule = require('./rules/emptySpaceRule');
 import verticalRule = require('./rules/verticalRule');
 import foldChildrenRule = require('./rules/foldChildrenRule');
 import alignmentRule = require('./rules/alignmentRule');
+import middleAlignmentRule = require('./rules/middleAlignmentRule');
 
 export class RuleRunner {
 	private rules: Rules.Rule[];
@@ -70,6 +71,7 @@ export class DefaultRuleRunner extends RuleRunner {
 			verticalRule,
 			foldChildrenRule,
 			alignmentRule,
+			middleAlignmentRule,
 		]);
 	}
 }

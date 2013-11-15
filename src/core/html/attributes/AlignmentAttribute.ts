@@ -3,14 +3,18 @@ import c = require('Component');
 import sinf = require('../../spec/interfaces');
 
 class AlignmentAttribute extends Attributes.BaseAttribute {
-	private horiz: sinf.Alignment;
-	private vert: sinf.Alignment;
+	horiz: sinf.Alignment;
+	vert: sinf.Alignment;
 
 	constructor(horiz: sinf.Alignment, vert: sinf.Alignment) {
 		super();
 
 		this.horiz = horiz || sinf.defaultAlignment;
 		this.vert = vert || sinf.defaultAlignment;
+	}
+
+	static getFrom(component: c.Component): AlignmentAttribute {
+		return <AlignmentAttribute>(component.getAttr(Attributes.Type.ALIGNMENT));
 	}
 
 	getType() {
