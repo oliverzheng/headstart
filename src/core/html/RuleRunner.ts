@@ -1,5 +1,6 @@
 import Rules = require('./Rules');
 import Attributes = require('./Attributes');
+import Context = require('./Context');
 import c = require('./Component');
 
 import dynamicBoxRule = require('./rules/dynamicBoxRule');
@@ -16,9 +17,11 @@ import cssMarginRule = require('./rules/cssMarginRule');
 
 export class RuleRunner {
 	private rules: Rules.Rule[];
+	private context: Context.Context;
 
-	constructor(rules: Rules.Rule[]) {
+	constructor(rules: Rules.Rule[], context: Context.Context) {
 		this.rules = rules;
+		this.context = context;
 	}
 
 	start(component: c.Component) {
@@ -45,7 +48,7 @@ export class RuleRunner {
 		var updated = false;
 		for (var ii = 0; ii < this.rules.length; ++ii) {
 			var rule = this.rules[ii];
-			var attrsForComponents = rule(component);
+			var attrsForComponents = rule(component, this.context);
 			if (attrsForComponents) {
 				attrsForComponents.forEach((attrsForComponent) => {
 					var component = attrsForComponent.component;
@@ -65,7 +68,7 @@ export class RuleRunner {
 }
 
 export class LayoutRuleRunner extends RuleRunner {
-	constructor() {
+	constructor(context: Context.Context) {
 		super([
 			dynamicBoxRule,
 			percentChildRule,
@@ -75,24 +78,27 @@ export class LayoutRuleRunner extends RuleRunner {
 			foldChildrenRule,
 			alignmentRule,
 			middleAlignmentRule,
-		]);
+		], context);
 	}
 }
 
 export class CSSRuleRunner extends RuleRunner {
-	constructor() {
+	constructor(context: Context.Context) {
 		super([
 			cssMarginRule,
-		]);
+		], context);
 	}
 }
 
 export class DefaultRuleRunner extends RuleRunner {
-	private layoutRuleRunner = new LayoutRuleRunner;
-	private cssRuleRunner = new CSSRuleRunner;
+	private layoutRuleRunner: LayoutRuleRunner;
+	private cssRuleRunner: CSSRuleRunner;
 
-	constructor() {
-		super([]);
+	constructor(context: Context.Context) {
+		super([], context);
+
+		this.layoutRuleRunner = new LayoutRuleRunner(context);
+		this.cssRuleRunner = new CSSRuleRunner(context);
 	}
 
 	start(component: c.Component) {

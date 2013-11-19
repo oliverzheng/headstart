@@ -41,7 +41,7 @@ var cssMarginRule: Rules.Rule = function(component: c.Component): Rules.RuleResu
 		component: component,
 		attributes: [
 			new CSSAttribute({'margin': margin}),
-			new SealedAttribute(),
+			//new SealedAttribute(),
 		]
 	}];
 }

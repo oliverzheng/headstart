@@ -1,5 +1,6 @@
 import c = require('./Component');
 import Attributes = require('./Attributes');
+import Context = require('./Context');
 
 export interface RuleResult {
 	component: c.Component;
@@ -8,5 +9,5 @@ export interface RuleResult {
 }
 
 export interface Rule {
-	(component: c.Component): RuleResult[];
+	(component: c.Component, context: Context.Context): RuleResult[];
 }

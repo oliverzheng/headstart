@@ -4,11 +4,12 @@ import Attributes = require('../core/html/Attributes');
 import c = require('../core/html/Component');
 import ChildrenAttribute = require('../core/html/attributes/ChildrenAttribute');
 import RuleRunner = require('../core/html/RuleRunner');
+import Context = require('../core/html/Context');
 
 export var RootComponent = React.createClass({
 	getInitialState() {
 		return {
-			ruleRunner: new RuleRunner.DefaultRuleRunner(),
+			ruleRunner: new RuleRunner.DefaultRuleRunner(Context.ie6AndAbove),
 		};
 	},
 
