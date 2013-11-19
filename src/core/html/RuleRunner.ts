@@ -11,6 +11,7 @@ import verticalRule = require('./rules/verticalRule');
 import foldChildrenRule = require('./rules/foldChildrenRule');
 import alignmentRule = require('./rules/alignmentRule');
 import middleAlignmentRule = require('./rules/middleAlignmentRule');
+import cssVerticalBottomRule = require('./rules/cssVerticalBottomRule');
 
 import cssMarginRule = require('./rules/cssMarginRule');
 
@@ -78,6 +79,7 @@ export class LayoutRuleRunner extends RuleRunner {
 			foldChildrenRule,
 			alignmentRule,
 			middleAlignmentRule,
+			cssVerticalBottomRule,
 		], context);
 	}
 }

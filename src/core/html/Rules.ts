@@ -6,6 +6,7 @@ export interface RuleResult {
 	component: c.Component;
 	attributes?: Attributes.BaseAttribute[];
 	replaceAttributes?: Attributes.BaseAttribute[];
+	deleteAttributes?: Attributes.Type[];
 }
 
 export interface Rule {

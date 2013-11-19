@@ -10,6 +10,8 @@ import layout = require('../../spec/layout');
 import sinf = require('../../spec/interfaces');
 import sutil = require('../../spec/util');
 
+// Create a new component to wrap around the child that's middle aligned and has
+// siblings.
 var middleAlignmentRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
 	var childrenAttr = component.childrenAttr();
 	var groups = groupChildren(component, (child) => {

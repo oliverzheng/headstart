@@ -1,12 +1,12 @@
 import Attributes = require('../Attributes');
+import Length = require('./Length');
 import sinf = require('../../spec/interfaces');
 
-/*
-export class SizeAttribute extends Attributes.BaseAttribute {
-	private width: sinf.Length;
-	private height: sinf.Length;
+class SizeAttribute extends Attributes.BaseAttribute {
+	width: Length;
+	height: Length;
 
-	constructor(width: Length.Length, height: Length.Length) {
+	constructor(width: Length, height: Length) {
 		super();
 
 		this.width = width;
@@ -21,7 +21,8 @@ export class SizeAttribute extends Attributes.BaseAttribute {
 		if (!this.isSameAttrType(attribute)) { return false; }
 		var attr = <SizeAttribute>attribute;
 
-		return true;
+		return false;
 	}
 }
-*/
+
+export = SizeAttribute;
