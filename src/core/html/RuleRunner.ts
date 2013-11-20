@@ -11,6 +11,7 @@ import verticalRule = require('./rules/verticalRule');
 import foldChildrenRule = require('./rules/foldChildrenRule');
 import alignmentRule = require('./rules/alignmentRule');
 import middleAlignmentRule = require('./rules/middleAlignmentRule');
+import sizeRule = require('./rules/sizeRule');
 import cssVerticalBottomRule = require('./rules/cssVerticalBottomRule');
 
 import cssMarginRule = require('./rules/cssMarginRule');
@@ -72,6 +73,7 @@ export class LayoutRuleRunner extends RuleRunner {
 	constructor(context: Context.Context) {
 		super([
 			dynamicBoxRule,
+			sizeRule,
 			percentChildRule,
 			coalesceSpacesRule,
 			emptySpaceRule,

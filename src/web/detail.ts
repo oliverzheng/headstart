@@ -125,10 +125,13 @@ export var DetailComponent = React.createClass({
 				);
 			} else {
 				var classNames = 'content';
+				/*
 				var disabled = children.length > 0 && content !== inf.Content.NONE;
 				if (disabled) {
 					classNames += ' disabled';
 				}
+				*/
+				var disabled = false;
 				return React.DOM.a(
 					{className: classNames, key: content, href: '#', onClick: (event: any) => {
 						if (!disabled) {
@@ -140,54 +143,53 @@ export var DetailComponent = React.createClass({
 			}
 		});
 
-		var childrenMarkup: any = null;
-		if (!box.content) {
-			var directions = inf.directions.map((direction) => {
-				if (direction === (box.direction || inf.noDirection)) {
-					return React.DOM.strong(
-						{className: 'direction', key: direction},
-						inf.Direction[direction]
-					);
-				} else {
-					return React.DOM.a(
-						{className: 'direction', key: direction, href: '#', onClick: (event: any) => {
-							this.changeDirection(direction);
-						}},
-						inf.Direction[direction]
-					);
-				}
-			});
+		var directions = inf.directions.map((direction) => {
+			if (direction === (box.direction || inf.noDirection)) {
+				return React.DOM.strong(
+					{className: 'direction', key: direction},
+					inf.Direction[direction]
+				);
+			} else {
+				return React.DOM.a(
+					{className: 'direction', key: direction, href: '#', onClick: (event: any) => {
+						this.changeDirection(direction);
+					}},
+					inf.Direction[direction]
+				);
+			}
+		});
 
-			var alignments = inf.alignments.map((alignment) => {
-				if (alignment === (box.alignment || inf.defaultAlignment)) {
-					return React.DOM.strong(
-						{className: 'alignment', key: alignment},
-						inf.Alignment[alignment]
-					);
-				} else {
-					return React.DOM.a(
-						{className: 'alignment', key: alignment, href: '#', onClick: (event: any) => {
-							this.changeAlignment(alignment);
-						}},
-						inf.Alignment[alignment]
-					);
-				}
-			});
+		var alignments = inf.alignments.map((alignment) => {
+			if (alignment === (box.alignment || inf.defaultAlignment)) {
+				return React.DOM.strong(
+					{className: 'alignment', key: alignment},
+					inf.Alignment[alignment]
+				);
+			} else {
+				return React.DOM.a(
+					{className: 'alignment', key: alignment, href: '#', onClick: (event: any) => {
+						this.changeAlignment(alignment);
+					}},
+					inf.Alignment[alignment]
+				);
+			}
+		});
 
-			childrenMarkup = [
-				React.DOM.button({onClick: this.addChild}, 'Add Child'),
-				React.DOM.div({},
-					React.DOM.strong(null, 'Direction:'),
-					React.DOM.span(null, directions)
-				),
-				React.DOM.div({},
-					React.DOM.strong(null, 'Alignment:'),
-					React.DOM.span(null, alignments)
-				),
-				React.DOM.div({}, children),
-			];
+		var childrenMarkup = [
+			React.DOM.button({onClick: this.addChild}, 'Add Child'),
+			React.DOM.div({},
+				React.DOM.strong(null, 'Direction:'),
+				React.DOM.span(null, directions)
+			),
+			React.DOM.div({},
+				React.DOM.strong(null, 'Alignment:'),
+				React.DOM.span(null, alignments)
+			),
+			React.DOM.div({}, children),
+		];
 
-		} else if (box.content === inf.Content.STATIC) {
+		var staticThings: any;
+		if (box.content === inf.Content.STATIC) {
 			var isSingleLine = (
 				box.staticContent &&
 				box.staticContent.text &&
@@ -220,7 +222,7 @@ export var DetailComponent = React.createClass({
 					React.DOM.strong({className: 'staticContent'}, 'Multi Line')
 				);
 			}
-			childrenMarkup = staticText;
+			staticThings = staticText;
 		}
 
 		var isRoot = box === this.props.layout.root;
@@ -246,6 +248,7 @@ export var DetailComponent = React.createClass({
 			React.DOM.hr(null),
 			parent,
 			childrenMarkup,
+			staticThings,
 			React.DOM.hr(null),
 			(box !== this.props.layout.root)
 				? React.DOM.button({onClick: this.deleteBox}, 'Delete Box')

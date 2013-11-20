@@ -73,6 +73,11 @@ export var lengthUnitsWithValue = [
 	LengthUnit.PARTS,
 ];
 
+export var fixedLengthUnits = [
+	LengthUnit.PIXELS,
+	LengthUnit.PERCENT,
+];
+
 
 export interface Length {
 	unit: LengthUnit;

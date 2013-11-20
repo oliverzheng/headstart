@@ -1,4 +1,6 @@
 import BoxAttribute = require('../attributes/BoxAttribute');
+import SizeAttribute = require('../attributes/SizeAttribute');
+import Length = require('../Length');
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
 import sutil = require('../../spec/util');

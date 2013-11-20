@@ -100,6 +100,23 @@ export function addFixedLengths(
 	};
 }
 
+/*
+export function addLengths(
+		first: inf.Length,
+		second: inf.Length
+	): inf.Length {
+	var sum = addFixedLength(first, second);
+	if (sum) {
+		return sum;
+	}
+
+	if (first.unit === inf.LengthUnit.EXPAND &&
+		second.unit === inf.LengthUnit.EXPAND) {
+		return inf.expand;
+	}
+}
+*/
+
 export function serializeLength(length: inf.Length): string {
 	var value: string;
 	var unit: string;
