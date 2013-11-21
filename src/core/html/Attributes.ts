@@ -21,7 +21,8 @@ export enum Type {
 	FLOAT,
 
 	// Sizing of the component
-	SIZE,
+	WIDTH,
+	HEIGHT,
 
 	// Space outside this component (not CSS margins, as they collapse)
 	SPACING,

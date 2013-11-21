@@ -5,8 +5,7 @@ import NodeAttribute = require('../attributes/NodeAttribute');
 import ChildrenAttribute = require('../attributes/ChildrenAttribute');
 import AlignmentAttribute = require('../attributes/AlignmentAttribute');
 import PositionAttribute = require('../attributes/PositionAttribute');
-import SizeAttribute = require('../attributes/SizeAttribute');
-import Length = require('../Length');
+import LengthAttribute = require('../attributes/LengthAttribute');
 import matchChildren = require('../patterns/matchChildren');
 import hasBoxContent = require('../patterns/hasBoxContent');
 import getDirection = require('../patterns/getDirection');
@@ -15,20 +14,62 @@ import sinf = require('../../spec/interfaces');
 import util = require('../../spec/util');
 import assert = require('assert');
 
-function sizeComponent(component: c.Component): Rules.RuleResult[] {
-	var sizeAttr = SizeAttribute.getFrom(component);
-	var width: Length = sizeAttr ? sizeAttr.width : null;
-	var height: Length = sizeAttr ? sizeAttr.height : null;;
+function makeResults(
+		component: c.Component, width: LengthAttribute, height: LengthAttribute
+	): Rules.RuleResult[] {
+
+	if (!width && !height) {
+		return;
+	}
+
+	var attributes: Attributes.BaseAttribute[] = [];
+	if (width) {
+		attributes.push(width);
+	}
+	if (height) {
+		attributes.push(height);
+	}
+	return [{
+		component: component,
+		attributes: attributes,
+	}];
+}
+
+export var sizeUserExplicit: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+	var width: LengthAttribute = null;
+	var height: LengthAttribute = null;
 
 	var boxAttr = component.boxAttr();
 	if (boxAttr) {
 		var box = boxAttr.getBox();
 		// The user specified these should be exactly this length
 		if (!width && box.w && sinf.fixedLengthUnits.indexOf(box.w.unit) !== -1) {
-			width = Length.makeLength(box.w, true);
+			width = LengthAttribute.fromUser(box.w, sinf.horiz);
 		}
 		if (!height && box.h && sinf.fixedLengthUnits.indexOf(box.h.unit) !== -1) {
-			height = Length.makeLength(box.h, true);
+			height = LengthAttribute.fromUser(box.h, sinf.vert);
+		}
+	}
+
+	return makeResults(component, width, height);
+}
+
+// Get components that wrap around children (all components without boxes do by
+// default), or components with boxes that have SHRINK for size.
+export var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+	var width: LengthAttribute = null;
+	var height: LengthAttribute = null;
+	var doWidth = true;
+	var doHeight = true;
+
+	var boxAttr = component.boxAttr();
+	if (boxAttr) {
+		var box = boxAttr.getBox();
+		if (box.w.unit !== sinf.LengthUnit.SHRINK) {
+			doWidth = false;
+		}
+		if (box.h.unit !== sinf.LengthUnit.SHRINK) {
+			doHeight = false;
 		}
 	}
 
@@ -37,78 +78,85 @@ function sizeComponent(component: c.Component): Rules.RuleResult[] {
 	if (childrenAttr && childrenAttr.getChildren().length > 0 && direction) {
 		// Sum up children lengths
 		var children = childrenAttr.getChildren();
-		var childrenSizeAttrs = children.map(
-			(child) => SizeAttribute.getFrom(child)
+
+		var childrenWidths = children.map(
+			(child) => LengthAttribute.getFrom(child, sinf.horiz)
 		).filter((attr) => !!attr);
-		if (childrenSizeAttrs.length === children.length) {
-			if (!width) {
-				var childrenWidths = childrenSizeAttrs.map((attr) => attr.width);
-				if (childrenWidths.length === children.length) {
-					// TODO take into account spacing
-					if (direction === sinf.horiz) {
-						width = Length.makeImplicit(childrenWidths.reduce(Length.add));
+		if (childrenWidths.length === children.length) {
+			// TODO take into account spacing
+			if (direction === sinf.horiz) {
+				width = childrenWidths.reduce(LengthAttribute.add).makeImplicit();
+			} else {
+				var canCompare = childrenWidths.every((w, i) => {
+					if (i === 0) {
+						return true;
 					} else {
-						var canCompare = childrenWidths.every((w, i) => {
-							if (i === 0) {
-								return true;
-							} else {
-								return Length.canCompare(w, childrenWidths[i-1]);
-							}
-						});
-						// Find the max
-						if (canCompare) {
-							childrenWidths.sort(Length.compare);
-							width = Length.makeImplicit(childrenWidths[childrenWidths.length - 1]);
-						}
+						return w.canCompare(childrenWidths[i-1]);
 					}
+				});
+				// Find the max
+				if (canCompare) {
+					childrenWidths.sort(LengthAttribute.compare);
+					width = childrenWidths[childrenWidths.length - 1].makeImplicit();
 				}
 			}
-			if (!height) {
-				var childrenHeights = childrenSizeAttrs.map(
-					(attr) => attr.height
-				);
-				if (childrenHeights.length === children.length) {
-					// TODO take into account spacing
-					if (direction === sinf.vert) {
-						height = Length.makeImplicit(childrenHeights.reduce(Length.add));
+		}
+
+		var childrenHeights = children.map(
+			(child) => LengthAttribute.getFrom(child, sinf.vert)
+		).filter((attr) => !!attr);
+		if (childrenHeights.length === children.length) {
+			// TODO take into account spacing
+			if (direction === sinf.vert) {
+				height = childrenHeights.reduce(LengthAttribute.add).makeImplicit();
+			} else {
+				var canCompare = childrenHeights.every((h, i) => {
+					if (i === 0) {
+						return true;
 					} else {
-						var canCompare = childrenHeights.every((h, i) => {
-							if (i === 0) {
-								return true;
-							} else {
-								return Length.canCompare(h, childrenHeights[i-1]);
-							}
-						});
-						// Find the max
-						if (canCompare) {
-							childrenHeights.sort(Length.compare);
-							height = Length.makeImplicit(childrenHeights[childrenHeights.length - 1]);
-						}
+						return h.canCompare(childrenHeights[i-1]);
 					}
+				});
+				// Find the max
+				if (canCompare) {
+					childrenHeights.sort(LengthAttribute.compare);
+					height = childrenHeights[childrenHeights.length - 1].makeImplicit();
 				}
 			}
 		}
 	}
 
-	if (width || height) {
-		return [{
-			component: component,
-			attributes: [
-				new SizeAttribute(width, height),
-			],
-		}];
+	return makeResults(component, doWidth ? width : null, doHeight ? height : null);
+}
+
+export var sizePercentChildren: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+	var parentWidth = LengthAttribute.getFrom(component, sinf.horiz);
+	var parentHeight = LengthAttribute.getFrom(component, sinf.vert);
+
+	var childrenAttr = component.childrenAttr();
+	if (childrenAttr && childrenAttr.getChildren().length > 0) {
+		var children = childrenAttr.getChildren();
+
+		var results: Rules.RuleResult[] = [];
+		children.forEach((child) => {
+			var childWidth = LengthAttribute.getFrom(child, sinf.horiz);
+			if (parentWidth && childWidth &&
+				parentWidth.px.isSet() && !childWidth.px.isSet() && childWidth.pct.isSet()) {
+				results.push({
+					component: child,
+					attributes: [childWidth.percentOf(parentWidth)],
+				});
+			}
+			var childHeight = LengthAttribute.getFrom(child, sinf.vert);
+			if (parentHeight && childHeight &&
+				parentHeight.px.isSet() && !childHeight.px.isSet() && childHeight.pct.isSet()) {
+				results.push({
+					component: child,
+					attributes: [childHeight.percentOf(parentHeight)],
+				});
+			}
+		});
+		return results;
 	}
 }
 
-function sizeChildren(component: c.Component): Rules.RuleResult[] {
-	return;
-}
-
-var sizeRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
-	var results: Rules.RuleResult[] = [];
-	results.push.apply(results, sizeComponent(component));
-	results.push.apply(results, sizeChildren(component));
-	return results;
-}
-
-export = sizeRule;

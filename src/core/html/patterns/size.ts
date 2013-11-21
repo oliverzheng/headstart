@@ -1,11 +1,9 @@
 import BoxAttribute = require('../attributes/BoxAttribute');
-import SizeAttribute = require('../attributes/SizeAttribute');
-import Length = require('../Length');
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
 import sutil = require('../../spec/util');
 
-export function getBoxFixedSize(
+function getBoxFixedSize(
 		component: c.Component,
 		direction: sinf.Direction,
 		allowPercentage: boolean
@@ -44,6 +42,7 @@ export function isBoxSizePercent(
 	return size && size.unit === sinf.LengthUnit.PERCENT;
 }
 
+/*
 export function getAggregatedSize(
 		component: c.Component,
 		direction: sinf.Direction
@@ -66,3 +65,4 @@ export function getAggregatedSize(
 	}
 	return lengths.reduce(sutil.addFixedLengths);
 }
+*/

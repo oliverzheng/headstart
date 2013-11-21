@@ -41,6 +41,7 @@ var emptySpaceRule: Rules.Rule = function(component: c.Component): Rules.RuleRes
 	var emptyComponents: c.Component[] = [];
 	matches.forEach((match) => {
 		var capture = match.capture;
+		/*
 		var size = sizePatterns.getAggregatedSize(capture.space, direction);
 		results.push({
 			component: capture.previous,
@@ -58,6 +59,7 @@ var emptySpaceRule: Rules.Rule = function(component: c.Component): Rules.RuleRes
 				: SpacingAttribute.top(size)
 			],
 		});
+		*/
 		emptyComponents.push(capture.space);
 	});
 

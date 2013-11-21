@@ -73,7 +73,9 @@ export class LayoutRuleRunner extends RuleRunner {
 	constructor(context: Context.Context) {
 		super([
 			dynamicBoxRule,
-			sizeRule,
+			sizeRule.sizeUserExplicit,
+			sizeRule.sizeByChildrenSum,
+			sizeRule.sizePercentChildren,
 			percentChildRule,
 			coalesceSpacesRule,
 			emptySpaceRule,
