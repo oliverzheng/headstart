@@ -7,14 +7,38 @@ import Measurement = require('./Measurement');
 class LengthAttribute extends Attributes.BaseAttribute {
 	direction: sinf.Direction;
 
-	px: Measurement = new Measurement;
-	pct: Measurement = new Measurement;
-	lines: Measurement = new Measurement; // For heights only
+	px: Measurement;
+	pct: Measurement;
+	lines: Measurement; // For heights only
 
-	constructor(direction: sinf.Direction) {
+	static horizZero =
+		new LengthAttribute(
+			sinf.horiz,
+			Measurement.implicit(0),
+			Measurement.implicit(0),
+			Measurement.implicit(0)
+		);
+
+	static vertZero =
+		new LengthAttribute(
+			sinf.vert,
+			Measurement.implicit(0),
+			Measurement.implicit(0),
+			Measurement.implicit(0)
+		);
+
+	constructor(
+			direction: sinf.Direction,
+			px: Measurement = null,
+			pct: Measurement = null,
+			lines: Measurement = null
+		) {
 		super();
 
 		this.direction = direction;
+		this.px = px || new Measurement;
+		this.pct = pct || new Measurement;
+		this.lines = lines || new Measurement;
 	}
 
 	static fromUser(slen: sinf.Length, direction: sinf.Direction):
@@ -152,6 +176,10 @@ class LengthAttribute extends Attributes.BaseAttribute {
 		throw new Error('Cannot compare');
 	}
 
+	compare(other: LengthAttribute) {
+		return LengthAttribute.compare(this, other);
+	}
+
 	static add(l1: LengthAttribute, l2: LengthAttribute): LengthAttribute {
 		assert(l1.direction === l2.direction);
 		var sum = new LengthAttribute(l1.direction);
@@ -160,7 +188,7 @@ class LengthAttribute extends Attributes.BaseAttribute {
 			sum.px = l1.px.add(l2.px);
 		}
 		if (l1.pct.isSet() && l2.pct.isSet()) {
-			sum.px = l1.px.add(l2.px);
+			sum.pct = l1.pct.add(l2.px);
 		}
 		if (l1.lines.isSet() && l2.lines.isSet()) {
 			sum.lines = l1.px.add(l2.lines);
@@ -171,6 +199,33 @@ class LengthAttribute extends Attributes.BaseAttribute {
 		}
 	}
 
+	add(other: LengthAttribute) {
+		return LengthAttribute.add(this, other);
+	}
+
+	static subtract(l1: LengthAttribute, l2: LengthAttribute): LengthAttribute {
+		assert(l1.direction === l2.direction);
+		var diff = new LengthAttribute(l1.direction);
+
+		if (l1.px.isSet() && l2.px.isSet()) {
+			diff.px = l1.px.subtract(l2.px);
+		}
+		if (l1.pct.isSet() && l2.pct.isSet()) {
+			diff.pct = l1.pct.subtract(l2.px);
+		}
+		if (l1.lines.isSet() && l2.lines.isSet()) {
+			diff.lines = l1.lines.subtract(l2.lines);
+		}
+
+		if (diff.isSet()) {
+			return diff;
+		}
+	}
+
+	subtract(other: LengthAttribute) {
+		return LengthAttribute.subtract(this, other);
+	}
+
 	isSet() {
 		return this.px.isSet() || this.pct.isSet() || this.lines.isSet();
 	}
@@ -178,12 +233,32 @@ class LengthAttribute extends Attributes.BaseAttribute {
 	percentOf(parent: LengthAttribute): LengthAttribute {
 		assert(!this.px.isSet() && this.pct.isSet());
 
+		if (!parent.px.isSet()) {
+			return this;
+		}
+
 		var l = new LengthAttribute(this.direction);
 		l.px = Measurement.implicit(this.pct.value * parent.px.value);
 		l.pct = this.pct;
 		l.lines = this.lines;
 
 		return l;
+	}
+
+	split(parts: number): LengthAttribute {
+		var part = new LengthAttribute(this.direction);
+		if (this.px.isSet()) {
+			part.px = this.px.split(parts);
+		}
+		if (this.pct.isSet()) {
+			part.pct = this.pct.split(parts);
+		}
+		if (this.lines.isSet()) {
+			part.lines = this.lines.split(parts);
+		}
+		if (part.isSet()) {
+			return part;
+		}
 	}
 }
 

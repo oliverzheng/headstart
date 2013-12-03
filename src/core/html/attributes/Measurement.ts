@@ -57,13 +57,21 @@ class Measurement {
 	}
 
 	add(m: Measurement): Measurement {
-		if (!this.isSet()) {
-			return m;
-		} else if (!m.isSet()) {
-			return this;
-		} else {
-			return Measurement.implicit(this.value + m.value);
-		}
+		assert(this.isSet() && m.isSet());
+		return Measurement.implicit(this.value + m.value);
+	}
+
+	subtract(m: Measurement): Measurement {
+		assert(this.isSet() && m.isSet());
+		return Measurement.implicit(this.value - m.value);
+	}
+
+	split(parts: number): Measurement {
+		assert(this.isSet());
+		var m = new Measurement;
+		m.value = this.value / parts;
+		m.isExplicit = this.isExplicit;
+		return m;
 	}
 }
 

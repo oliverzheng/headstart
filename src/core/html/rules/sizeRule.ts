@@ -4,6 +4,7 @@ import Rules = require('../Rules');
 import NodeAttribute = require('../attributes/NodeAttribute');
 import ChildrenAttribute = require('../attributes/ChildrenAttribute');
 import AlignmentAttribute = require('../attributes/AlignmentAttribute');
+import Measurement = require('../attributes/Measurement');
 import PositionAttribute = require('../attributes/PositionAttribute');
 import LengthAttribute = require('../attributes/LengthAttribute');
 import matchChildren = require('../patterns/matchChildren');
@@ -129,6 +130,8 @@ export var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rul
 	return makeResults(component, doWidth ? width : null, doHeight ? height : null);
 }
 
+// Set the px length of children that have % lengths and if the parent has
+// a known px length.
 export var sizePercentChildren: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
 	var parentWidth = LengthAttribute.getFrom(component, sinf.horiz);
 	var parentHeight = LengthAttribute.getFrom(component, sinf.vert);
@@ -160,3 +163,137 @@ export var sizePercentChildren: Rules.Rule = function(component: c.Component): R
 	}
 }
 
+// Set the % and px lengths of children that expand.
+export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[] {
+	var parentWidth = LengthAttribute.getFrom(component, sinf.horiz);
+	var parentHeight = LengthAttribute.getFrom(component, sinf.vert);
+
+	var childrenAttr = component.childrenAttr();
+	if (!childrenAttr) {
+		return;
+	}
+	var children = childrenAttr.getChildren();
+	var direction = getDirection(component);
+
+	var results: Rules.RuleResult[] = [];
+
+	if (parentWidth) {
+		var unsizedExpandChildren = children.filter((child) => {
+			if (LengthAttribute.getFrom(child, sinf.horiz)) {
+				return false;
+			}
+			var boxAttr = child.boxAttr();
+			if (!boxAttr) {
+				return false;
+			}
+			return boxAttr.getBox().w.unit === sinf.LengthUnit.EXPAND;
+		});
+
+		if (direction === sinf.horiz) {
+			var sizedChildrenWidths = children.map((child) => {
+				return LengthAttribute.getFrom(child, sinf.horiz);
+			}).filter((length) => <boolean>length);
+
+			// We can't figure out the size of other EXPAND children if not all
+			// non-EXPAND children are sized.
+			var horizUnsizedChildrenAllExpand =
+				sizedChildrenWidths.length + unsizedExpandChildren.length === children.length;
+				
+			if (horizUnsizedChildrenAllExpand && unsizedExpandChildren.length > 0) {
+				var widthOfSizedChildren: LengthAttribute;
+				if (sizedChildrenWidths.length > 0) {
+					widthOfSizedChildren =
+						sizedChildrenWidths.reduce(LengthAttribute.add).makeImplicit();
+				} else {
+					widthOfSizedChildren = LengthAttribute.horizZero;
+				}
+
+				var leftOverWidth = parentWidth.subtract(widthOfSizedChildren);
+				if (leftOverWidth &&
+					leftOverWidth.canCompare(LengthAttribute.horizZero)) {
+					if (leftOverWidth.compare(LengthAttribute.horizZero) < 0) {
+						leftOverWidth = LengthAttribute.horizZero;
+					}
+					var splitWidth = leftOverWidth.split(unsizedExpandChildren.length);
+
+					results.push.apply(results, unsizedExpandChildren.map((child) => {
+						return {
+							component: child,
+							attributes: [splitWidth],
+						};
+					}));
+				}
+			}
+		} else if (direction === sinf.vert) {
+			var oneHundredPct =
+				new LengthAttribute(sinf.horiz, null, Measurement.implicit(1));
+			var widthFromParent = oneHundredPct.percentOf(parentWidth);
+			results.push.apply(results, unsizedExpandChildren.map((child) => {
+				return {
+					component: child,
+					attributes: [widthFromParent],
+				};
+			}));
+		}
+	}
+
+	if (parentHeight) {
+		var unsizedExpandChildren = children.filter((child) => {
+			if (LengthAttribute.getFrom(child, sinf.vert)) {
+				return false;
+			}
+			var boxAttr = child.boxAttr();
+			if (!boxAttr) {
+				return false;
+			}
+			return boxAttr.getBox().h.unit === sinf.LengthUnit.EXPAND;
+		});
+
+		if (direction === sinf.vert) {
+			var sizedChildrenHeights = children.map((child) => {
+				return LengthAttribute.getFrom(child, sinf.vert);
+			}).filter((length) => <boolean>length);
+
+			var vertUnsizedChildrenAllExpand =
+				sizedChildrenHeights.length + unsizedExpandChildren.length === children.length;
+				
+			if (vertUnsizedChildrenAllExpand && unsizedExpandChildren.length > 0) {
+				var heightOfSizedChildren: LengthAttribute;
+				if (sizedChildrenHeights.length > 0) {
+					heightOfSizedChildren =
+						sizedChildrenHeights.reduce(LengthAttribute.add).makeImplicit();
+				} else {
+					heightOfSizedChildren = LengthAttribute.vertZero;
+				}
+
+				var leftOverHeight = parentHeight.subtract(heightOfSizedChildren);
+				if (leftOverHeight &&
+					leftOverHeight.canCompare(LengthAttribute.vertZero)) {
+					if (leftOverHeight.compare(LengthAttribute.vertZero) < 0) {
+						leftOverHeight = LengthAttribute.vertZero;
+					}
+					var splitHeight = leftOverHeight.split(unsizedExpandChildren.length);
+
+					results.push.apply(results, unsizedExpandChildren.map((child) => {
+						return {
+							component: child,
+							attributes: [splitHeight],
+						};
+					}));
+				}
+			}
+		} else if (direction === sinf.horiz) {
+			var oneHundredPct =
+				new LengthAttribute(sinf.vert, null, Measurement.implicit(1));
+			var heightFromParent = oneHundredPct.percentOf(parentHeight);
+			results.push.apply(results, unsizedExpandChildren.map((child) => {
+				return {
+					component: child,
+					attributes: [heightFromParent],
+				};
+			}));
+		}
+	}
+
+	return results;
+}

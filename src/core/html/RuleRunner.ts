@@ -76,6 +76,7 @@ export class LayoutRuleRunner extends RuleRunner {
 			sizeRule.sizeUserExplicit,
 			sizeRule.sizeByChildrenSum,
 			sizeRule.sizePercentChildren,
+			sizeRule.sizeExpandedChildren,
 			percentChildRule,
 			coalesceSpacesRule,
 			emptySpaceRule,
