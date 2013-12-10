@@ -41,28 +41,3 @@ export function isBoxSizePercent(
 	var size = getBoxFixedSize(component, direction, true);
 	return size && size.unit === sinf.LengthUnit.PERCENT;
 }
-
-/*
-export function getAggregatedSize(
-		component: c.Component,
-		direction: sinf.Direction
-	): sinf.Length {
-	var size = getBoxFixedSize(component, direction, false);
-	if (size) {
-		return size;
-	}
-
-	var childrenAttr = component.childrenAttr();
-	if (!childrenAttr) {
-		return;
-	}
-	var children = childrenAttr.getChildren();
-	var lengths = children.map((child) => {
-		return getAggregatedSize(child, direction);
-	});
-	if (lengths.some((length) => !length)) {
-		return;
-	}
-	return lengths.reduce(sutil.addFixedLengths);
-}
-*/

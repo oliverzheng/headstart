@@ -74,9 +74,10 @@ export class LayoutRuleRunner extends RuleRunner {
 		super([
 			dynamicBoxRule,
 			sizeRule.sizeUserExplicit,
-			sizeRule.sizeByChildrenSum,
 			sizeRule.sizePercentChildren,
 			sizeRule.sizeExpandedChildren,
+			sizeRule.sizeShrink,
+			sizeRule.sizeByChildrenSum,
 			percentChildRule,
 			coalesceSpacesRule,
 			emptySpaceRule,

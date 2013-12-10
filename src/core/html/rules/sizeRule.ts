@@ -55,23 +55,15 @@ export var sizeUserExplicit: Rules.Rule = function(component: c.Component): Rule
 	return makeResults(component, width, height);
 }
 
-// Get components that wrap around children (all components without boxes do by
-// default), or components with boxes that have SHRINK for size.
+// All components without boxes wrap around their children by default. This does
+// not size components that have boxes.
 export var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
 	var width: LengthAttribute = null;
 	var height: LengthAttribute = null;
-	var doWidth = true;
-	var doHeight = true;
 
 	var boxAttr = component.boxAttr();
 	if (boxAttr) {
-		var box = boxAttr.getBox();
-		if (box.w.unit !== sinf.LengthUnit.SHRINK) {
-			doWidth = false;
-		}
-		if (box.h.unit !== sinf.LengthUnit.SHRINK) {
-			doHeight = false;
-		}
+		return;
 	}
 
 	var childrenAttr = component.childrenAttr();
@@ -127,7 +119,7 @@ export var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rul
 		}
 	}
 
-	return makeResults(component, doWidth ? width : null, doHeight ? height : null);
+	return makeResults(component, width, height);
 }
 
 // Set the px length of children that have % lengths and if the parent has
@@ -137,48 +129,53 @@ export var sizePercentChildren: Rules.Rule = function(component: c.Component): R
 	var parentHeight = LengthAttribute.getFrom(component, sinf.vert);
 
 	var childrenAttr = component.childrenAttr();
-	if (childrenAttr && childrenAttr.getChildren().length > 0) {
-		var children = childrenAttr.getChildren();
-
-		var results: Rules.RuleResult[] = [];
-		children.forEach((child) => {
-			var childWidth = LengthAttribute.getFrom(child, sinf.horiz);
-			if (parentWidth && childWidth &&
-				parentWidth.px.isSet() && !childWidth.px.isSet() && childWidth.pct.isSet()) {
-				results.push({
-					component: child,
-					attributes: [childWidth.percentOf(parentWidth)],
-				});
-			}
-			var childHeight = LengthAttribute.getFrom(child, sinf.vert);
-			if (parentHeight && childHeight &&
-				parentHeight.px.isSet() && !childHeight.px.isSet() && childHeight.pct.isSet()) {
-				results.push({
-					component: child,
-					attributes: [childHeight.percentOf(parentHeight)],
-				});
-			}
-		});
-		return results;
+	if (!childrenAttr) {
+		return;
 	}
+	var children = childrenAttr.getChildren();
+
+	// This can only be used for when the entire tree is a box tree.
+	assert(children.every((child) => <boolean>child.boxAttr()));
+
+	var results: Rules.RuleResult[] = [];
+
+	children.forEach((child) => {
+		var childWidth = LengthAttribute.getFrom(child, sinf.horiz);
+		if (parentWidth && childWidth &&
+			parentWidth.px.isSet() && !childWidth.px.isSet() && childWidth.pct.isSet()) {
+			results.push({
+				component: child,
+				attributes: [childWidth.percentOf(parentWidth)],
+			});
+		}
+		var childHeight = LengthAttribute.getFrom(child, sinf.vert);
+		if (parentHeight && childHeight &&
+			parentHeight.px.isSet() && !childHeight.px.isSet() && childHeight.pct.isSet()) {
+			results.push({
+				component: child,
+				attributes: [childHeight.percentOf(parentHeight)],
+			});
+		}
+	});
+	return results;
 }
 
 // Set the % and px lengths of children that expand.
 export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[] {
 	var parentWidth = LengthAttribute.getFrom(component, sinf.horiz);
 	var parentHeight = LengthAttribute.getFrom(component, sinf.vert);
+	var direction = getDirection(component);
 
 	var childrenAttr = component.childrenAttr();
-	if (!childrenAttr) {
+	if (!childrenAttr || childrenAttr.getChildren().length === 0) {
 		return;
 	}
 	var children = childrenAttr.getChildren();
-	var direction = getDirection(component);
 
 	var results: Rules.RuleResult[] = [];
 
 	if (parentWidth) {
-		var unsizedExpandChildren = children.filter((child) => {
+		var unsizedExpandHorizChildren = children.filter((child) => {
 			if (LengthAttribute.getFrom(child, sinf.horiz)) {
 				return false;
 			}
@@ -188,7 +185,6 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 			}
 			return boxAttr.getBox().w.unit === sinf.LengthUnit.EXPAND;
 		});
-
 		if (direction === sinf.horiz) {
 			var sizedChildrenWidths = children.map((child) => {
 				return LengthAttribute.getFrom(child, sinf.horiz);
@@ -197,9 +193,9 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 			// We can't figure out the size of other EXPAND children if not all
 			// non-EXPAND children are sized.
 			var horizUnsizedChildrenAllExpand =
-				sizedChildrenWidths.length + unsizedExpandChildren.length === children.length;
+				sizedChildrenWidths.length + unsizedExpandHorizChildren.length === children.length;
 				
-			if (horizUnsizedChildrenAllExpand && unsizedExpandChildren.length > 0) {
+			if (horizUnsizedChildrenAllExpand && unsizedExpandHorizChildren.length > 0) {
 				var widthOfSizedChildren: LengthAttribute;
 				if (sizedChildrenWidths.length > 0) {
 					widthOfSizedChildren =
@@ -214,9 +210,9 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 					if (leftOverWidth.compare(LengthAttribute.horizZero) < 0) {
 						leftOverWidth = LengthAttribute.horizZero;
 					}
-					var splitWidth = leftOverWidth.split(unsizedExpandChildren.length);
+					var splitWidth = leftOverWidth.split(unsizedExpandHorizChildren.length);
 
-					results.push.apply(results, unsizedExpandChildren.map((child) => {
+					results.push.apply(results, unsizedExpandHorizChildren.map((child) => {
 						return {
 							component: child,
 							attributes: [splitWidth],
@@ -228,7 +224,7 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 			var oneHundredPct =
 				new LengthAttribute(sinf.horiz, null, Measurement.implicit(1));
 			var widthFromParent = oneHundredPct.percentOf(parentWidth);
-			results.push.apply(results, unsizedExpandChildren.map((child) => {
+			results.push.apply(results, unsizedExpandHorizChildren.map((child) => {
 				return {
 					component: child,
 					attributes: [widthFromParent],
@@ -238,7 +234,7 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 	}
 
 	if (parentHeight) {
-		var unsizedExpandChildren = children.filter((child) => {
+		var unsizedExpandVertChildren = children.filter((child) => {
 			if (LengthAttribute.getFrom(child, sinf.vert)) {
 				return false;
 			}
@@ -248,16 +244,17 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 			}
 			return boxAttr.getBox().h.unit === sinf.LengthUnit.EXPAND;
 		});
-
 		if (direction === sinf.vert) {
 			var sizedChildrenHeights = children.map((child) => {
 				return LengthAttribute.getFrom(child, sinf.vert);
 			}).filter((length) => <boolean>length);
 
+			// We can't figure out the size of other EXPAND children if not all
+			// non-EXPAND children are sized.
 			var vertUnsizedChildrenAllExpand =
-				sizedChildrenHeights.length + unsizedExpandChildren.length === children.length;
+				sizedChildrenHeights.length + unsizedExpandVertChildren.length === children.length;
 				
-			if (vertUnsizedChildrenAllExpand && unsizedExpandChildren.length > 0) {
+			if (vertUnsizedChildrenAllExpand && unsizedExpandVertChildren.length > 0) {
 				var heightOfSizedChildren: LengthAttribute;
 				if (sizedChildrenHeights.length > 0) {
 					heightOfSizedChildren =
@@ -272,9 +269,9 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 					if (leftOverHeight.compare(LengthAttribute.vertZero) < 0) {
 						leftOverHeight = LengthAttribute.vertZero;
 					}
-					var splitHeight = leftOverHeight.split(unsizedExpandChildren.length);
+					var splitHeight = leftOverHeight.split(unsizedExpandVertChildren.length);
 
-					results.push.apply(results, unsizedExpandChildren.map((child) => {
+					results.push.apply(results, unsizedExpandVertChildren.map((child) => {
 						return {
 							component: child,
 							attributes: [splitHeight],
@@ -286,12 +283,147 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 			var oneHundredPct =
 				new LengthAttribute(sinf.vert, null, Measurement.implicit(1));
 			var heightFromParent = oneHundredPct.percentOf(parentHeight);
-			results.push.apply(results, unsizedExpandChildren.map((child) => {
+			results.push.apply(results, unsizedExpandVertChildren.map((child) => {
 				return {
 					component: child,
 					attributes: [heightFromParent],
 				};
 			}));
+		}
+	}
+
+	return results;
+}
+
+export function sizeShrink(component: c.Component): Rules.RuleResult[] {
+	var boxAttr = component.boxAttr();
+	if (!boxAttr) {
+		return;
+	}
+	var box = boxAttr.getBox();
+
+	var shrinkWidth = box.w.unit === sinf.LengthUnit.SHRINK;
+	var shrinkHeight = box.h.unit === sinf.LengthUnit.SHRINK;
+	if (!shrinkWidth && !shrinkHeight) {
+		return;
+	}
+
+	var childrenAttr = component.childrenAttr()
+	var children: c.Component[];
+	if (childrenAttr) {
+		children = childrenAttr.getChildren();
+	} else {
+		children = [];
+	}
+	var direction = getDirection(component);
+	assert(!!direction);
+
+	// This can only be used for when the entire tree is a box tree.
+	assert(children.every((child) => <boolean>child.boxAttr()));
+
+	var results: Rules.RuleResult[] = [];
+
+	if (shrinkWidth) {
+		var horizSizedWidths = children.map((child) => {
+			return LengthAttribute.getFrom(child, sinf.horiz);
+		}).filter((length) => length && length.px.isSet());
+		var horizPctAndExpandChildren = children.filter((child) => {
+			var box = child.boxAttr().getBox();
+			return (
+				box.w.unit === sinf.LengthUnit.PERCENT ||
+				box.w.unit === sinf.LengthUnit.EXPAND
+			);
+		});
+		if ((horizSizedWidths.length + horizPctAndExpandChildren.length) !==
+			children.length) {
+			// We need all the explicit lengths to be calculated first
+			return;
+		}
+
+		if (direction === sinf.horiz) {
+			var widthSum: LengthAttribute;
+			if (horizSizedWidths.length > 0) {
+				widthSum = horizSizedWidths.reduce(LengthAttribute.add).makeImplicit();
+			} else {
+				widthSum = LengthAttribute.horizZero;
+			}
+			results.push({
+				component: component,
+				attributes: [widthSum],
+			});
+
+			results.push.apply(results,
+				horizPctAndExpandChildren.map((child) => {
+					return {
+						component: child,
+						attributes: [LengthAttribute.horizZeroPx],
+					};
+				})
+			);
+		} else {
+			var maxWidth: LengthAttribute;
+			if (horizSizedWidths.length > 0) {
+				horizSizedWidths.sort(LengthAttribute.compare);
+				maxWidth = horizSizedWidths[horizSizedWidths.length - 1].makeImplicit();
+			} else {
+				maxWidth = LengthAttribute.horizZero;
+			}
+			results.push({
+				component: component,
+				attributes: [maxWidth],
+			});
+		}
+	}
+
+	if (shrinkHeight) {
+		var vertSizedHeights = children.map((child) => {
+			return LengthAttribute.getFrom(child, sinf.vert);
+		}).filter((length) => length && length.px.isSet());
+		var vertPctAndExpandChildren = children.filter((child) => {
+			var box = child.boxAttr().getBox();
+			return (
+				box.h.unit === sinf.LengthUnit.PERCENT ||
+				box.h.unit === sinf.LengthUnit.EXPAND
+			);
+		});
+		if ((vertSizedHeights.length + vertPctAndExpandChildren.length) !==
+			children.length) {
+			// We need all the explicit lengths to be calculated first
+			return;
+		}
+
+		if (direction === sinf.vert) {
+			var heightSum: LengthAttribute;
+			if (vertSizedHeights.length > 0) {
+				heightSum = vertSizedHeights.reduce(LengthAttribute.add).makeImplicit();
+			} else {
+				heightSum = LengthAttribute.vertZero;
+			}
+			results.push({
+				component: component,
+				attributes: [heightSum],
+			});
+
+			results.push.apply(results,
+				vertPctAndExpandChildren.map((child) => {
+					return {
+						component: child,
+						attributes: [LengthAttribute.vertZeroPx],
+					};
+				})
+			);
+		} else {
+			var maxHeight: LengthAttribute;
+			if (vertSizedHeights.length > 0) {
+				vertSizedHeights.sort(LengthAttribute.compare);
+				maxHeight = vertSizedHeights[vertSizedHeights.length - 1].makeImplicit();
+			} else {
+				maxHeight = LengthAttribute.vertZero;
+			}
+			results.push({
+				component: component,
+				attributes: [maxHeight],
+			});
 		}
 	}
 

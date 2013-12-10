@@ -19,11 +19,23 @@ class LengthAttribute extends Attributes.BaseAttribute {
 			Measurement.implicit(0)
 		);
 
+	static horizZeroPx =
+		new LengthAttribute(
+			sinf.horiz,
+			Measurement.implicit(0)
+		);
+
 	static vertZero =
 		new LengthAttribute(
 			sinf.vert,
 			Measurement.implicit(0),
 			Measurement.implicit(0),
+			Measurement.implicit(0)
+		);
+
+	static vertZeroPx =
+		new LengthAttribute(
+			sinf.vert,
 			Measurement.implicit(0)
 		);
 
@@ -93,10 +105,10 @@ class LengthAttribute extends Attributes.BaseAttribute {
 			newLength.px = newLength.px.merge(attr.px);
 		}
 		if (!newLength.pct.equals(attr.pct)) {
-			newLength.pct = newLength.px.merge(attr.pct);
+			newLength.pct = newLength.pct.merge(attr.pct);
 		}
 		if (!newLength.lines.equals(attr.lines)) {
-			newLength.lines = newLength.px.merge(attr.lines);
+			newLength.lines = newLength.lines.merge(attr.lines);
 		}
 
 		if (newLength.px.equals(this.px) &&
