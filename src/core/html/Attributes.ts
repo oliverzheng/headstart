@@ -8,6 +8,9 @@ export enum Type {
 	// Children components of the component
 	CHILDREN,
 
+	// Parent of the component (dynamically set)
+	PARENT,
+
 	// This component uses block formatting context for children
 	BLOCK_FORMATTING,
 

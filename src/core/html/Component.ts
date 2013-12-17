@@ -2,6 +2,7 @@ import Attributes = require('./Attributes');
 import BoxAttribute = require('./attributes/BoxAttribute');
 import NodeAttribute = require('./attributes/NodeAttribute');
 import ChildrenAttribute = require('./attributes/ChildrenAttribute');
+import ParentAttribute = require('./attributes/ParentAttribute');
 import sinf = require('../spec/interfaces');
 import assert = require('assert');
 
@@ -64,6 +65,7 @@ export class Component {
 				added = true;
 			}
 		});
+		this.recalcParent(attrs);
 		return added;
 	}
 
@@ -84,7 +86,21 @@ export class Component {
 				this.attributes.push(attr);
 			}
 		});
+		this.recalcParent(attrs);
 		return replaced;
+	}
+
+	private recalcParent(attrs: Attributes.BaseAttribute[]) {
+		if (attrs.length !== 1 || attrs[0].getType() !== Attributes.Type.PARENT) {
+			attrs.forEach((attr) => {
+				assert(attr.getType() !== Attributes.Type.PARENT);
+				if (attr.getType() === Attributes.Type.CHILDREN) {
+					(<ChildrenAttribute>attr).getChildren().forEach((child) => {
+						child.addAttributes([new ParentAttribute(this)]);
+					});
+				}
+			});
+		}
 	}
 
 	// Specific attributes
@@ -99,6 +115,13 @@ export class Component {
 
 	childrenAttr(): ChildrenAttribute {
 		return <ChildrenAttribute>this.getAttr(Attributes.Type.CHILDREN);
+	}
+
+	getParent(): Component {
+		var parentAttr = <ParentAttribute>this.getAttr(Attributes.Type.PARENT);
+		if (parentAttr) {
+			return parentAttr.getParent();
+		}
 	}
 
 	repr(): Attributes.Repr {

@@ -46,6 +46,9 @@ export var ComponentComponent = React.createClass({
 	},
 
 	serializeRepr(repr: Attributes.Repr) {
+		if (!repr) {
+			return;
+		}
 		var children: Attributes.Repr[] = repr.children || [];
 		return React.DOM.ul(null,
 			React.DOM.li(null, repr.title),

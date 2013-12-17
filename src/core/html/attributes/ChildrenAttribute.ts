@@ -2,6 +2,9 @@ import c = require('../Component');
 import Attributes = require('../Attributes');
 
 class ChildrenAttribute extends Attributes.BaseAttribute {
+	static STOP_RECURSION = new Object();
+	static STOP_ITERATION = new Object();
+
 	private children: c.Component[];
 
 	constructor(children: c.Component[]) {
@@ -27,15 +30,22 @@ class ChildrenAttribute extends Attributes.BaseAttribute {
 		return this.children;
 	}
 
-	breadthFirst(callback: (component: c.Component) => any) {
-		var stopRecursion: any[] = this.children.map(callback);
+	breadthFirst(callback: (component: c.Component) => any): any {
+		var stopIteration = false;
 		this.children.forEach((child, i) => {
-			if (stopRecursion[i]) {
+			if (stopIteration) {
 				return;
 			}
-			var childrenAttr = child.childrenAttr();
-			if (childrenAttr) {
-				childrenAttr.breadthFirst(callback);
+
+			var result = callback(child);
+			if (result === ChildrenAttribute.STOP_ITERATION) {
+				stopIteration = true;
+			} else if (result === ChildrenAttribute.STOP_RECURSION) {
+			} else {
+				var childrenAttr = child.childrenAttr();
+				if (childrenAttr) {
+					childrenAttr.breadthFirst(callback);
+				}
 			}
 		});
 	}

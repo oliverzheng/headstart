@@ -18,6 +18,11 @@ function getDirection(component: c.Component): sinf.Direction {
 	if (ff) {
 		return sinf.horiz;
 	}
+
+	var parent = component.getParent();
+	if (parent) {
+		return getDirection(parent);
+	}
 }
 
 export = getDirection;

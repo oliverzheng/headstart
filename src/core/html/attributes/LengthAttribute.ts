@@ -188,6 +188,11 @@ class LengthAttribute extends Attributes.BaseAttribute {
 		throw new Error('Cannot compare');
 	}
 
+	static getMax(lengths: LengthAttribute[]): LengthAttribute {
+		lengths.sort(LengthAttribute.compare);
+		return lengths[lengths.length - 1].makeImplicit();
+	}
+
 	compare(other: LengthAttribute) {
 		return LengthAttribute.compare(this, other);
 	}
