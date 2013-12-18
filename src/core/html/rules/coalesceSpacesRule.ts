@@ -1,7 +1,7 @@
 import Attributes = require('../Attributes');
 import c = require('../Component');
 import Rules = require('../Rules');
-import ChildrenAttribute = require('../attributes/ChildrenAttribute');
+import Children = require('../attributes/Children');
 import LengthAttribute = require('../attributes/LengthAttribute');
 import groupChildren = require('../patterns/groupChildren');
 import hasBoxContent = require('../patterns/hasBoxContent');
@@ -37,7 +37,7 @@ var coalesceSpacesRule: Rules.Rule = function(component: c.Component): Rules.Rul
 			var aggregate = new c.Component;
 			newChildren.push(aggregate);
 			aggregate.addAttributes([
-				new ChildrenAttribute(group.components),
+				new Children(group.components),
 			]);
 
 		} else {
@@ -48,7 +48,7 @@ var coalesceSpacesRule: Rules.Rule = function(component: c.Component): Rules.Rul
 	return [{
 		component: component,
 		replaceAttributes: [
-			new ChildrenAttribute(newChildren),
+			new Children(newChildren),
 		],
 	}];
 }

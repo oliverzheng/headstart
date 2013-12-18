@@ -1,5 +1,6 @@
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
+import Children = require('../attributes/Children');
 
 function doesBoxHaveContent(box: sinf.Box): boolean {
 	return box.content != null && box.content !== sinf.Content.NONE;
@@ -11,19 +12,16 @@ function hasBoxContent(component: c.Component): boolean {
 		return true;
 	}
 
-	var childrenAttr = component.childrenAttr();
 	var hasNonEmptyChild = false;
-	if (childrenAttr) {
-		childrenAttr.breadthFirst((childComponent) => {
-			if (hasNonEmptyChild) {
-				return;
-			}
-			var boxAttr = childComponent.boxAttr();
-			if (boxAttr && doesBoxHaveContent(boxAttr.getBox())) {
-				hasNonEmptyChild = true;
-			}
-		});
-	}
+	Children.getLogicalFrom(component).breadthFirst((childComponent) => {
+		if (hasNonEmptyChild) {
+			return;
+		}
+		var boxAttr = childComponent.boxAttr();
+		if (boxAttr && doesBoxHaveContent(boxAttr.getBox())) {
+			hasNonEmptyChild = true;
+		}
+	});
 
 	return hasNonEmptyChild;
 }

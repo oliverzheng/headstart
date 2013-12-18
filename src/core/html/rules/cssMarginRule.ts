@@ -2,7 +2,7 @@ import Attributes = require('../Attributes');
 import c = require('../Component');
 import Rules = require('../Rules');
 import NodeAttribute = require('../attributes/NodeAttribute');
-import ChildrenAttribute = require('../attributes/ChildrenAttribute');
+//import ChildrenAttribute = require('../attributes/ChildrenAttribute');
 import SpacingAttribute = require('../attributes/SpacingAttribute');
 import CSSAttribute = require('../attributes/CSSAttribute');
 import SealedAttribute = require('../attributes/SealedAttribute');
@@ -14,6 +14,7 @@ import sinf = require('../../spec/interfaces');
 import assert = require('assert');
 
 var cssMarginRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+	/*
 	var nodeAttr = component.nodeAttr();
 	if (!nodeAttr) {
 		return;
@@ -44,6 +45,8 @@ var cssMarginRule: Rules.Rule = function(component: c.Component): Rules.RuleResu
 			//new SealedAttribute(),
 		]
 	}];
+	*/
+	return;
 }
 
 export = cssMarginRule;

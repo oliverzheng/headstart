@@ -2,7 +2,7 @@ import Attributes = require('../Attributes');
 import c = require('../Component');
 import Rules = require('../Rules');
 import NodeAttribute = require('../attributes/NodeAttribute');
-import ChildrenAttribute = require('../attributes/ChildrenAttribute');
+//import ChildrenAttribute = require('../attributes/ChildrenAttribute');
 import AlignmentAttribute = require('../attributes/AlignmentAttribute');
 import PositionAttribute = require('../attributes/PositionAttribute');
 import CSSAttribute = require('../attributes/CSSAttribute');
@@ -15,6 +15,7 @@ import sinf = require('../../spec/interfaces');
 import assert = require('assert');
 
 var cssVerticalBottom: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+	/*
 	var childrenAttr = component.childrenAttr();
 	if (!childrenAttr) {
 		return;
@@ -44,6 +45,8 @@ var cssVerticalBottom: Rules.Rule = function(component: c.Component): Rules.Rule
 			})
 		],
 	}];
+	*/
+	return;
 }
 
 export = cssVerticalBottom;

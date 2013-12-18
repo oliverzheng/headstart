@@ -2,7 +2,6 @@ import Attributes = require('../Attributes');
 import c = require('../Component');
 import Rules = require('../Rules');
 import NodeAttribute = require('../attributes/NodeAttribute');
-import ChildrenAttribute = require('../attributes/ChildrenAttribute');
 import SpacingAttribute = require('../attributes/SpacingAttribute');
 import matchChildren = require('../patterns/matchChildren');
 import hasBoxContent = require('../patterns/hasBoxContent');
@@ -31,6 +30,7 @@ function matchSpace(components: c.Component[]): SpaceMatch {
 }
 
 var emptySpaceRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+	/*
 	var matches = matchChildren(component, matchSpace);
 	var direction = getDirection(component);
 	if (!matches || !direction) {
@@ -41,7 +41,6 @@ var emptySpaceRule: Rules.Rule = function(component: c.Component): Rules.RuleRes
 	var emptyComponents: c.Component[] = [];
 	matches.forEach((match) => {
 		var capture = match.capture;
-		/*
 		var size = sizePatterns.getAggregatedSize(capture.space, direction);
 		results.push({
 			component: capture.previous,
@@ -59,7 +58,6 @@ var emptySpaceRule: Rules.Rule = function(component: c.Component): Rules.RuleRes
 				: SpacingAttribute.top(size)
 			],
 		});
-		*/
 		emptyComponents.push(capture.space);
 	});
 
@@ -76,6 +74,8 @@ var emptySpaceRule: Rules.Rule = function(component: c.Component): Rules.RuleRes
 	});
 
 	return results;
+	*/
+	return;
 }
 
 export = emptySpaceRule;

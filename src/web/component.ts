@@ -2,7 +2,6 @@ import inf = require('../core/spec/interfaces');
 import l = require('../core/spec/layout');
 import Attributes = require('../core/html/Attributes');
 import c = require('../core/html/Component');
-import ChildrenAttribute = require('../core/html/attributes/ChildrenAttribute');
 import RuleRunner = require('../core/html/RuleRunner');
 import Context = require('../core/html/Context');
 

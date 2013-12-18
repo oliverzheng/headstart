@@ -1,7 +1,7 @@
 import Attributes = require('../Attributes');
 import c = require('../Component');
 import Rules = require('../Rules');
-import ChildrenAttribute = require('../attributes/ChildrenAttribute');
+//import ChildrenAttribute = require('../attributes/ChildrenAttribute');
 import AlignmentAttribute = require('../attributes/AlignmentAttribute');
 import NodeAttribute = require('../attributes/NodeAttribute');
 import groupChildren = require('../patterns/groupChildren');
@@ -13,6 +13,7 @@ import sutil = require('../../spec/util');
 // Create a new component to wrap around the child that's middle aligned and has
 // siblings.
 var middleAlignmentRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+	/*
 	var childrenAttr = component.childrenAttr();
 	var groups = groupChildren(component, (child) => {
 		var alignmentAttr = AlignmentAttribute.getFrom(child);
@@ -52,6 +53,8 @@ var middleAlignmentRule: Rules.Rule = function(component: c.Component): Rules.Ru
 	});
 
 	return results;
+	*/
+	return;
 }
 
 export = middleAlignmentRule;

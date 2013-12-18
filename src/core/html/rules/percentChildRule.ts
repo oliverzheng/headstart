@@ -2,16 +2,20 @@ import Attributes = require('../Attributes');
 import c = require('../Component');
 import Rules = require('../Rules');
 import NodeAttribute = require('../attributes/NodeAttribute');
+import Children = require('../attributes/Children');
 import size = require('../patterns/size');
 import sinf = require('../../spec/interfaces');
 
 var percentChildRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
-	if (!component.boxAttr() || !component.childrenAttr()) {
+	if (!component.boxAttr()) {
 		return;
 	}
 
-	var children = component.childrenAttr().getChildren();
-	var anyChildWithPercentage = children.some((child) => {
+	var children = Children.getLayoutFrom(component);
+	if (children.isEmpty()) {
+		return;
+	}
+	var anyChildWithPercentage = children.getComponents().some((child) => {
 		return (
 			size.isBoxSizePercent(child, sinf.horiz) ||
 			size.isBoxSizePercent(child, sinf.vert)

@@ -5,8 +5,12 @@ export enum Type {
 	// Generates a DOM node in HTML/CSS
 	NODE,
 
-	// Children components of the component
-	CHILDREN,
+	// Children components sequenced one after another in layout. If this
+	// exists, it is also logical children.
+	LAYOUT_CHILDREN,
+
+	// Children components managed by the component
+	LOGICAL_CHILDREN,
 
 	// Parent of the component (dynamically set)
 	PARENT,

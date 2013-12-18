@@ -1,6 +1,7 @@
 import Attributes = require('../Attributes');
 import c = require('../Component');
 import sinf = require('../spec/interfaces');
+import ParentAttribute = require('./ParentAttribute');
 
 // There is a 1-to-1 correspondance between the component and a box in the
 // visual spec.
@@ -33,14 +34,10 @@ class BoxAttribute extends Attributes.BaseAttribute {
 		if (component.boxAttr()) {
 			boxAttr = component.boxAttr();
 		}
-		if (component.childrenAttr()) {
-			component.childrenAttr().breadthFirst((child) => {
-				if (!boxAttr && child.boxAttr()) {
-					boxAttr = child.boxAttr();
-				}
-			});
+		var parent = ParentAttribute.getFrom(component);
+		if (parent) {
+			return BoxAttribute.getContainingBox(parent.getParent());
 		}
-		return boxAttr && boxAttr.getBox();
 	}
 
 	repr(): Attributes.Repr {

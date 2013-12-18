@@ -20,6 +20,10 @@ class ParentAttribute extends Attributes.BaseAttribute {
 		return this.parent === attr.parent;
 	}
 
+	static getFrom(component: c.Component): ParentAttribute {
+		return <ParentAttribute>(component.getAttr(Attributes.Type.PARENT));
+	}
+
 	merge(attribute: Attributes.BaseAttribute): ParentAttribute {
 		return <ParentAttribute>attribute;
 	}

@@ -3,13 +3,13 @@ import c = require('../Component');
 import Rules = require('../Rules');
 import BlockFormattingAttribute = require('../attributes/BlockFormattingAttribute');
 import LengthAttribute = require('../attributes/LengthAttribute');
-import ChildrenAttribute = require('../attributes/ChildrenAttribute');
+import Children = require('../attributes/Children');
 import getDirection = require('../patterns/getDirection');
 import sinf = require('../../spec/interfaces');
 
 var foldBlockFormattingRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
-	var childrenAttr = component.childrenAttr();
-	if (!childrenAttr) {
+	var children = Children.getLayoutFrom(component);
+	if (children.isEmpty()) {
 		return;
 	}
 
@@ -25,7 +25,7 @@ var foldBlockFormattingRule: Rules.Rule = function(component: c.Component): Rule
 	var width = LengthAttribute.getFrom(component, sinf.horiz);
 
 	var newChildren: c.Component[] = [];
-	childrenAttr.getChildren().forEach((child) => {
+	children.getComponents().forEach((child) => {
 		do {
 			if (!BlockFormattingAttribute.getFrom(child) ||
 				child.nodeAttr()) {
@@ -37,13 +37,13 @@ var foldBlockFormattingRule: Rules.Rule = function(component: c.Component): Rule
 				break;
 			}
 
-			if (!child.childrenAttr()) {
+			var grandChildren = Children.getLayoutFrom(child);
+			if (grandChildren.isEmpty()) {
 				break;
 			}
-			var grandChildren = child.childrenAttr().getChildren();
 			var height = LengthAttribute.getFrom(child, sinf.vert);
 			var childrenHeightsSum = LengthAttribute.sum(
-				grandChildren.map(
+				grandChildren.getComponents().map(
 					(grandChild) => LengthAttribute.getFrom(grandChild, sinf.vert)
 				)
 			);
@@ -52,7 +52,7 @@ var foldBlockFormattingRule: Rules.Rule = function(component: c.Component): Rule
 				break;
 			}
 
-			newChildren.push.apply(newChildren, grandChildren);
+			newChildren.push.apply(newChildren, grandChildren.getComponents());
 			return;
 
 		} while (false);
@@ -63,7 +63,7 @@ var foldBlockFormattingRule: Rules.Rule = function(component: c.Component): Rule
 	return [{
 		component: component,
 		replaceAttributes: [
-			new ChildrenAttribute(newChildren),
+			new Children(newChildren),
 		],
 	}];
 }

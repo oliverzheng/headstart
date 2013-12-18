@@ -1,7 +1,7 @@
 import Attributes = require('../Attributes');
 import c = require('../Component');
 import Rules = require('../Rules');
-import ChildrenAttribute = require('../attributes/ChildrenAttribute');
+//import ChildrenAttribute = require('../attributes/ChildrenAttribute');
 import AlignmentAttribute = require('../attributes/AlignmentAttribute');
 import groupChildren = require('../patterns/groupChildren');
 import hasBoxContent = require('../patterns/hasBoxContent');
@@ -10,6 +10,7 @@ import sinf = require('../../spec/interfaces');
 import sutil = require('../../spec/util');
 
 var alignmentRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+	/*
 	// TODO handle shrink
 	//var horizChildren = layout.getEffectiveChildren(box, sinf.horiz);
 
@@ -92,6 +93,8 @@ var alignmentRule: Rules.Rule = function(component: c.Component): Rules.RuleResu
 	});
 
 	return results;
+	*/
+	return;
 }
 
 export = alignmentRule;

@@ -1,7 +1,7 @@
 import Attributes = require('./Attributes');
 import BoxAttribute = require('./attributes/BoxAttribute');
 import NodeAttribute = require('./attributes/NodeAttribute');
-import ChildrenAttribute = require('./attributes/ChildrenAttribute');
+import Children = require('./attributes/Children');
 import ParentAttribute = require('./attributes/ParentAttribute');
 import sinf = require('../spec/interfaces');
 import assert = require('assert');
@@ -18,7 +18,7 @@ export class Component {
 				return Component.fromBox(childBox);
 			});
 			if (children.length > 0) {
-				component.addAttributes([new ChildrenAttribute(children)]);
+				component.addAttributes([new Children(children)]);
 			}
 		}
 		return component;
@@ -93,9 +93,11 @@ export class Component {
 	private recalcParent(attrs: Attributes.BaseAttribute[]) {
 		if (attrs.length !== 1 || attrs[0].getType() !== Attributes.Type.PARENT) {
 			attrs.forEach((attr) => {
-				assert(attr.getType() !== Attributes.Type.PARENT);
-				if (attr.getType() === Attributes.Type.CHILDREN) {
-					(<ChildrenAttribute>attr).getChildren().forEach((child) => {
+				var attrType = attr.getType();
+				assert(attrType !== Attributes.Type.PARENT);
+				if (attrType === Attributes.Type.LAYOUT_CHILDREN ||
+					attrType === Attributes.Type.LOGICAL_CHILDREN) {
+					(<Children>attr).getComponents().forEach((child) => {
 						child.addAttributes([new ParentAttribute(this)]);
 					});
 				}
@@ -111,10 +113,6 @@ export class Component {
 
 	nodeAttr(): NodeAttribute {
 		return <NodeAttribute>this.getAttr(Attributes.Type.NODE);
-	}
-
-	childrenAttr(): ChildrenAttribute {
-		return <ChildrenAttribute>this.getAttr(Attributes.Type.CHILDREN);
 	}
 
 	getParent(): Component {
