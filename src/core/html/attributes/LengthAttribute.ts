@@ -88,6 +88,10 @@ class LengthAttribute extends Attributes.BaseAttribute {
 		);
 	}
 
+	looksEqual(length: LengthAttribute): boolean {
+		return this.px.looksEqual(length.px);
+	}
+
 	merge(attribute: Attributes.BaseAttribute): LengthAttribute {
 		if (!this.isSameAttrType(attribute)) { return; }
 		var attr = <LengthAttribute>attribute;
@@ -188,7 +192,7 @@ class LengthAttribute extends Attributes.BaseAttribute {
 		throw new Error('Cannot compare');
 	}
 
-	static getMax(lengths: LengthAttribute[]): LengthAttribute {
+	static max(lengths: LengthAttribute[]): LengthAttribute {
 		lengths.sort(LengthAttribute.compare);
 		return lengths[lengths.length - 1].makeImplicit();
 	}
@@ -214,6 +218,10 @@ class LengthAttribute extends Attributes.BaseAttribute {
 		if (sum.isSet()) {
 			return sum;
 		}
+	}
+
+	static sum(lengths: LengthAttribute[]): LengthAttribute {
+		return lengths.reduce(LengthAttribute.add).makeImplicit();
 	}
 
 	add(other: LengthAttribute) {

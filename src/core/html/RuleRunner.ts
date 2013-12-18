@@ -10,8 +10,8 @@ import dynamicBoxRule = require('./rules/dynamicBoxRule');
 import percentChildRule = require('./rules/percentChildRule');
 import coalesceSpacesRule = require('./rules/coalesceSpacesRule');
 import emptySpaceRule = require('./rules/emptySpaceRule');
-import verticalRule = require('./rules/verticalRule');
-import foldChildrenRule = require('./rules/foldChildrenRule');
+import blockFormattingRule = require('./rules/blockFormattingRule');
+import foldBlockFormattingRule = require('./rules/foldBlockFormattingRule');
 import alignmentRule = require('./rules/alignmentRule');
 import middleAlignmentRule = require('./rules/middleAlignmentRule');
 import sizeRule = require('./rules/sizeRule');
@@ -115,6 +115,7 @@ export class UserSpecifiedRuleRunner extends IndependentRuleRunner {
 	constructor(context: Context.Context) {
 		super([
 			dynamicBoxRule,
+			percentChildRule,
 		], context);
 	}
 }
@@ -138,17 +139,18 @@ export class LayoutRuleRunner extends PreferenceRuleRunner {
 		super([
 			// TODO: Put these into an independent group
 			sizeRule.sizeByChildrenSum,
+			blockFormattingRule,
 
 			coalesceSpacesRule,
+			foldBlockFormattingRule,
 
 			/*
-			percentChildRule,
-			emptySpaceRule,
-			verticalRule,
-			foldChildrenRule,
 			alignmentRule,
 			middleAlignmentRule,
 			cssVerticalBottomRule,
+
+			// Hmm these don't look right:
+			emptySpaceRule,
 			*/
 		], context);
 	}

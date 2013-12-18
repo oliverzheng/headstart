@@ -30,6 +30,10 @@ class Measurement {
 		}
 	}
 
+	looksEqual(m: Measurement): boolean {
+		return this.isSet() && m.isSet() && this.value === m.value;
+	}
+
 	merge(m: Measurement): Measurement {
 		if (!this.isSet() ||
 			!this.isExplicit && m.isExplicit && this.value === m.value) {

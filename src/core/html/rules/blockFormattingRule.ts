@@ -5,20 +5,18 @@ import BlockFormattingAttribute = require('../attributes/BlockFormattingAttribut
 import getDirection = require('../patterns/getDirection');
 import sinf = require('../../spec/interfaces');
 
-var verticalRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+var blockFormattingRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
 	var direction = getDirection(component);
 	var children = component.childrenAttr();
-	if (direction !== sinf.vert ||
-		!children || children.getChildren().length == 0) {
-		return null;
+	if (direction === sinf.vert &&
+		children && children.getChildren().length > 0) {
+		return [{
+			component: component,
+			attributes: [
+				new BlockFormattingAttribute(),
+			],
+		}];
 	}
-
-	return [{
-		component: component,
-		attributes: [
-			new BlockFormattingAttribute(),
-		],
-	}];
 }
 
-export = verticalRule;
+export = blockFormattingRule;
