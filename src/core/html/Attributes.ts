@@ -1,3 +1,6 @@
+import assert = require('assert');
+import c = require('./Component');
+
 export enum Type {
 	// Corresponds to a box in the visual spec
 	BOX,
@@ -51,6 +54,13 @@ export interface Repr {
 }
 
 export class BaseAttribute {
+	component: c.Component;
+
+	setComponent(component: c.Component) {
+		assert(this.component == null);
+		this.component = component;
+	}
+
 	getType(): Type {
 		throw new Error(
 			'Type not specified for ' + this.getName()

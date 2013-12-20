@@ -55,6 +55,7 @@ export class Component {
 			var existingAttr = this.getAttr(attr.getType());
 			if (!existingAttr) {
 				this.attributes.push(attr);
+				attr.setComponent(this);
 				added = true;
 			} else if (!existingAttr.equals(attr)) {
 				var mergeAttr = existingAttr.merge(attr);
@@ -84,6 +85,7 @@ export class Component {
 				replaced = true;
 				this.deleteAttr(attr.getType());
 				this.attributes.push(attr);
+				attr.setComponent(this);
 			}
 		});
 		this.recalcParent(attrs);
