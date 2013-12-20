@@ -128,4 +128,17 @@ export class Component {
 			children: this.attributes.map((attr) => attr.repr()),
 		};
 	}
+
+	static aggregate(components: Component[]): Component {
+		assert(components.length > 0);
+		if (components.length === 1) {
+			return components[0];
+		}
+
+		var wrap = new Component;
+		wrap.addAttributes([
+			new Children(components),
+		]);
+		return wrap;
+	}
 }

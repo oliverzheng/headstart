@@ -3,7 +3,6 @@ import c = require('../Component');
 import Rules = require('../Rules');
 import NodeAttribute = require('../attributes/NodeAttribute');
 import Children = require('../attributes/Children');
-import AlignmentAttribute = require('../attributes/AlignmentAttribute');
 import Measurement = require('../attributes/Measurement');
 import PositionAttribute = require('../attributes/PositionAttribute');
 import LengthAttribute = require('../attributes/LengthAttribute');

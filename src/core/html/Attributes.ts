@@ -25,7 +25,11 @@ export enum Type {
 	// Space outside this component (not CSS margins, as they collapse)
 	SPACING,
 
-	ALIGNMENT,
+	// Align children to left, middle, or right
+	HORIZONTAL_ALIGNMENT,
+
+	// Align children to top, middle, bottom
+	VERTICAL_ALIGNMENT,
 
 	// Relative or absolute positioning
 	POSITION,

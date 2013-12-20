@@ -10,12 +10,11 @@ import dynamicBoxRule = require('./rules/dynamicBoxRule');
 import percentChildRule = require('./rules/percentChildRule');
 import coalesceSpacesRule = require('./rules/coalesceSpacesRule');
 import emptySpaceRule = require('./rules/emptySpaceRule');
-import alignmentRule = require('./rules/alignmentRule');
-import middleAlignmentRule = require('./rules/middleAlignmentRule');
 import sizeRule = require('./rules/sizeRule');
 import cssVerticalBottomRule = require('./rules/cssVerticalBottomRule');
 
 import BlockFormat = require('./markup/BlockFormat');
+import Alignment = require('./attributes/Alignment');
 
 import cssMarginRule = require('./rules/cssMarginRule');
 
@@ -35,11 +34,23 @@ export class RuleRunner {
 			var parent = component.getParent();
 			attrsForComponents.forEach((attrsForComponent) => {
 				var component = attrsForComponent.component;
+				// TODO make sure component is under the tree of the original
+				// component
 				assert(component != parent);
+
+				var deleteAttrs = attrsForComponent.deleteAttributes;
+				if (deleteAttrs && deleteAttrs.length > 0) {
+					deleteAttrs.forEach(
+						(attrType) => component.deleteAttr(attrType)
+					);
+					updated = true;
+				}
+
 				var attrs = attrsForComponent.attributes;
 				if (attrs) {
 					updated = component.addAttributes(attrs) || updated;
 				}
+
 				var replaceAttrs = attrsForComponent.replaceAttributes;
 				if (replaceAttrs) {
 					updated = component.replaceAttributes(replaceAttrs) || updated;
@@ -141,16 +152,14 @@ export class LayoutRuleRunner extends PreferenceRuleRunner {
 			sizeRule.sizeByChildrenSum,
 			BlockFormat.verticalRule,
 
+			Alignment.expandRule,
 			coalesceSpacesRule,
 			BlockFormat.foldRule,
 
 			/*
-			alignmentRule,
-			middleAlignmentRule,
-			cssVerticalBottomRule,
-
 			// Hmm these don't look right:
 			emptySpaceRule,
+			cssVerticalBottomRule,
 			*/
 		], context);
 	}
