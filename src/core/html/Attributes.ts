@@ -15,15 +15,6 @@ export enum Type {
 	// Parent of the component (dynamically set)
 	PARENT,
 
-	// This component uses block formatting context for children
-	BLOCK_FORMATTING,
-
-	// This component uses inline formatting context for children
-	INLINE_FORMATTING,
-
-	// This component contains children that float
-	FLOAT_FORMATTING,
-
 	// This component floats
 	FLOAT,
 
@@ -46,6 +37,8 @@ export enum Type {
 	SEALED,
 
 	CSS,
+
+	MARKUP_BLOCK_FORMAT,
 }
 
 export interface Repr {

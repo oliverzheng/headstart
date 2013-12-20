@@ -77,7 +77,7 @@ class Children extends Attributes.BaseAttribute {
 
 	repr(): Attributes.Repr {
 		return {
-			title: 'Children (' + (this.isLayout ? 'layout' : 'logical'),
+			title: 'Children (' + (this.isLayout ? 'layout' : 'logical') + ')',
 			children: this.children.map((child) => child.repr()),
 		};
 	}

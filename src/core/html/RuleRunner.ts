@@ -10,12 +10,12 @@ import dynamicBoxRule = require('./rules/dynamicBoxRule');
 import percentChildRule = require('./rules/percentChildRule');
 import coalesceSpacesRule = require('./rules/coalesceSpacesRule');
 import emptySpaceRule = require('./rules/emptySpaceRule');
-import blockFormattingRule = require('./rules/blockFormattingRule');
-import foldBlockFormattingRule = require('./rules/foldBlockFormattingRule');
 import alignmentRule = require('./rules/alignmentRule');
 import middleAlignmentRule = require('./rules/middleAlignmentRule');
 import sizeRule = require('./rules/sizeRule');
 import cssVerticalBottomRule = require('./rules/cssVerticalBottomRule');
+
+import BlockFormat = require('./markup/BlockFormat');
 
 import cssMarginRule = require('./rules/cssMarginRule');
 
@@ -139,10 +139,10 @@ export class LayoutRuleRunner extends PreferenceRuleRunner {
 		super([
 			// TODO: Put these into an independent group
 			sizeRule.sizeByChildrenSum,
-			blockFormattingRule,
+			BlockFormat.verticalRule,
 
 			coalesceSpacesRule,
-			foldBlockFormattingRule,
+			BlockFormat.foldRule,
 
 			/*
 			alignmentRule,
