@@ -199,18 +199,17 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 					widthOfSizedChildren =
 						sizedChildrenWidths.reduce(LengthAttribute.add).makeImplicit();
 				} else {
-					widthOfSizedChildren = LengthAttribute.horizZero;
+					widthOfSizedChildren = LengthAttribute.getHorizZero();
 				}
 
 				var leftOverWidth = parentWidth.subtract(widthOfSizedChildren);
 				if (leftOverWidth &&
-					leftOverWidth.canCompare(LengthAttribute.horizZero)) {
-					if (leftOverWidth.compare(LengthAttribute.horizZero) < 0) {
-						leftOverWidth = LengthAttribute.horizZero;
+					leftOverWidth.canCompare(LengthAttribute.getHorizZero())) {
+					if (leftOverWidth.compare(LengthAttribute.getHorizZero()) < 0) {
+						leftOverWidth = LengthAttribute.getHorizZero();
 					}
-					var splitWidth = leftOverWidth.split(unsizedExpandHorizChildren.length);
-
 					results.push.apply(results, unsizedExpandHorizChildren.map((child) => {
+						var splitWidth = leftOverWidth.split(unsizedExpandHorizChildren.length);
 						return {
 							component: child,
 							attributes: [splitWidth],
@@ -221,8 +220,8 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 		} else if (direction === sinf.vert) {
 			var oneHundredPct =
 				new LengthAttribute(sinf.horiz, null, Measurement.implicit(1));
-			var widthFromParent = oneHundredPct.percentOf(parentWidth);
 			results.push.apply(results, unsizedExpandHorizChildren.map((child) => {
+				var widthFromParent = oneHundredPct.percentOf(parentWidth);
 				return {
 					component: child,
 					attributes: [widthFromParent],
@@ -258,18 +257,17 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 					heightOfSizedChildren =
 						sizedChildrenHeights.reduce(LengthAttribute.add).makeImplicit();
 				} else {
-					heightOfSizedChildren = LengthAttribute.vertZero;
+					heightOfSizedChildren = LengthAttribute.getVertZero();
 				}
 
 				var leftOverHeight = parentHeight.subtract(heightOfSizedChildren);
 				if (leftOverHeight &&
-					leftOverHeight.canCompare(LengthAttribute.vertZero)) {
-					if (leftOverHeight.compare(LengthAttribute.vertZero) < 0) {
-						leftOverHeight = LengthAttribute.vertZero;
+					leftOverHeight.canCompare(LengthAttribute.getVertZero())) {
+					if (leftOverHeight.compare(LengthAttribute.getVertZero()) < 0) {
+						leftOverHeight = LengthAttribute.getVertZero();
 					}
-					var splitHeight = leftOverHeight.split(unsizedExpandVertChildren.length);
-
 					results.push.apply(results, unsizedExpandVertChildren.map((child) => {
+						var splitHeight = leftOverHeight.split(unsizedExpandVertChildren.length);
 						return {
 							component: child,
 							attributes: [splitHeight],
@@ -280,8 +278,8 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 		} else if (direction === sinf.horiz) {
 			var oneHundredPct =
 				new LengthAttribute(sinf.vert, null, Measurement.implicit(1));
-			var heightFromParent = oneHundredPct.percentOf(parentHeight);
 			results.push.apply(results, unsizedExpandVertChildren.map((child) => {
+				var heightFromParent = oneHundredPct.percentOf(parentHeight);
 				return {
 					component: child,
 					attributes: [heightFromParent],
@@ -338,7 +336,7 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 			if (horizSizedWidths.length > 0) {
 				widthSum = horizSizedWidths.reduce(LengthAttribute.add).makeImplicit();
 			} else {
-				widthSum = LengthAttribute.horizZero;
+				widthSum = LengthAttribute.getHorizZero();
 			}
 			results.push({
 				component: component,
@@ -349,7 +347,7 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 				horizPctAndExpandChildren.map((child) => {
 					return {
 						component: child,
-						attributes: [LengthAttribute.horizZeroPx],
+						attributes: [LengthAttribute.getHorizZeroPx()],
 					};
 				})
 			);
@@ -359,7 +357,7 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 				horizSizedWidths.sort(LengthAttribute.compare);
 				maxWidth = horizSizedWidths[horizSizedWidths.length - 1].makeImplicit();
 			} else {
-				maxWidth = LengthAttribute.horizZero;
+				maxWidth = LengthAttribute.getHorizZero();
 			}
 			results.push({
 				component: component,
@@ -390,7 +388,7 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 			if (vertSizedHeights.length > 0) {
 				heightSum = vertSizedHeights.reduce(LengthAttribute.add).makeImplicit();
 			} else {
-				heightSum = LengthAttribute.vertZero;
+				heightSum = LengthAttribute.getVertZero();
 			}
 			results.push({
 				component: component,
@@ -401,7 +399,7 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 				vertPctAndExpandChildren.map((child) => {
 					return {
 						component: child,
-						attributes: [LengthAttribute.vertZeroPx],
+						attributes: [LengthAttribute.getVertZeroPx()],
 					};
 				})
 			);
@@ -411,7 +409,7 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 				vertSizedHeights.sort(LengthAttribute.compare);
 				maxHeight = vertSizedHeights[vertSizedHeights.length - 1].makeImplicit();
 			} else {
-				maxHeight = LengthAttribute.vertZero;
+				maxHeight = LengthAttribute.getVertZero();
 			}
 			results.push({
 				component: component,

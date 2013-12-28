@@ -11,34 +11,6 @@ class LengthAttribute extends Attributes.BaseAttribute {
 	pct: Measurement;
 	lines: Measurement; // For heights only
 
-	static horizZero =
-		new LengthAttribute(
-			sinf.horiz,
-			Measurement.implicit(0),
-			Measurement.implicit(0),
-			Measurement.implicit(0)
-		);
-
-	static horizZeroPx =
-		new LengthAttribute(
-			sinf.horiz,
-			Measurement.implicit(0)
-		);
-
-	static vertZero =
-		new LengthAttribute(
-			sinf.vert,
-			Measurement.implicit(0),
-			Measurement.implicit(0),
-			Measurement.implicit(0)
-		);
-
-	static vertZeroPx =
-		new LengthAttribute(
-			sinf.vert,
-			Measurement.implicit(0)
-		);
-
 	constructor(
 			direction: sinf.Direction,
 			px: Measurement = null,
@@ -284,6 +256,38 @@ class LengthAttribute extends Attributes.BaseAttribute {
 		if (part.isSet()) {
 			return part;
 		}
+	}
+
+	static getHorizZero() {
+		return new LengthAttribute(
+			sinf.horiz,
+			Measurement.implicit(0),
+			Measurement.implicit(0),
+			Measurement.implicit(0)
+		);
+	}
+
+	static getHorizZeroPx() {
+		return new LengthAttribute(
+			sinf.horiz,
+			Measurement.implicit(0)
+		);
+	}
+
+	static getVertZero() {
+		return new LengthAttribute(
+			sinf.vert,
+			Measurement.implicit(0),
+			Measurement.implicit(0),
+			Measurement.implicit(0)
+		);
+	}
+
+	static getVertZeroPx() {
+		return new LengthAttribute(
+			sinf.vert,
+			Measurement.implicit(0)
+		);
 	}
 }
 

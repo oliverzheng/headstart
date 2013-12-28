@@ -55,6 +55,8 @@ class FloatFormat extends Markup {
 			return;
 
 		var alignment = Alignment.getFrom(component, sinf.horiz);
+		if (!alignment)
+			return;
 
 		// Only aligned children on the left and right can be floated
 		if (alignment.afterNear || alignment.afterCenter || alignment.center)
