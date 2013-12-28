@@ -4,7 +4,6 @@ import Rules = require('./Rules');
 import Attributes = require('./Attributes');
 import Context = require('./Context');
 import c = require('./Component');
-import Children = require('./attributes/Children');
 
 import dynamicBoxRule = require('./rules/dynamicBoxRule');
 import percentChildRule = require('./rules/percentChildRule');
@@ -79,10 +78,10 @@ export class IndependentRuleRunner extends RuleRunner {
 			updated = this.runAllRulesOn(component);
 
 			if (!updated) {
-				Children.getLogicalFrom(component).breadthFirst((child) => {
+				component.iterateChildrenBreadthFirst((child) => {
 					updated = this.runAllRulesOn(child);
 					if (updated) {
-						return Children.STOP_RECURSION;
+						return c.STOP_RECURSION;
 					}
 				});
 			}
@@ -104,10 +103,10 @@ export class PreferenceRuleRunner extends RuleRunner {
 				var isFirstRule = i === 0;
 				updated = this.runSingleRuleOn(component, rule);
 				if (!updated) {
-					Children.getLogicalFrom(component).breadthFirst((child) => {
+					component.iterateChildrenBreadthFirst((child) => {
 						updated = this.runSingleRuleOn(child, rule);
 						if (updated && !isFirstRule) {
-							return Children.STOP_ITERATION;
+							return c.STOP_ITERATION;
 						}
 					});
 				}

@@ -1,6 +1,5 @@
 import assert = require('assert');
 import Attributes = require('../Attributes');
-import Children = require('./Children');
 import Rules = require('../Rules');
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
@@ -9,19 +8,21 @@ import groupChildren = require('../patterns/groupChildren');
 import getDirection = require('../patterns/getDirection');
 import hasBoxContent = require('../patterns/hasBoxContent');
 
+import util = require('../../../util');
+
 // This indicates how logical children are aligned. There can be a max of
 // five logical children. They can be any of near, center, far, or the two areas
 // between the three, making up five positions.
 class Alignment extends Attributes.BaseAttribute {
 	isHoriz: boolean;
-	near: boolean;
-	afterNear: boolean;
-	center: boolean;
-	afterCenter: boolean;
-	far: boolean;
+	near: c.Component[];
+	afterNear: c.Component[];
+	center: c.Component[];
+	afterCenter: c.Component[];
+	far: c.Component[];
 
 	constructor(
-		isHoriz: boolean, near: boolean, afterNear: boolean, center: boolean, afterCenter: boolean, far: boolean
+		isHoriz: boolean, near: c.Component[], afterNear: c.Component[], center: c.Component[], afterCenter: c.Component[], far: c.Component[]
 	) {
 		super();
 
@@ -43,25 +44,6 @@ class Alignment extends Attributes.BaseAttribute {
 		return <Alignment>attr;
 	}
 
-	static createAttributes(
-		isHoriz: boolean, near: c.Component, afterNear: c.Component, center: c.Component, afterCenter: c.Component, far: c.Component
-	): Attributes.BaseAttribute[] {
-		var children: c.Component[] = [];
-		if (near) children.push(near);
-		if (afterNear) children.push(afterNear);
-		if (center) children.push(center);
-		if (afterCenter) children.push(afterCenter);
-		if (far) children.push(far);
-
-		// If they are all here, that means they are all connected.
-		var isLayout = children.length === 5;
-
-		return [
-			new Children(children, isLayout),
-			new Alignment(isHoriz, !!near, !!afterNear, !!center, !!afterCenter, !!far),
-		];
-	}
-
 	static getHorizFrom(component: c.Component): Alignment {
 		return <Alignment>(component.getAttr(Attributes.Type.HORIZONTAL_ALIGNMENT));
 	}
@@ -79,35 +61,87 @@ class Alignment extends Attributes.BaseAttribute {
 		var attr = <Alignment>attribute;
 
 		return (
-			this.near === attr.near &&
-			this.afterNear === attr.afterNear &&
-			this.center === attr.center &&
-			this.afterCenter === attr.afterCenter &&
-			this.far === attr.far
+			util.arraysEqual(this.near, attr.near) &&
+			util.arraysEqual(this.afterNear, attr.afterNear) &&
+			util.arraysEqual(this.center, attr.center) &&
+			util.arraysEqual(this.afterCenter, attr.afterCenter) &&
+			util.arraysEqual(this.far, attr.far)
 		);
 	}
 
 	repr() {
-		var alignments: string[] = [];
-		var name: string;
-		if (this.isHoriz) {
-			name = 'Horizontal Alignment';
-			if (this.near) alignments.push('left');
-			if (this.afterNear) alignments.push('after-left');
-			if (this.center) alignments.push('center');
-			if (this.afterCenter) alignments.push('after-center');
-			if (this.far) alignments.push('right');
-		} else {
-			name = 'Vertical Alignment';
-			if (this.near) alignments.push('top');
-			if (this.afterNear) alignments.push('after-top');
-			if (this.center) alignments.push('center');
-			if (this.afterCenter) alignments.push('after-center');
-			if (this.far) alignments.push('bottom');
+		var children: Attributes.Repr[] = [];
+
+		if (this.near) {
+			children.push({
+				title: this.isHoriz ? 'Left' : 'Top',
+				children: this.near.map((child) => child.repr())
+			});
 		}
+
+		if (this.afterNear) {
+			children.push({
+				title: this.isHoriz ? 'After Left' : 'After Top',
+				children: this.afterNear.map((child) => child.repr())
+			});
+		}
+
+		if (this.center) {
+			children.push({
+				title: 'Center',
+				children: this.center.map((child) => child.repr())
+			});
+		}
+
+		if (this.afterCenter) {
+			children.push({
+				title: 'After Center',
+				children: this.afterCenter.map((child) => child.repr())
+			});
+		}
+
+		if (this.far) {
+			children.push({
+				title: this.isHoriz ? 'Right' : 'Bottom',
+				children: this.far.map((child) => child.repr())
+			});
+		}
+
 		return {
-			title: name + ': ' + alignments.join(', '),
+			title: this.isHoriz ? 'Horizontal Alignment' : 'Vertical Alignment',
+			children: children,
 		};
+	}
+
+	getComponentChildren() {
+		var children: c.Component[] = [];
+		if (this.near) children.push.apply(children, this.near);
+		if (this.afterNear) children.push.apply(children, this.afterNear);
+		if (this.center) children.push.apply(children, this.center);
+		if (this.afterCenter) children.push.apply(children, this.afterCenter);
+		if (this.far) children.push.apply(children, this.far);
+		return children;
+	}
+
+	getSimpleAlignment(): sinf.Alignment {
+		if (this.afterNear || this.afterCenter) {
+			return sinf.Alignment.NONE;
+		}
+		var simpleAlignments = [{
+			flag: !!this.near,
+			alignment: sinf.near,
+		}, {
+			flag: !!this.center,
+			alignment: sinf.center,
+		}, {
+			flag: !!this.far,
+			alignment: sinf.far,
+		}].filter((obj) => obj.flag);
+		if (simpleAlignments.length !== 1) {
+			return sinf.Alignment.NONE;
+		}
+
+		return simpleAlignments[0].alignment;
 	}
 
 	static expandRule(component: c.Component): Rules.RuleResult[] {
@@ -130,11 +164,11 @@ class Alignment extends Attributes.BaseAttribute {
 			return;
 		}
 
-		var near: c.Component;
-		var afterNear: c.Component;
-		var center: c.Component;
-		var afterCenter: c.Component;
-		var far: c.Component;
+		var near: c.Component[];
+		var afterNear: c.Component[];
+		var center: c.Component[];
+		var afterCenter: c.Component[];
+		var far: c.Component[];
 
 		var totalExpands = groups.filter((group) => group.matched).length;
 		var expandsSeen = 0;
@@ -142,10 +176,10 @@ class Alignment extends Attributes.BaseAttribute {
 			if (group.matched) {
 				switch (expandsSeen) {
 					case 0:
-						afterNear = c.Component.aggregate(group.components);
+						afterNear = group.components;
 						break;
 					case 1:
-						afterCenter = c.Component.aggregate(group.components);
+						afterCenter = group.components;
 						break;
 					default:
 						assert(false);
@@ -154,17 +188,17 @@ class Alignment extends Attributes.BaseAttribute {
 			} else if (group.components.length > 0) {
 				switch (expandsSeen) {
 					case 0:
-						near = c.Component.aggregate(group.components);
+						near = group.components;
 						break;
 					case 1:
 						if (totalExpands === 1) {
-							far = c.Component.aggregate(group.components);
+							far = group.components;
 						} else if (totalExpands === 2) {
-							center = c.Component.aggregate(group.components);
+							center = group.components;
 						}
 						break;
 					case 2:
-						far = c.Component.aggregate(group.components);
+						far = group.components;
 						break;
 					default:
 						assert(false);
@@ -172,28 +206,27 @@ class Alignment extends Attributes.BaseAttribute {
 			}
 		});
 
-		if (near && !hasBoxContent(near)) near = null;
-		if (afterNear && !hasBoxContent(afterNear)) afterNear = null;
-		if (center && !hasBoxContent(center)) center = null;
-		if (afterCenter && !hasBoxContent(afterCenter)) afterCenter = null;
-		if (far && !hasBoxContent(far)) far = null;
+		if (near && near.some((comp) => !hasBoxContent(comp))) near = null;
+		if (afterNear && afterNear.some((comp) => !hasBoxContent(comp))) afterNear = null;
+		if (center && center.some((comp) => !hasBoxContent(comp))) center = null;
+		if (afterCenter && afterCenter.some((comp) => !hasBoxContent(comp))) afterCenter = null;
+		if (far && far.some((comp) => !hasBoxContent(comp))) far = null;
 
 		if (!near && !afterNear && !center && !afterCenter && !far) {
 			return;
 		}
 
-		var attributes = Alignment.createAttributes(
-			direction === sinf.horiz,
-			near,
-			afterNear,
-			center,
-			afterCenter,
-			far
-		);
 		return [{
 			component: component,
-			attributes: attributes,
-			deleteAttributes: [Attributes.Type.LAYOUT_CHILDREN],
+			attributes: [new Alignment(
+				direction === sinf.horiz,
+				near,
+				afterNear,
+				center,
+				afterCenter,
+				far
+			)],
+			deleteAttributes: [Attributes.Type.STACKED_CHILDREN],
 		}];
 	}
 }

@@ -1,10 +1,13 @@
 import Attributes = require('./Attributes');
 import BoxAttribute = require('./attributes/BoxAttribute');
 import NodeAttribute = require('./attributes/NodeAttribute');
-import Children = require('./attributes/Children');
+import StackedChildren = require('./attributes/StackedChildren');
 import ParentAttribute = require('./attributes/ParentAttribute');
 import sinf = require('../spec/interfaces');
 import assert = require('assert');
+
+export var STOP_RECURSION = new Object();
+export var STOP_ITERATION = new Object();
 
 export class Component {
 	attributes: Attributes.BaseAttribute[] = [];
@@ -18,7 +21,7 @@ export class Component {
 				return Component.fromBox(childBox);
 			});
 			if (children.length > 0) {
-				component.addAttributes([new Children(children)]);
+				component.addAttributes([new StackedChildren(children)]);
 			}
 		}
 		return component;
@@ -97,14 +100,40 @@ export class Component {
 			attrs.forEach((attr) => {
 				var attrType = attr.getType();
 				assert(attrType !== Attributes.Type.PARENT);
-				if (attrType === Attributes.Type.LAYOUT_CHILDREN ||
-					attrType === Attributes.Type.LOGICAL_CHILDREN) {
-					(<Children>attr).getComponents().forEach((child) => {
+				if (attr.managesChildren()) {
+					attr.getComponentChildren().forEach((child) => {
 						child.addAttributes([new ParentAttribute(this)]);
 					});
 				}
 			});
 		}
+	}
+
+	getChildren(): Component[] {
+		var childrenAttrs = this.attributes.filter((attr) => attr.managesChildren());
+		assert(childrenAttrs.length <= 1);
+		var childrenAttr = childrenAttrs[0];
+		if (!childrenAttr) {
+			return [];
+		}
+		return childrenAttr.getComponentChildren();
+	}
+
+	iterateChildrenBreadthFirst(callback: (component: Component) => any) {
+		var stopIteration = false;
+		this.getChildren().forEach((child, i) => {
+			if (stopIteration) {
+				return;
+			}
+
+			var result = callback(child);
+			if (result === STOP_ITERATION) {
+				stopIteration = true;
+			} else if (result === STOP_RECURSION) {
+			} else {
+				child.iterateChildrenBreadthFirst(callback);
+			}
+		});
 	}
 
 	// Specific attributes
@@ -129,18 +158,5 @@ export class Component {
 			title: 'Component',
 			children: this.attributes.map((attr) => attr.repr()),
 		};
-	}
-
-	static aggregate(components: Component[]): Component {
-		assert(components.length > 0);
-		if (components.length === 1) {
-			return components[0];
-		}
-
-		var wrap = new Component;
-		wrap.addAttributes([
-			new Children(components),
-		]);
-		return wrap;
 	}
 }

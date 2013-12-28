@@ -2,7 +2,7 @@ import Attributes = require('../Attributes');
 import c = require('../Component');
 import Rules = require('../Rules');
 import NodeAttribute = require('../attributes/NodeAttribute');
-import Children = require('../attributes/Children');
+import StackedChildren = require('../attributes/StackedChildren');
 import size = require('../patterns/size');
 import sinf = require('../../spec/interfaces');
 
@@ -11,11 +11,11 @@ var percentChildRule: Rules.Rule = function(component: c.Component): Rules.RuleR
 		return;
 	}
 
-	var children = Children.getLayoutFrom(component);
+	var children = StackedChildren.getFrom(component);
 	if (children.isEmpty()) {
 		return;
 	}
-	var anyChildWithPercentage = children.getComponents().some((child) => {
+	var anyChildWithPercentage = children.get().some((child) => {
 		return (
 			size.isBoxSizePercent(child, sinf.horiz) ||
 			size.isBoxSizePercent(child, sinf.vert)

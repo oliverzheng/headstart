@@ -2,7 +2,7 @@ import Attributes = require('../Attributes');
 import Markup = require('./Markup');
 import c = require('../Component');
 import Rules = require('../Rules');
-import Children = require('../attributes/Children');
+import StackedChildren = require('../attributes/StackedChildren');
 import getDirection = require('../patterns/getDirection');
 import LengthAttribute = require('../attributes/LengthAttribute');
 import sinf = require('../../spec/interfaces');
@@ -13,9 +13,12 @@ class BlockFormat extends Markup {
 	}
 
 	getCSS() {
-		return {
-			display: 'block',
-		};
+		return [{
+			component: this.component,
+			css: {
+				display: 'block',
+			}
+		}];
 	}
 
 	static from(component: c.Component): boolean {
@@ -24,7 +27,7 @@ class BlockFormat extends Markup {
 
 	static verticalRule(component: c.Component): Rules.RuleResult[] {
 		if (getDirection(component) === sinf.vert &&
-			!Children.getLayoutFrom(component).isEmpty()) {
+			!StackedChildren.getFrom(component).isEmpty()) {
 			return [{
 				component: component,
 				attributes: [
@@ -35,7 +38,7 @@ class BlockFormat extends Markup {
 	}
 
 	static foldRule(component: c.Component): Rules.RuleResult[] {
-		var children = Children.getLayoutFrom(component);
+		var children = StackedChildren.getFrom(component);
 		if (children.isEmpty()) {
 			return;
 		}
@@ -52,7 +55,7 @@ class BlockFormat extends Markup {
 		var width = LengthAttribute.getFrom(component, sinf.horiz);
 
 		var newChildren: c.Component[] = [];
-		children.getComponents().forEach((child) => {
+		children.get().forEach((child) => {
 			do {
 				if (!BlockFormat.from(child) ||
 					child.nodeAttr()) {
@@ -64,13 +67,13 @@ class BlockFormat extends Markup {
 					break;
 				}
 
-				var grandChildren = Children.getLayoutFrom(child);
+				var grandChildren = StackedChildren.getFrom(child);
 				if (grandChildren.isEmpty()) {
 					break;
 				}
 				var height = LengthAttribute.getFrom(child, sinf.vert);
 				var childrenHeightsSum = LengthAttribute.sum(
-					grandChildren.getComponents().map(
+					grandChildren.get().map(
 						(grandChild) => LengthAttribute.getFrom(grandChild, sinf.vert)
 					)
 				);
@@ -79,7 +82,7 @@ class BlockFormat extends Markup {
 					break;
 				}
 
-				newChildren.push.apply(newChildren, grandChildren.getComponents());
+				newChildren.push.apply(newChildren, grandChildren.get());
 				return;
 
 			} while (false);
@@ -90,7 +93,7 @@ class BlockFormat extends Markup {
 		return [{
 			component: component,
 			replaceAttributes: [
-				new Children(newChildren),
+				new StackedChildren(newChildren),
 			],
 		}];
 	}

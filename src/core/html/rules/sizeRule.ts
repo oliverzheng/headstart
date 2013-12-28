@@ -2,7 +2,7 @@ import Attributes = require('../Attributes');
 import c = require('../Component');
 import Rules = require('../Rules');
 import NodeAttribute = require('../attributes/NodeAttribute');
-import Children = require('../attributes/Children');
+import StackedChildren = require('../attributes/StackedChildren');
 import Measurement = require('../attributes/Measurement');
 import PositionAttribute = require('../attributes/PositionAttribute');
 import LengthAttribute = require('../attributes/LengthAttribute');
@@ -66,10 +66,10 @@ export var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rul
 	}
 
 	var direction = getDirection(component);
-	var children = Children.getLayoutFrom(component);
+	var children = StackedChildren.getFrom(component);
 	if (direction && !children.isEmpty()) {
 		// Sum up children lengths
-		var childrenComponents = children.getComponents();
+		var childrenComponents = children.get();
 		var childrenWidths = childrenComponents.map(
 			(child) => LengthAttribute.getFrom(child, sinf.horiz)
 		).filter((attr) => !!attr);
@@ -126,11 +126,11 @@ export var sizePercentChildren: Rules.Rule = function(component: c.Component): R
 	var parentWidth = LengthAttribute.getFrom(component, sinf.horiz);
 	var parentHeight = LengthAttribute.getFrom(component, sinf.vert);
 
-	var children = Children.getLayoutFrom(component);
+	var children = StackedChildren.getFrom(component);
 	if (children.isEmpty()) {
 		return;
 	}
-	var childrenComponents = children.getComponents();
+	var childrenComponents = children.get();
 
 	// This can only be used for when the entire tree is a box tree.
 	assert(childrenComponents.every((child) => <boolean>child.boxAttr()));
@@ -164,11 +164,11 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 	var parentHeight = LengthAttribute.getFrom(component, sinf.vert);
 	var direction = getDirection(component);
 
-	var children = Children.getLayoutFrom(component);
+	var children = StackedChildren.getFrom(component);
 	if (children.isEmpty()) {
 		return;
 	}
-	var childrenComponents = children.getComponents();
+	var childrenComponents = children.get();
 
 	var results: Rules.RuleResult[] = [];
 
@@ -306,8 +306,8 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 		return;
 	}
 
-	var children = Children.getLayoutFrom(component);
-	var childrenComponents = children.getComponents();
+	var children = StackedChildren.getFrom(component);
+	var childrenComponents = children.get();
 	var direction = getDirection(component);
 	assert(!!direction);
 

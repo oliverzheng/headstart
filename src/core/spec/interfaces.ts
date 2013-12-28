@@ -164,6 +164,8 @@ export var overflows = [wrap, show, hidden];
  * there is free space left.
  */
 export enum Alignment {
+	NONE,
+
 	/** Insert an invisible child at the end. */
 	NEAR,
 
@@ -175,6 +177,7 @@ export enum Alignment {
 }
 
 export var alignments = [
+	Alignment.NONE,
 	Alignment.NEAR,
 	Alignment.CENTER,
 	Alignment.FAR,
@@ -184,7 +187,7 @@ export var near = Alignment.NEAR;
 export var center = Alignment.CENTER;
 export var far = Alignment.FAR;
 
-export var defaultAlignment = Alignment.NEAR;
+export var defaultAlignment = Alignment.NONE;
 
 
 export interface Position {

@@ -6,13 +6,18 @@ class Markup extends Attributes.BaseAttribute {
 		return this.isSameAttrType(attribute);
 	}
 
-	getCSS(): { [name: string]: string; } {
-		return {};
+	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
+		return [];
 	}
 
 	getCSSRepr(): string {
 		var css = this.getCSS();
-		return Object.keys(css).map((name) => (name + ': ' + css[name])).join(', ');
+		var thisComponentCss = css.filter((css) => css.component === this.component)[0];
+		if (!thisComponentCss) {
+			return '';
+		}
+		var actualCss = thisComponentCss.css;
+		return Object.keys(actualCss).map((name) => (name + ': ' + actualCss[name])).join(', ');
 	}
 
 	static from(component: c.Component, type: Attributes.Type): boolean {

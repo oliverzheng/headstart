@@ -1,14 +1,13 @@
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
-import Children = require('../attributes/Children');
+import StackedChildren = require('../attributes/StackedChildren');
 
 function matchChildren<T>(
 		component: c.Component,
-		pattern: (components: c.Component[]) => T,
-		isLayout: boolean = true
+		pattern: (components: c.Component[]) => T
 	): { startIndex: number; capture: T; }[] {
-	var children = Children.getFrom(component, isLayout);
-	var childrenComponents = children.getComponents();
+	var children = StackedChildren.getFrom(component);
+	var childrenComponents = children.get();
 	if (childrenComponents.length === 0) {
 		return;
 	}

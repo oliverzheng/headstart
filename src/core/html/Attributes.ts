@@ -8,12 +8,8 @@ export enum Type {
 	// Generates a DOM node in HTML/CSS
 	NODE,
 
-	// Children components sequenced one after another in layout. If this
-	// exists, it is also logical children.
-	LAYOUT_CHILDREN,
-
-	// Children components managed by the component
-	LOGICAL_CHILDREN,
+	// Visually stacked children
+	STACKED_CHILDREN,
 
 	// Parent of the component (dynamically set)
 	PARENT,
@@ -46,6 +42,7 @@ export enum Type {
 	CSS,
 
 	MARKUP_BLOCK_FORMAT,
+	MARKUP_FLOAT_FORMAT,
 }
 
 export interface Repr {
@@ -88,5 +85,13 @@ export class BaseAttribute {
 		return {
 			title: this.getName(),
 		};
+	}
+
+	managesChildren(): boolean {
+		return !!this.getComponentChildren();
+	}
+
+	getComponentChildren(): c.Component[] {
+		return;
 	}
 }

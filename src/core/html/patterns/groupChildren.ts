@@ -1,20 +1,19 @@
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
-import Children = require('../attributes/Children');
+import StackedChildren = require('../attributes/StackedChildren');
 
 function groupChildren(
 		component: c.Component,
-		filter: (component: c.Component) => boolean,
-		isLayout: boolean = true
+		filter: (component: c.Component) => boolean
 	): { matched: boolean; components: c.Component[]; }[] {
-	var children = Children.getFrom(component, isLayout);
+	var children = StackedChildren.getFrom(component);
 	if (children.isEmpty()) {
 		return;
 	}
 
 	var currentGroup: { matched: boolean; components: c.Component[]; };
 	var groups: Array<typeof currentGroup> = [];
-	children.getComponents().forEach((child) => {
+	children.get().forEach((child) => {
 		var matched = filter(child);
 		if (!currentGroup || currentGroup.matched !== matched) {
 			currentGroup = {
