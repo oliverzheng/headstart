@@ -5,6 +5,7 @@ import c = require('../Component');
 import sinf = require('../spec/interfaces');
 import Rules = require('../Rules');
 import Markup = require('../markup/Markup');
+import NodeAttribute = require('./NodeAttribute');
 
 class CSSAttribute extends Attributes.BaseAttribute {
 	styles: { [styleName: string]: string; } = {};
@@ -80,7 +81,10 @@ class CSSAttribute extends Attributes.BaseAttribute {
 					if (child === css.component) {
 						results.push({
 							component: child,
-							attributes: [new CSSAttribute(css.css)],
+							attributes: [
+								new NodeAttribute(),
+								new CSSAttribute(css.css),
+							],
 						});
 						componentFound = true;
 						return c.STOP_ITERATION;

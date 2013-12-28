@@ -14,6 +14,7 @@ import cssVerticalBottomRule = require('./rules/cssVerticalBottomRule');
 
 import BlockFormat = require('./markup/BlockFormat');
 import Alignment = require('./attributes/Alignment');
+import FloatFormat = require('./markup/FloatFormat');
 
 import CSSAttribute = require('./attributes/CSSAttribute');
 
@@ -148,6 +149,7 @@ export class LayoutRuleRunner extends PreferenceRuleRunner {
 			Alignment.expandRule,
 			coalesceSpacesRule,
 			BlockFormat.foldRule,
+			FloatFormat.alignRule,
 
 			/*
 			// Hmm these don't look right:
