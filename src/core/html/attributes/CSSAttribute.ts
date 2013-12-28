@@ -4,7 +4,7 @@ import Attributes = require('../Attributes');
 import c = require('../Component');
 import sinf = require('../spec/interfaces');
 import Rules = require('../Rules');
-import Markup = require('../markup/Markup');
+import Markup = require('../Markup');
 import NodeAttribute = require('./NodeAttribute');
 
 class CSSAttribute extends Attributes.BaseAttribute {
@@ -18,6 +18,17 @@ class CSSAttribute extends Attributes.BaseAttribute {
 
 	getType() {
 		return Attributes.Type.CSS;
+	}
+
+	includes(attribute: Attributes.BaseAttribute) {
+		if (!this.isSameAttrType(attribute)) { return false; }
+		var attr = <CSSAttribute>attribute;
+		for (var name in attr.styles) {
+			if (this.styles[name] !== attr.styles[name]) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	equals(attribute: Attributes.BaseAttribute) {

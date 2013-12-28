@@ -12,10 +12,9 @@ import emptySpaceRule = require('./rules/emptySpaceRule');
 import sizeRule = require('./rules/sizeRule');
 import cssVerticalBottomRule = require('./rules/cssVerticalBottomRule');
 
-import BlockFormat = require('./markup/BlockFormat');
+import BlockFormat = require('./attributes/BlockFormat');
 import Alignment = require('./attributes/Alignment');
-import FloatFormat = require('./markup/FloatFormat');
-
+import FloatFormat = require('./attributes/FloatFormat');
 import CSSAttribute = require('./attributes/CSSAttribute');
 
 export class RuleRunner {
@@ -149,6 +148,7 @@ export class LayoutRuleRunner extends PreferenceRuleRunner {
 			Alignment.expandRule,
 			coalesceSpacesRule,
 			BlockFormat.foldRule,
+			BlockFormat.explicitFixedWidthBlockRule,
 			FloatFormat.alignRule,
 
 			/*

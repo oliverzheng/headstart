@@ -6,7 +6,6 @@ import NodeAttribute = require('../attributes/NodeAttribute');
 //import AlignmentAttribute = require('../attributes/AlignmentAttribute');
 import PositionAttribute = require('../attributes/PositionAttribute');
 import CSSAttribute = require('../attributes/CSSAttribute');
-import SealedAttribute = require('../attributes/SealedAttribute');
 import matchChildren = require('../patterns/matchChildren');
 import hasBoxContent = require('../patterns/hasBoxContent');
 import getDirection = require('../patterns/getDirection');

@@ -1,5 +1,5 @@
 import Attributes = require('../Attributes');
-import Markup = require('./Markup');
+import Markup = require('../Markup');
 import c = require('../Component');
 import Rules = require('../Rules');
 import StackedChildren = require('../attributes/StackedChildren');
@@ -9,7 +9,7 @@ import sinf = require('../../spec/interfaces');
 
 class BlockFormat extends Markup {
 	getType() {
-		return Attributes.Type.MARKUP_BLOCK_FORMAT;
+		return Attributes.Type.BLOCK_FORMAT;
 	}
 
 	getCSS() {
@@ -22,7 +22,7 @@ class BlockFormat extends Markup {
 	}
 
 	static from(component: c.Component): boolean {
-		return Markup.from(component, Attributes.Type.MARKUP_BLOCK_FORMAT);
+		return Markup.from(component, Attributes.Type.BLOCK_FORMAT);
 	}
 
 	static verticalRule(component: c.Component): Rules.RuleResult[] {
@@ -96,6 +96,17 @@ class BlockFormat extends Markup {
 				new StackedChildren(newChildren),
 			],
 		}];
+	}
+
+	static explicitFixedWidthBlockRule(component: c.Component): Rules.RuleResult[] {
+		var attr = LengthAttribute.getFrom(component, sinf.horiz);
+		if (!attr || !attr.px.isSet() || !attr.px.isExplicit)
+			return;
+
+		return [{
+			component: component,
+			attributes: [new BlockFormat()],
+		}]
 	}
 }
 

@@ -1,6 +1,6 @@
 import assert = require('assert');
 import Attributes = require('../Attributes');
-import Markup = require('./Markup');
+import Markup = require('../Markup');
 import c = require('../Component');
 import Rules = require('../Rules');
 import StackedChildren = require('../attributes/StackedChildren');
@@ -12,7 +12,7 @@ import sinf = require('../../spec/interfaces');
 
 class FloatFormat extends Markup {
 	getType() {
-		return Attributes.Type.MARKUP_FLOAT_FORMAT;
+		return Attributes.Type.FLOAT_FORMAT;
 	}
 
 	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
@@ -40,7 +40,7 @@ class FloatFormat extends Markup {
 	}
 
 	static from(component: c.Component): boolean {
-		return Markup.from(component, Attributes.Type.MARKUP_FLOAT_FORMAT);
+		return Markup.from(component, Attributes.Type.FLOAT_FORMAT);
 	}
 
 	static isTopHorizontal(component: c.Component): boolean {

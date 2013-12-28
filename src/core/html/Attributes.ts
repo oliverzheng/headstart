@@ -41,8 +41,9 @@ export enum Type {
 
 	CSS,
 
-	MARKUP_BLOCK_FORMAT,
-	MARKUP_FLOAT_FORMAT,
+	BLOCK_FORMAT,
+
+	FLOAT_FORMAT,
 }
 
 export interface Repr {
@@ -66,6 +67,10 @@ export class BaseAttribute {
 
 	getName(): string {
 		return (<any>this).constructor.name;
+	}
+
+	includes(attribute: BaseAttribute): boolean {
+		return this.equals(attribute);
 	}
 
 	equals(attribute: BaseAttribute): boolean {

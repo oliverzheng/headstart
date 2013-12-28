@@ -1,5 +1,5 @@
-import Attributes = require('../Attributes');
-import c = require('../Component');
+import Attributes = require('./Attributes');
+import c = require('./Component');
 
 class Markup extends Attributes.BaseAttribute {
 	isMarkup = true;

@@ -1,10 +1,11 @@
 import c = require('../Component');
 import Attributes = require('../Attributes');
+import Markup = require('../Markup');
 import sinf = require('../../spec/interfaces');
 import assert = require('assert');
 import Measurement = require('./Measurement');
 
-class LengthAttribute extends Attributes.BaseAttribute {
+class LengthAttribute extends Markup {
 	direction: sinf.Direction;
 
 	px: Measurement;
@@ -47,8 +48,7 @@ class LengthAttribute extends Attributes.BaseAttribute {
 	}
 
 	// a == b doesn't mean b == a. a may contain all of b.
-	// TODO rename it to includes?
-	equals(attribute: Attributes.BaseAttribute) {
+	includes(attribute: Attributes.BaseAttribute) {
 		if (!this.isSameAttrType(attribute)) { return false; }
 		var attr = <LengthAttribute>attribute;
 
@@ -56,6 +56,18 @@ class LengthAttribute extends Attributes.BaseAttribute {
 			(this.px.equals(attr.px) || this.px.isSet() && !attr.px.isSet()) &&
 			(this.pct.equals(attr.pct) || this.pct.isSet() && !attr.pct.isSet()) &&
 			(this.lines.equals(attr.lines) || this.lines.isSet() && !attr.lines.isSet()) &&
+			this.direction === attr.direction
+		);
+	}
+
+	equals(attribute: Attributes.BaseAttribute) {
+		if (!this.isSameAttrType(attribute)) { return false; }
+		var attr = <LengthAttribute>attribute;
+
+		return (
+			this.px.equals(attr.px) &&
+			this.pct.equals(attr.pct) &&
+			this.lines.equals(attr.lines) &&
 			this.direction === attr.direction
 		);
 	}
@@ -256,6 +268,22 @@ class LengthAttribute extends Attributes.BaseAttribute {
 		if (part.isSet()) {
 			return part;
 		}
+	}
+
+	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
+		if (!this.px.isSet() || !this.px.isExplicit) {
+			return [];
+		}
+		var css: { [name: string]: string;};
+		if (this.direction === sinf.horiz) {
+			css = { width: this.px.value.toString() + 'px' };
+		} else {
+			css = { height: this.px.value.toString() + 'px' };
+		}
+		return [{
+			component: this.component,
+			css: css,
+		}];
 	}
 
 	static getHorizZero() {

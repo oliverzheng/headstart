@@ -60,7 +60,7 @@ export class Component {
 				this.attributes.push(attr);
 				attr.setComponent(this);
 				added = true;
-			} else if (!existingAttr.equals(attr)) {
+			} else if (!existingAttr.includes(attr)) {
 				var mergeAttr = existingAttr.merge(attr);
 				if (!mergeAttr) {
 					throw new Error('Cannot merge to an existing attr!');
