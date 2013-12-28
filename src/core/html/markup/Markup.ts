@@ -2,6 +2,8 @@ import Attributes = require('../Attributes');
 import c = require('../Component');
 
 class Markup extends Attributes.BaseAttribute {
+	isMarkup = true;
+
 	equals(attribute: Attributes.BaseAttribute) {
 		return this.isSameAttrType(attribute);
 	}
@@ -10,24 +12,12 @@ class Markup extends Attributes.BaseAttribute {
 		return [];
 	}
 
-	getCSSRepr(): string {
-		var css = this.getCSS();
-		var thisComponentCss = css.filter((css) => css.component === this.component)[0];
-		if (!thisComponentCss) {
-			return '';
-		}
-		var actualCss = thisComponentCss.css;
-		return Object.keys(actualCss).map((name) => (name + ': ' + actualCss[name])).join(', ');
-	}
-
 	static from(component: c.Component, type: Attributes.Type): boolean {
 		return !!component.getAttr(type);
 	}
 
-	repr() {
-		return {
-			title: this.getName() + ' (' + this.getCSSRepr() + ')',
-		};
+	static getMarkupAttributes(component: c.Component): Markup[] {
+		return <Markup[]>component.attributes.filter((a) => a instanceof Markup);
 	}
 }
 

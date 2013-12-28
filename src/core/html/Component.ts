@@ -119,21 +119,24 @@ export class Component {
 		return childrenAttr.getComponentChildren();
 	}
 
-	iterateChildrenBreadthFirst(callback: (component: Component) => any) {
-		var stopIteration = false;
-		this.getChildren().forEach((child, i) => {
-			if (stopIteration) {
-				return;
+	iterateChildrenBreadthFirst(callback: (component: Component) => any): any {
+		var result = callback(this);
+		if (result === STOP_ITERATION) {
+			return STOP_ITERATION;
+		} else if (result === STOP_RECURSION) {
+			return STOP_ITERATION;
+		} else {
+			var stopIteration = false;
+			for (var i = 0; i < this.getChildren().length; ++i) {
+				var child = this.getChildren()[i];
+				var result = child.iterateChildrenBreadthFirst(callback);
+				if (result === STOP_ITERATION) {
+					return STOP_ITERATION;
+				} else if (result === STOP_RECURSION) {
+					break;
+				}
 			}
-
-			var result = callback(child);
-			if (result === STOP_ITERATION) {
-				stopIteration = true;
-			} else if (result === STOP_RECURSION) {
-			} else {
-				child.iterateChildrenBreadthFirst(callback);
-			}
-		});
+		}
 	}
 
 	// Specific attributes

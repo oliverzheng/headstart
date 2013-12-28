@@ -15,7 +15,7 @@ import cssVerticalBottomRule = require('./rules/cssVerticalBottomRule');
 import BlockFormat = require('./markup/BlockFormat');
 import Alignment = require('./attributes/Alignment');
 
-import cssMarginRule = require('./rules/cssMarginRule');
+import CSSAttribute = require('./attributes/CSSAttribute');
 
 export class RuleRunner {
 	rules: Rules.Rule[];
@@ -75,19 +75,15 @@ export class IndependentRuleRunner extends RuleRunner {
 	start(component: c.Component) {
 		var updated: boolean;
 		do {
-			updated = this.runAllRulesOn(component);
-
-			if (!updated) {
-				component.iterateChildrenBreadthFirst((child) => {
-					updated = this.runAllRulesOn(child);
-					if (updated) {
-						return c.STOP_RECURSION;
-					}
-				});
-			}
+			updated = false;
+			component.iterateChildrenBreadthFirst((child) => {
+				updated = this.runAllRulesOn(child);
+				if (updated) {
+					return c.STOP_RECURSION;
+				}
+			});
 		} while (updated);
 	}
-
 }
 
 // Walk the tree (breadth first) applying the first rule of a list of rules. When
@@ -98,18 +94,16 @@ export class PreferenceRuleRunner extends RuleRunner {
 	start(component: c.Component) {
 		var updated: boolean;
 		do {
+			updated = false;
 			for (var i = 0; i < this.rules.length; ++i) {
 				var rule = this.rules[i];
 				var isFirstRule = i === 0;
-				updated = this.runSingleRuleOn(component, rule);
-				if (!updated) {
-					component.iterateChildrenBreadthFirst((child) => {
-						updated = this.runSingleRuleOn(child, rule);
-						if (updated && !isFirstRule) {
-							return c.STOP_ITERATION;
-						}
-					});
-				}
+				component.iterateChildrenBreadthFirst((child) => {
+					updated = this.runSingleRuleOn(child, rule);
+					if (updated && !isFirstRule) {
+						return c.STOP_ITERATION;
+					}
+				});
 				if (updated && !isFirstRule) {
 					break;
 				}
@@ -164,21 +158,19 @@ export class LayoutRuleRunner extends PreferenceRuleRunner {
 	}
 }
 
-/*
-export class CSSRuleRunner extends RestartRunner {
+export class CSSRuleRunner extends IndependentRuleRunner {
 	constructor(context: Context.Context) {
 		super([
-			cssMarginRule,
+			CSSAttribute.applyCssRule,
 		], context);
 	}
 }
-*/
 
 export class DefaultRuleRunner extends RuleRunner {
 	private userSpecifiedRuleRunner: UserSpecifiedRuleRunner;
 	private sizeRuleRunner: SizeRuleRunner;
 	private layoutRuleRunner: LayoutRuleRunner;
-	//private cssRuleRunner: CSSRuleRunner;
+	private cssRuleRunner: CSSRuleRunner;
 
 	constructor(context: Context.Context) {
 		super([], context);
@@ -186,13 +178,13 @@ export class DefaultRuleRunner extends RuleRunner {
 		this.userSpecifiedRuleRunner = new UserSpecifiedRuleRunner(context);
 		this.sizeRuleRunner = new SizeRuleRunner(context);
 		this.layoutRuleRunner = new LayoutRuleRunner(context);
-		//this.cssRuleRunner = new CSSRuleRunner(context);
+		this.cssRuleRunner = new CSSRuleRunner(context);
 	}
 
 	start(component: c.Component) {
 		this.userSpecifiedRuleRunner.start(component);
 		this.sizeRuleRunner.start(component);
 		this.layoutRuleRunner.start(component);
-		//this.cssRuleRunner.start(component);
+		this.cssRuleRunner.start(component);
 	}
 }
