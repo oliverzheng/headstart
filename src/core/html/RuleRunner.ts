@@ -5,7 +5,7 @@ import Attributes = require('./Attributes');
 import Context = require('./Context');
 import c = require('./Component');
 
-import dynamicBoxRule = require('./rules/dynamicBoxRule');
+import NodeAttribute = require('./attributes/NodeAttribute');
 import percentChildRule = require('./rules/percentChildRule');
 import coalesceSpacesRule = require('./rules/coalesceSpacesRule');
 import emptySpaceRule = require('./rules/emptySpaceRule');
@@ -118,7 +118,7 @@ export class PreferenceRuleRunner extends RuleRunner {
 export class UserSpecifiedRuleRunner extends IndependentRuleRunner {
 	constructor(context: Context.Context) {
 		super([
-			dynamicBoxRule,
+			NodeAttribute.dynamicBoxRule,
 			percentChildRule,
 		], context);
 	}
