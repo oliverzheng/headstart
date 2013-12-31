@@ -21,8 +21,8 @@ export enum Type {
 	WIDTH,
 	HEIGHT,
 
-	// Space outside this component (not CSS margins, as they collapse)
-	SPACING,
+	// CSS margin
+	MARGIN,
 
 	// Align children to left, middle, or right
 	HORIZONTAL_ALIGNMENT,

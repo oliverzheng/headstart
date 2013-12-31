@@ -8,13 +8,13 @@ import c = require('./Component');
 import NodeAttribute = require('./attributes/NodeAttribute');
 import percentChildRule = require('./rules/percentChildRule');
 import coalesceSpacesRule = require('./rules/coalesceSpacesRule');
-import emptySpaceRule = require('./rules/emptySpaceRule');
 import sizeRule = require('./rules/sizeRule');
 import cssVerticalBottomRule = require('./rules/cssVerticalBottomRule');
 
 import BlockFormat = require('./attributes/BlockFormat');
 import Alignment = require('./attributes/Alignment');
 import FloatFormat = require('./attributes/FloatFormat');
+import Margin = require('./attributes/Margin');
 import CSSAttribute = require('./attributes/CSSAttribute');
 
 export class RuleRunner {
@@ -141,22 +141,34 @@ var defaultRuleGroups: RuleGroup[] = [{
 	// Hierarchy changing rules
 	independent: false,
 	rules: [
+		// Size calculation
 		sizeRule.sizeByChildrenSum,
+
 		NodeAttribute.unfoldSameDirectionRule,
-
-		BlockFormat.verticalRule,
-
 		Alignment.expandRule,
 		coalesceSpacesRule,
-		BlockFormat.explicitFixedWidthBlockRule,
-		NodeAttribute.explicitLengthContentRule,
-		FloatFormat.alignRule,
 
 		/*
 		// Hmm these don't look right:
-		emptySpaceRule,
 		cssVerticalBottomRule,
 		*/
+	],
+
+	// Rules after this should not change hierarchy
+}, {
+	// Determine which are nodes
+	independent: true,
+	rules: [
+		NodeAttribute.explicitLengthContentRule,
+	]
+}, {
+	// Attributes that require nodes
+	independent: true,
+	rules: [
+		BlockFormat.verticalRule,
+		BlockFormat.explicitFixedWidthBlockRule,
+		FloatFormat.alignRule,
+		Margin.marginRule,
 	],
 }, {
 	// Apply all CSS

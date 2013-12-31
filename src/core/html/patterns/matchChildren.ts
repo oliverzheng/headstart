@@ -7,10 +7,9 @@ function matchChildren<T>(
 		pattern: (components: c.Component[]) => T
 	): { startIndex: number; capture: T; }[] {
 	var children = StackedChildren.getFrom(component);
-	var childrenComponents = children.get();
-	if (childrenComponents.length === 0) {
+	if (!children || children.isEmpty())
 		return;
-	}
+	var childrenComponents = children.get();
 
 	var matches: { startIndex: number; capture: T; }[] = [];
 	for (var ii = 0; ii < childrenComponents.length; ++ii) {

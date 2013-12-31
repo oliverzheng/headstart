@@ -12,7 +12,7 @@ var percentChildRule: Rules.Rule = function(component: c.Component): Rules.RuleR
 	}
 
 	var children = StackedChildren.getFrom(component);
-	if (children.isEmpty()) {
+	if (!children || children.isEmpty()) {
 		return;
 	}
 	var anyChildWithPercentage = children.get().some((child) => {

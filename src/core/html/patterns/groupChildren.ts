@@ -7,7 +7,7 @@ function groupChildren(
 		filter: (component: c.Component) => boolean
 	): { matched: boolean; components: c.Component[]; }[] {
 	var children = StackedChildren.getFrom(component);
-	if (children.isEmpty()) {
+	if (!children || children.isEmpty()) {
 		return;
 	}
 

@@ -38,9 +38,9 @@ class NodeAttribute extends Attributes.BaseAttribute {
 	}
 
 	static unfoldSameDirectionRule(component: c.Component): Rules.RuleResult[] {
-		if (StackedChildren.getFrom(component).isEmpty()) {
+		var stackedChildren = StackedChildren.getFrom(component);
+		if (!stackedChildren || stackedChildren.isEmpty())
 			return;
-		}
 
 		var direction = getDirection(component);
 
@@ -58,7 +58,7 @@ class NodeAttribute extends Attributes.BaseAttribute {
 				return false;
 
 			var grandChildren = StackedChildren.getFrom(child);
-			if (grandChildren.isEmpty())
+			if (!grandChildren || grandChildren.isEmpty())
 				return false;
 
 			var grandChildrenLength = LengthAttribute.sum(

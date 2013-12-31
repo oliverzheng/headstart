@@ -30,8 +30,9 @@ class BlockFormat extends Markup {
 		if (!NodeAttribute.getFrom(component))
 			return;
 
+		var stackedChildren = StackedChildren.getFrom(component);
 		if (getDirection(component) === sinf.vert &&
-			!StackedChildren.getFrom(component).isEmpty()) {
+			stackedChildren && !stackedChildren.isEmpty()) {
 			return [{
 				component: component,
 				attributes: [

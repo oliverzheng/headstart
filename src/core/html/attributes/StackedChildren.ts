@@ -17,7 +17,7 @@ class StackedChildren extends Attributes.BaseAttribute {
 
 	static getFrom(component: c.Component): StackedChildren {
 		var children = <StackedChildren>(component.getAttr(Attributes.Type.STACKED_CHILDREN));
-		return children || emptyChildren;
+		return children;
 	}
 
 	isEmpty(): boolean {
@@ -45,8 +45,40 @@ class StackedChildren extends Attributes.BaseAttribute {
 			children: this.children.map((child) => child.repr()),
 		};
 	}
-}
 
-var emptyChildren = new StackedChildren([]);
+	static getNextSibling(component: c.Component): c.Component {
+		var parent = component.getParent();
+		if (!parent)
+			return;
+
+		var stackedChildren = StackedChildren.getFrom(parent);
+		if (!stackedChildren)
+			return;
+
+		var children = stackedChildren.get();
+		for (var i = 0; i < children.length - 1; ++i) {
+			if (children[i] === component)
+				return children[i + 1];
+		}
+		return null;
+	}
+
+	static getPrevSibling(component: c.Component): c.Component {
+		var parent = component.getParent();
+		if (!parent)
+			return;
+
+		var stackedChildren = StackedChildren.getFrom(parent);
+		if (!stackedChildren)
+			return;
+
+		var children = stackedChildren.get();
+		for (var i = 1; i < children.length; ++i) {
+			if (children[i] === component)
+				return children[i - 1];
+		}
+		return null;
+	}
+}
 
 export = StackedChildren;

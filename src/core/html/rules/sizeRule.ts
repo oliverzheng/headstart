@@ -67,7 +67,7 @@ export var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rul
 
 	var direction = getDirection(component);
 	var children = StackedChildren.getFrom(component);
-	if (direction && !children.isEmpty()) {
+	if (direction && children && !children.isEmpty()) {
 		// Sum up children lengths
 		var childrenComponents = children.get();
 		var childrenWidths = childrenComponents.map(
@@ -127,7 +127,7 @@ export var sizePercentChildren: Rules.Rule = function(component: c.Component): R
 	var parentHeight = LengthAttribute.getFrom(component, sinf.vert);
 
 	var children = StackedChildren.getFrom(component);
-	if (children.isEmpty()) {
+	if (!children || children.isEmpty()) {
 		return;
 	}
 	var childrenComponents = children.get();
@@ -165,7 +165,7 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 	var direction = getDirection(component);
 
 	var children = StackedChildren.getFrom(component);
-	if (children.isEmpty()) {
+	if (!children || children.isEmpty()) {
 		return;
 	}
 	var childrenComponents = children.get();
@@ -305,6 +305,8 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 	}
 
 	var children = StackedChildren.getFrom(component);
+	if (!children)
+		return;
 	var childrenComponents = children.get();
 	var direction = getDirection(component);
 	assert(!!direction);
