@@ -143,11 +143,12 @@ export class LayoutRuleRunner extends PreferenceRuleRunner {
 		super([
 			// TODO: Put these into an independent group
 			sizeRule.sizeByChildrenSum,
+			NodeAttribute.unfoldSameDirectionRule,
+
 			BlockFormat.verticalRule,
 
 			Alignment.expandRule,
 			coalesceSpacesRule,
-			BlockFormat.foldRule,
 			BlockFormat.explicitFixedWidthBlockRule,
 			FloatFormat.alignRule,
 
