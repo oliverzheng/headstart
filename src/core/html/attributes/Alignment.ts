@@ -1,5 +1,6 @@
 import assert = require('assert');
 import Attributes = require('../Attributes');
+import StackedChildren = require('./StackedChildren');
 import Rules = require('../Rules');
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
@@ -15,14 +16,14 @@ import util = require('../../../util');
 // between the three, making up five positions.
 class Alignment extends Attributes.BaseAttribute {
 	isHoriz: boolean;
-	near: c.Component[];
-	afterNear: c.Component[];
-	center: c.Component[];
-	afterCenter: c.Component[];
-	far: c.Component[];
+	near: c.Component;
+	afterNear: c.Component;
+	center: c.Component;
+	afterCenter: c.Component;
+	far: c.Component;
 
 	constructor(
-		isHoriz: boolean, near: c.Component[], afterNear: c.Component[], center: c.Component[], afterCenter: c.Component[], far: c.Component[]
+		isHoriz: boolean, near: c.Component, afterNear: c.Component, center: c.Component, afterCenter: c.Component, far: c.Component
 	) {
 		super();
 
@@ -61,11 +62,11 @@ class Alignment extends Attributes.BaseAttribute {
 		var attr = <Alignment>attribute;
 
 		return (
-			util.arraysEqual(this.near, attr.near) &&
-			util.arraysEqual(this.afterNear, attr.afterNear) &&
-			util.arraysEqual(this.center, attr.center) &&
-			util.arraysEqual(this.afterCenter, attr.afterCenter) &&
-			util.arraysEqual(this.far, attr.far)
+			this.near === attr.near &&
+			this.afterNear == attr.afterNear &&
+			this.center == attr.center &&
+			this.afterCenter == attr.afterCenter &&
+			this.far == attr.far
 		);
 	}
 
@@ -73,38 +74,33 @@ class Alignment extends Attributes.BaseAttribute {
 		var children: Attributes.Repr[] = [];
 
 		if (this.near) {
-			children.push({
-				title: this.isHoriz ? 'Left' : 'Top',
-				children: this.near.map((child) => child.repr())
-			});
+			var repr = this.near.repr();
+			repr.title = (this.isHoriz ? 'Left' : 'Top') + ' ' + repr.title;
+			children.push(repr);
 		}
 
 		if (this.afterNear) {
-			children.push({
-				title: this.isHoriz ? 'After Left' : 'After Top',
-				children: this.afterNear.map((child) => child.repr())
-			});
+			var repr = this.afterNear.repr();
+			repr.title = (this.isHoriz ? 'After Left' : 'After Top') + ' ' + repr.title;
+			children.push(repr);
 		}
 
 		if (this.center) {
-			children.push({
-				title: 'Center',
-				children: this.center.map((child) => child.repr())
-			});
+			var repr = this.center.repr();
+			repr.title = 'Center ' + repr.title;
+			children.push(repr);
 		}
 
 		if (this.afterCenter) {
-			children.push({
-				title: 'After Center',
-				children: this.afterCenter.map((child) => child.repr())
-			});
+			var repr = this.afterCenter.repr();
+			repr.title = 'After Center ' + repr.title;
+			children.push(repr);
 		}
 
 		if (this.far) {
-			children.push({
-				title: this.isHoriz ? 'Right' : 'Bottom',
-				children: this.far.map((child) => child.repr())
-			});
+			var repr = this.far.repr();
+			repr.title = (this.isHoriz ? 'Right' : 'Bottom') + ' ' + repr.title;
+			children.push(repr);
 		}
 
 		return {
@@ -114,13 +110,9 @@ class Alignment extends Attributes.BaseAttribute {
 	}
 
 	getComponentChildren() {
-		var children: c.Component[] = [];
-		if (this.near) children.push.apply(children, this.near);
-		if (this.afterNear) children.push.apply(children, this.afterNear);
-		if (this.center) children.push.apply(children, this.center);
-		if (this.afterCenter) children.push.apply(children, this.afterCenter);
-		if (this.far) children.push.apply(children, this.far);
-		return children;
+		return [
+			this.near, this.afterNear, this.center, this.afterCenter, this.far
+		].filter((component) => !!component);
 	}
 
 	getSimpleAlignment(): sinf.Alignment {
@@ -206,28 +198,40 @@ class Alignment extends Attributes.BaseAttribute {
 			}
 		});
 
-		if (near && near.some((comp) => !hasBoxContent(comp))) near = null;
-		if (afterNear && afterNear.some((comp) => !hasBoxContent(comp))) afterNear = null;
-		if (center && center.some((comp) => !hasBoxContent(comp))) center = null;
-		if (afterCenter && afterCenter.some((comp) => !hasBoxContent(comp))) afterCenter = null;
-		if (far && far.some((comp) => !hasBoxContent(comp))) far = null;
-
 		if (!near && !afterNear && !center && !afterCenter && !far) {
 			return;
 		}
+		var aggregates = [
+			near, afterNear, center, afterCenter, far
+		].map(Alignment.aggregate);
+		var results = aggregates.filter((result) => !!result);
 
-		return [{
+		results.push({
 			component: component,
 			attributes: [new Alignment(
 				direction === sinf.horiz,
-				near,
-				afterNear,
-				center,
-				afterCenter,
-				far
+				aggregates[0] && aggregates[0].component,
+				aggregates[1] && aggregates[1].component,
+				aggregates[2] && aggregates[2].component,
+				aggregates[3] && aggregates[3].component,
+				aggregates[4] && aggregates[4].component
 			)],
 			deleteAttributes: [Attributes.Type.STACKED_CHILDREN],
-		}];
+		});
+		return results;
+	}
+
+	static aggregate(components: c.Component[]): Rules.RuleResult {
+		if (!components || components.length === 0)
+			return null;
+
+		if (components.length === 1)
+			return { component: components[0], attributes: [] };
+
+		return {
+			component: new c.Component,
+			attributes: [new StackedChildren(components)],
+		};
 	}
 }
 
