@@ -6,6 +6,7 @@ import LengthAttribute = require('../attributes/LengthAttribute');
 import getDynamicBox = require('../patterns/getDynamicBox');
 import getDirection = require('../patterns/getDirection');
 import groupChildren = require('../patterns/groupChildren');
+import hasBoxContent = require('../patterns/hasBoxContent');
 import sinf = require('../../spec/interfaces');
 
 // Having a node indicates that in the final HTML/CSS rendering tree, a node
@@ -94,6 +95,21 @@ class NodeAttribute extends Attributes.BaseAttribute {
 				new StackedChildren(newChildren),
 			],
 		}];
+	}
+
+	static explicitLengthContentRule(component: c.Component): Rules.RuleResult[] {
+		if (!hasBoxContent(component))
+			return;
+
+		var width = LengthAttribute.getFrom(component, sinf.horiz);
+		var height = LengthAttribute.getFrom(component, sinf.vert);
+		if (width.px.isSet() && width.px.isExplicit ||
+			height.px.isSet() && height.px.isExplicit) {
+			return [{
+				component: component,
+				attributes: [new NodeAttribute()],
+			}];
+		}
 	}
 }
 

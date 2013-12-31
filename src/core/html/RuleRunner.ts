@@ -150,6 +150,7 @@ export class LayoutRuleRunner extends PreferenceRuleRunner {
 			Alignment.expandRule,
 			coalesceSpacesRule,
 			BlockFormat.explicitFixedWidthBlockRule,
+			NodeAttribute.explicitLengthContentRule,
 			FloatFormat.alignRule,
 
 			/*

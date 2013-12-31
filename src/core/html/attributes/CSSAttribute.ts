@@ -84,20 +84,25 @@ class CSSAttribute extends Attributes.BaseAttribute {
 	static applyCssRule(component: c.Component): Rules.RuleResult[] {
 		var markups: Markup[] = Markup.getMarkupAttributes(component);
 
+		var root = component.getRoot();
 		var results: Rules.RuleResult[] = [];
 		markups.forEach((markup) => {
 			markup.getCSS().forEach((css) => {
+				if (css.component === root)
+					return;
+
 				var componentFound = false;
 				component.iterateChildrenBreadthFirst((child) => {
 					if (child === css.component) {
-						results.push({
-							component: child,
-							attributes: [
-								new NodeAttribute(),
-								new CSSAttribute(css.css),
-							],
-						});
 						componentFound = true;
+						if (NodeAttribute.getFrom(child)) {
+							results.push({
+								component: child,
+								attributes: [
+									new CSSAttribute(css.css),
+								],
+							});
+						}
 						return c.STOP_ITERATION;
 					}
 				});

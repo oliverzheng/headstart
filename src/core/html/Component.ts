@@ -149,6 +149,13 @@ export class Component {
 		return <NodeAttribute>this.getAttr(Attributes.Type.NODE);
 	}
 
+	getRoot(): Component {
+		var parent = this;
+		while (parent.getParent())
+			parent = parent.getParent();
+		return parent;
+	}
+
 	getParent(): Component {
 		var parentAttr = <ParentAttribute>this.getAttr(Attributes.Type.PARENT);
 		if (parentAttr) {
