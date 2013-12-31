@@ -6,16 +6,10 @@ import RuleRunner = require('../core/html/RuleRunner');
 import Context = require('../core/html/Context');
 
 export var RootComponent = React.createClass({
-	getInitialState() {
-		return {
-			ruleRunner: new RuleRunner.DefaultRuleRunner(Context.ie6AndAbove),
-		};
-	},
-
 	runRules() {
 		var component = this.props.component;
 
-		this.state.ruleRunner.start(component);
+		RuleRunner.runOn(component, Context.ie6AndAbove);
 
 		this.forceUpdate();
 	},

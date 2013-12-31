@@ -26,6 +26,8 @@ export class RuleRunner {
 		this.context = context;
 	}
 
+	start(component: c.Component) { throw new Error('Subclass RuleRunner first'); }
+
 	runSingleRuleOn(component: c.Component, rule: Rules.Rule): boolean {
 		var updated = false;
 		var attrsForComponents = rule(component, this.context);
@@ -112,83 +114,66 @@ export class PreferenceRuleRunner extends RuleRunner {
 	}
 }
 
+export interface RuleGroup {
+	independent: boolean;
 
-/* These do not change the children attributes */
-
-export class UserSpecifiedRuleRunner extends IndependentRuleRunner {
-	constructor(context: Context.Context) {
-		super([
-			NodeAttribute.dynamicBoxRule,
-			percentChildRule,
-		], context);
-	}
+	// Only one of the following can exist.
+	rules: Rules.Rule[];
 }
 
-export class SizeRuleRunner extends IndependentRuleRunner {
-	constructor(context: Context.Context) {
-		super([
-			sizeRule.sizeUserExplicit,
-			sizeRule.sizePercentChildren,
-			sizeRule.sizeExpandedChildren,
-			sizeRule.sizeShrink,
-		], context);
-	}
-}
+var defaultRuleGroups: RuleGroup[] = [{
+	// User specified rules
+	independent: true,
+	rules: [
+		NodeAttribute.dynamicBoxRule,
+		percentChildRule,
+	],
+}, {
+	// Calculate sizes
+	independent: true,
+	rules: [
+		sizeRule.sizeUserExplicit,
+		sizeRule.sizePercentChildren,
+		sizeRule.sizeExpandedChildren,
+		sizeRule.sizeShrink,
+	],
+}, {
+	// Hierarchy changing rules
+	independent: false,
+	rules: [
+		sizeRule.sizeByChildrenSum,
+		NodeAttribute.unfoldSameDirectionRule,
 
+		BlockFormat.verticalRule,
 
-/* These change children attributes */
+		Alignment.expandRule,
+		coalesceSpacesRule,
+		BlockFormat.explicitFixedWidthBlockRule,
+		NodeAttribute.explicitLengthContentRule,
+		FloatFormat.alignRule,
 
-export class LayoutRuleRunner extends PreferenceRuleRunner {
-	constructor(context: Context.Context) {
-		super([
-			// TODO: Put these into an independent group
-			sizeRule.sizeByChildrenSum,
-			NodeAttribute.unfoldSameDirectionRule,
+		/*
+		// Hmm these don't look right:
+		emptySpaceRule,
+		cssVerticalBottomRule,
+		*/
+	],
+}, {
+	// Apply all CSS
+	independent: true,
+	rules: [
+		CSSAttribute.applyCssRule,
+	],
+}];
 
-			BlockFormat.verticalRule,
-
-			Alignment.expandRule,
-			coalesceSpacesRule,
-			BlockFormat.explicitFixedWidthBlockRule,
-			NodeAttribute.explicitLengthContentRule,
-			FloatFormat.alignRule,
-
-			/*
-			// Hmm these don't look right:
-			emptySpaceRule,
-			cssVerticalBottomRule,
-			*/
-		], context);
-	}
-}
-
-export class CSSRuleRunner extends IndependentRuleRunner {
-	constructor(context: Context.Context) {
-		super([
-			CSSAttribute.applyCssRule,
-		], context);
-	}
-}
-
-export class DefaultRuleRunner extends RuleRunner {
-	private userSpecifiedRuleRunner: UserSpecifiedRuleRunner;
-	private sizeRuleRunner: SizeRuleRunner;
-	private layoutRuleRunner: LayoutRuleRunner;
-	private cssRuleRunner: CSSRuleRunner;
-
-	constructor(context: Context.Context) {
-		super([], context);
-
-		this.userSpecifiedRuleRunner = new UserSpecifiedRuleRunner(context);
-		this.sizeRuleRunner = new SizeRuleRunner(context);
-		this.layoutRuleRunner = new LayoutRuleRunner(context);
-		this.cssRuleRunner = new CSSRuleRunner(context);
-	}
-
-	start(component: c.Component) {
-		this.userSpecifiedRuleRunner.start(component);
-		this.sizeRuleRunner.start(component);
-		this.layoutRuleRunner.start(component);
-		this.cssRuleRunner.start(component);
-	}
+export function runOn(component: c.Component, context: Context.Context, ruleGroups: RuleGroup[] = defaultRuleGroups) {
+	ruleGroups.forEach((group) => {
+		var runner: RuleRunner;
+		if (group.independent) {
+			runner = new IndependentRuleRunner(group.rules, context);
+		} else {
+			runner = new PreferenceRuleRunner(group.rules, context);
+		}
+		runner.start(component);
+	});
 }
