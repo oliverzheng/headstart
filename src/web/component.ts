@@ -6,12 +6,20 @@ import RuleRunner = require('../core/html/RuleRunner');
 import Context = require('../core/html/Context');
 
 export var RootComponent = React.createClass({
+	getInitialState() {
+		return {
+			logs: <any>[],
+		};
+	},
+
 	runRules() {
 		var component = this.props.component;
 
-		RuleRunner.runOn(component, Context.ie6AndAbove);
+		var logs: string[] = [];
 
-		this.forceUpdate();
+		RuleRunner.runOn(component, Context.ie6AndAbove, logs);
+
+		this.setState({logs: logs});
 	},
 
 	render() {
@@ -22,7 +30,9 @@ export var RootComponent = React.createClass({
 				}, 'Run rules'),
 				ComponentComponent({
 					component: this.props.component
-				})
+				}),
+				React.DOM.pre(null,
+				this.state.logs.join('\n'))
 			)
 		);
 	},

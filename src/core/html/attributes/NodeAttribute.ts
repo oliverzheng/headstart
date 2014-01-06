@@ -53,6 +53,9 @@ class NodeAttribute extends Attributes.BaseAttribute {
 			if (NodeAttribute.getFrom(child))
 				return false;
 
+			if (!hasBoxContent(child))
+				return false;
+
 			var childDirection = getDirection(component);
 			if (childDirection !== direction)
 				return false;

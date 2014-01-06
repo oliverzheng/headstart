@@ -9,8 +9,15 @@ import assert = require('assert');
 export var STOP_RECURSION = new Object();
 export var STOP_ITERATION = new Object();
 
+var componentID: number = 0;
+
 export class Component {
 	attributes: Attributes.BaseAttribute[] = [];
+	id: number;
+
+	constructor() {
+		this.id = componentID++;
+	}
 
 	static fromBox(root: sinf.Box): Component {
 		var component = new Component;
@@ -165,7 +172,7 @@ export class Component {
 
 	repr(): Attributes.Repr {
 		return {
-			title: 'Component',
+			title: 'Component #' + this.id,
 			children: this.attributes.map((attr) => attr.repr()),
 		};
 	}

@@ -1,5 +1,6 @@
 import c = require('../Component');
 import Attributes = require('../Attributes');
+import Rules = require('../Rules');
 
 import util = require('../../../util');
 
@@ -78,6 +79,19 @@ class StackedChildren extends Attributes.BaseAttribute {
 				return children[i - 1];
 		}
 		return null;
+	}
+
+	static aggregate(components: c.Component[]): Rules.RuleResult {
+		if (!components || components.length === 0)
+			return null;
+
+		if (components.length === 1)
+			return { component: components[0], attributes: [] };
+
+		return {
+			component: new c.Component,
+			attributes: [new StackedChildren(components)],
+		};
 	}
 }
 

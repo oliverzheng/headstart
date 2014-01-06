@@ -198,12 +198,13 @@ class Alignment extends Attributes.BaseAttribute {
 			}
 		});
 
-		if (!near && !afterNear && !center && !afterCenter && !far) {
+		// Don't worry about near, that's the default anyway
+		if (!afterNear && !center && !afterCenter && !far) {
 			return;
 		}
 		var aggregates = [
 			near, afterNear, center, afterCenter, far
-		].map(Alignment.aggregate);
+		].map(StackedChildren.aggregate);
 		var results = aggregates.filter((result) => !!result);
 
 		results.push({
@@ -219,19 +220,6 @@ class Alignment extends Attributes.BaseAttribute {
 			deleteAttributes: [Attributes.Type.STACKED_CHILDREN],
 		});
 		return results;
-	}
-
-	static aggregate(components: c.Component[]): Rules.RuleResult {
-		if (!components || components.length === 0)
-			return null;
-
-		if (components.length === 1)
-			return { component: components[0], attributes: [] };
-
-		return {
-			component: new c.Component,
-			attributes: [new StackedChildren(components)],
-		};
 	}
 }
 

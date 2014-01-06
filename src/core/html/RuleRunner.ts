@@ -1,5 +1,7 @@
 import assert = require('assert');
 
+import util = require('../../util');
+
 import Rules = require('./Rules');
 import Attributes = require('./Attributes');
 import Context = require('./Context');
@@ -17,21 +19,29 @@ import FloatFormat = require('./attributes/FloatFormat');
 import Margin = require('./attributes/Margin');
 import CSSAttribute = require('./attributes/CSSAttribute');
 
-export class RuleRunner {
-	rules: Rules.Rule[];
-	context: Context.Context;
+export interface RuleWithName {
+	name: string;
+	rule: Rules.Rule;
+}
 
-	constructor(rules: Rules.Rule[], context: Context.Context) {
+export class RuleRunner {
+	rules: RuleWithName[];
+	context: Context.Context;
+	logs: string[];
+
+	constructor(rules: RuleWithName[], context: Context.Context, logs: string[]) {
 		this.rules = rules;
 		this.context = context;
+		this.logs = logs;
 	}
 
 	start(component: c.Component) { throw new Error('Subclass RuleRunner first'); }
 
-	runSingleRuleOn(component: c.Component, rule: Rules.Rule): boolean {
+	runSingleRuleOn(component: c.Component, rule: RuleWithName): boolean {
 		var updated = false;
-		var attrsForComponents = rule(component, this.context);
+		var attrsForComponents = rule.rule(component, this.context);
 		if (attrsForComponents) {
+			this.logs.push('Rule ' + rule.name + ' applied on Component #' + component.id + ':');
 			var parent = component.getParent();
 			attrsForComponents.forEach((attrsForComponent) => {
 				var component = attrsForComponent.component;
@@ -45,16 +55,22 @@ export class RuleRunner {
 						(attrType) => component.deleteAttr(attrType)
 					);
 					updated = true;
+
+					this.logs.push('- Component #' + component.id + ' had attributes deleted (' + deleteAttrs.join(',') + ')');
 				}
 
 				var attrs = attrsForComponent.attributes;
 				if (attrs) {
 					updated = component.addAttributes(attrs) || updated;
+					if (updated)
+						this.logs.push('- Component #' + component.id + ' had attributes added (' + attrs.map((attr) => attr.getType()).join(',') + ')');
 				}
 
 				var replaceAttrs = attrsForComponent.replaceAttributes;
 				if (replaceAttrs) {
 					updated = component.replaceAttributes(replaceAttrs) || updated;
+					if (updated)
+						this.logs.push('- Component #' + component.id + ' had attributes replaced (' + replaceAttrs.map((attr) => attr.getType()).join(',') + ')');
 				}
 			});
 		}
@@ -118,35 +134,35 @@ export interface RuleGroup {
 	independent: boolean;
 
 	// Only one of the following can exist.
-	rules: Rules.Rule[];
+	rules: RuleWithName[];
 }
 
 var defaultRuleGroups: RuleGroup[] = [{
 	// User specified rules
 	independent: true,
 	rules: [
-		NodeAttribute.dynamicBoxRule,
-		percentChildRule,
+		{name: 'dynamicBox', rule: NodeAttribute.dynamicBoxRule},
+		{name: 'percentChildRule', rule: percentChildRule},
 	],
 }, {
 	// Calculate sizes
 	independent: true,
 	rules: [
-		sizeRule.sizeUserExplicit,
-		sizeRule.sizePercentChildren,
-		sizeRule.sizeExpandedChildren,
-		sizeRule.sizeShrink,
+		{name: 'sizeRule.sizeUserExplicit', rule: sizeRule.sizeUserExplicit},
+		{name: 'sizeRule.sizePercentChildren', rule: sizeRule.sizePercentChildren},
+		{name: 'sizeRule.sizeExpandedChildren', rule: sizeRule.sizeExpandedChildren},
+		{name: 'sizeRule.sizeShrink', rule: sizeRule.sizeShrink},
 	],
 }, {
 	// Hierarchy changing rules
 	independent: false,
 	rules: [
 		// Size calculation
-		sizeRule.sizeByChildrenSum,
+		{name: 'sizeRule.sizeByChildrenSum', rule: sizeRule.sizeByChildrenSum},
 
-		NodeAttribute.unfoldSameDirectionRule,
-		Alignment.expandRule,
-		coalesceSpacesRule,
+		{name: 'NodeAttribute.unfoldSameDirectionRule', rule: NodeAttribute.unfoldSameDirectionRule},
+		{name: 'Alignment.expandRule', rule: Alignment.expandRule},
+		{name: 'coalesceSpacesRule', rule: coalesceSpacesRule},
 
 		/*
 		// Hmm these don't look right:
@@ -159,32 +175,32 @@ var defaultRuleGroups: RuleGroup[] = [{
 	// Determine which are nodes
 	independent: true,
 	rules: [
-		NodeAttribute.explicitLengthContentRule,
+		{name: 'NodeAttribute.explicitLengthContentRule', rule: NodeAttribute.explicitLengthContentRule},
 	]
 }, {
 	// Attributes that require nodes
 	independent: true,
 	rules: [
-		BlockFormat.verticalRule,
-		BlockFormat.explicitFixedWidthBlockRule,
-		FloatFormat.alignRule,
-		Margin.marginRule,
+		{name: 'BlockFormat.verticalRule', rule: BlockFormat.verticalRule},
+		{name: 'BlockFormat.explicitFixedWidthBlockRule', rule: BlockFormat.explicitFixedWidthBlockRule},
+		{name: 'FloatFormat.alignRule', rule: FloatFormat.alignRule},
+		{name: 'Margin.marginRule', rule: Margin.marginRule},
 	],
 }, {
 	// Apply all CSS
 	independent: true,
 	rules: [
-		CSSAttribute.applyCssRule,
+		{name: 'CSSAttribute.applyCssRule', rule: CSSAttribute.applyCssRule},
 	],
 }];
 
-export function runOn(component: c.Component, context: Context.Context, ruleGroups: RuleGroup[] = defaultRuleGroups) {
+export function runOn(component: c.Component, context: Context.Context, logs: string[], ruleGroups: RuleGroup[] = defaultRuleGroups) {
 	ruleGroups.forEach((group) => {
 		var runner: RuleRunner;
 		if (group.independent) {
-			runner = new IndependentRuleRunner(group.rules, context);
+			runner = new IndependentRuleRunner(group.rules, context, logs);
 		} else {
-			runner = new PreferenceRuleRunner(group.rules, context);
+			runner = new PreferenceRuleRunner(group.rules, context, logs);
 		}
 		runner.start(component);
 	});

@@ -29,28 +29,30 @@ var coalesceSpacesRule: Rules.Rule = function(component: c.Component): Rules.Rul
 	var direction = getDirection(component);
 
 	var newChildren: c.Component[] = [];
+	var results: Rules.RuleResult[] = [];
 	groupedChildren.forEach((group) => {
 		if (!group.matched && // !hasBoxContent
-			group.components.length > 1 && // Don't createa new component to wrap around 1 component
 			havePxSizes(group.components, direction)) {
-
-			var aggregate = new c.Component;
-			newChildren.push(aggregate);
-			aggregate.addAttributes([
-				new StackedChildren(group.components),
-			]);
-
+			var result = StackedChildren.aggregate(group.components);
+			newChildren.push(result.component);
+			results.push(result);
 		} else {
 			newChildren.push.apply(newChildren, group.components);
 		}
 	});
 
-	return [{
+	// Nothing's changed if we don't change the # of children.
+	var oldChildren = StackedChildren.getFrom(component).get();
+	if (newChildren.length === oldChildren.length)
+		return;
+
+	results.push({
 		component: component,
 		replaceAttributes: [
 			new StackedChildren(newChildren),
 		],
-	}];
+	});
+	return results;
 }
 
 export = coalesceSpacesRule;
