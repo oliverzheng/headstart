@@ -48,7 +48,9 @@ export enum Type {
 
 export interface Repr {
 	title: string;
+	id?: string; // Not used in serialization or test fixture comparisons
 	children?: Repr[];
+	ordered?: boolean;
 }
 
 export class BaseAttribute {

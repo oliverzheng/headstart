@@ -44,6 +44,7 @@ class StackedChildren extends Attributes.BaseAttribute {
 		return {
 			title: 'Stacked Children',
 			children: this.children.map((child) => child.repr()),
+			ordered: true,
 		};
 	}
 

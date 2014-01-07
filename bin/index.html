@@ -5,8 +5,9 @@
 	<body>
 		<script src="react.js"></script>
 		<script src="require.js"></script>
+		<script src="jquery-2.0.3.min.js"></script>
 		<script>
-			require(['../lib/src/web/index.js'], function(index) {
+			require(['browserFixtures', '../lib/src/web/index.js'], function(_, index) {
 				index.render(document.body);
 			});
 		</script>

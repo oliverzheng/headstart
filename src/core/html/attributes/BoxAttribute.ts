@@ -42,7 +42,7 @@ class BoxAttribute extends Attributes.BaseAttribute {
 
 	repr(): Attributes.Repr {
 		var repr = super.repr();
-		repr.title += ' (box id = ' + this.box.id + ')';
+		repr.id = this.box.id;
 		return repr;
 	}
 }

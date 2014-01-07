@@ -12,6 +12,36 @@ export function genId(): string {
 	return 'gen' + (genIdCounter++);
 }
 
+function cloneTreeAny(obj: any): any {
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+
+    // Handle Array
+    if (obj instanceof Array) {
+        var copyArray = <any[]>[];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copyArray[i] = cloneTreeAny(obj[i]);
+        }
+        return copyArray;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        var copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr) && attr !== 'parent')
+				copy[attr] = cloneTreeAny(obj[attr]);
+        }
+        return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
+}
+
+export function cloneTree(box: inf.Box): inf.Box {
+	return cloneTreeAny(box);
+}
+
 // TODO: Make a god damn copy function already.
 
 /*
@@ -28,6 +58,16 @@ export function boxFromJSON(box: inf.Box): inf.Box {
 	return box;
 }
 */
+
+export function refreshParents(root: inf.Box): void {
+	(function refresh(box: inf.Box) {
+		if (box.children)
+			box.children.forEach((child) => {
+				child.parent = box;
+				refresh(child);
+			});
+	})(root);
+}
 
 /**
  * Whether the two lengths are identical.

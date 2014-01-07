@@ -172,8 +172,9 @@ export class Component {
 
 	repr(): Attributes.Repr {
 		return {
-			title: 'Component #' + this.id,
-			children: this.attributes.map((attr) => attr.repr()),
+			title: 'Component',
+			id: this.id.toString(),
+			children: this.attributes.map((attr) => attr.repr()).filter((attr) => !!attr), // Filter things like parent attribute
 		};
 	}
 }

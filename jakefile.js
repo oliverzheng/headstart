@@ -218,5 +218,21 @@ task('open', function() {
 	ex.run();
 });
 
+task('serve', function() {
+	var cmd = 'node ' + __dirname + '/expressApp.js';
+	var ex = jake.createExec(cmd);
+	ex.addListener('error', function(msg) {
+		console.log(RED_COLOR + 'Failed.' + RESET_COLOR);
+		console.log(msg);
+		fail('Express app failed to launch');
+	});
+	ex.addListener('stdout', function(msg) {
+		process.stdout.write(msg);
+	});
+
+	console.log('Executing ' + cmd);
+	ex.run();
+});
+
 
 task('default', ['build']);

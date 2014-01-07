@@ -28,9 +28,13 @@ export var RootComponent = React.createClass({
 				React.DOM.button({
 					onClick: this.runRules,
 				}, 'Run rules'),
-				ComponentComponent({
-					component: this.props.component
-				}),
+				React.DOM.ul(null,
+					React.DOM.li(null,
+						ComponentComponent({
+							component: this.props.component
+						})
+					)
+				),
 				React.DOM.pre(null,
 				this.state.logs.join('\n'))
 			)
@@ -53,9 +57,18 @@ export var ComponentComponent = React.createClass({
 			return;
 		}
 		var children: Attributes.Repr[] = repr.children || [];
-		return React.DOM.ul(null,
-			React.DOM.li(null, repr.title),
-			children.map(this.serializeRepr)
+		var list = repr.ordered ? React.DOM.ol : React.DOM.ul;
+		var title = repr.title;
+		if (repr.id != null)
+			title += ' (id #' + repr.id + ')';
+
+		return React.DOM.div(null,
+			React.DOM.div(null, title),
+			list(null,
+				children.map(
+					(child) => React.DOM.li(null, this.serializeRepr(child))
+				)
+			)
 		);
 	}
 });

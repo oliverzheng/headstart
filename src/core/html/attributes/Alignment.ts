@@ -106,6 +106,7 @@ class Alignment extends Attributes.BaseAttribute {
 		return {
 			title: this.isHoriz ? 'Horizontal Alignment' : 'Vertical Alignment',
 			children: children,
+			ordered: true,
 		};
 	}
 
