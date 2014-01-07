@@ -18,8 +18,8 @@ export function save(
 		name: string,
 		root: inf.Box,
 		component: c.Component,
-		writeFunc: (name: string, body: any, successCb: () => any, errorCb: (error: any) => any) => any,
-		successCb: () => any,
+		writeFunc: (name: string, body: any, successCb: (data: any) => any, errorCb: (error: any) => any) => any,
+		successCb: (data: any) => any,
 		errorCb: (error: any) => any
 	) {
 	writeFunc(name, {

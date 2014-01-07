@@ -1,5 +1,6 @@
 var express = require('express');
 var fs = require('fs');
+var path = require('path');
 
 var app = express();
 
@@ -13,12 +14,13 @@ app.post('/fixtures/:name', function(req, res) {
 	var name = req.params['name'];
 	var data = req.body.data;
 
-	console.log(data);
-	fs.writeFile(__dirname + '/fixtures/' + name /* HOLY GOD SECURITY HOLE */, data, function(err) {
+	var filename = __dirname + '/fixtures/' + name /* HOLY GOD SECURITY HOLE */;
+	var overwriting = path.existsSync(filename);
+	fs.writeFile(filename, data, function(err) {
 		if (err) {
 			res.send(500, { success: false, error: err });
 		} else {
-			res.send({ success: true });
+			res.send({ success: true, overwritten: overwriting });
 		}
 	});
 });

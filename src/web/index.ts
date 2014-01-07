@@ -19,6 +19,8 @@ var PageComponent = React.createClass({
 			fixtureDisabled: true,
 			justLoaded: false,
 			justSaved: false,
+			wasSaveOverwrite: false,
+			loadError: null,
 		};
 	},
 
@@ -53,7 +55,18 @@ var PageComponent = React.createClass({
 					this.setState({ justLoaded: false });
 				}, 1000);
 			},
-			(error) => window.alert('Error reading: ' + error)
+			(error) => {
+				this.setState({
+					loadError: '✘ ' + error.statusText,
+					justLoaded: true,
+				});
+				setTimeout(() => {
+					this.setState({
+						loadError: null,
+						justLoaded: false,
+					});
+				}, 1000);
+			}
 		);
 	},
 
@@ -66,8 +79,11 @@ var PageComponent = React.createClass({
 			this.state.layout.root,
 			this.state.rootComponent,
 			browserFixtures.writeFixture,
-			() => {
-				this.setState({ justSaved: true });
+			(data) => {
+				this.setState({
+					justSaved: true,
+					wasSaveOverwrite: data.overwritten
+				});
 				setTimeout(() => {
 					this.setState({ justSaved: false });
 				}, 1000);
@@ -98,11 +114,11 @@ var PageComponent = React.createClass({
 					React.DOM.button({
 						onClick: this.loadFixture,
 						disabled: this.state.fixtureDisabled || this.state.justLoaded,
-					}, 'Load Fixture' + (this.state.justLoaded ? ' ✔' : '')),
+					}, (this.state.justLoaded ? (this.state.loadError || '✔ Loaded') : 'Load Fixture')),
 					React.DOM.button({
 						onClick: this.saveFixture,
 						disabled: this.state.fixtureDisabled || this.state.justSaved,
-					}, 'Save Fixture' + (this.state.justSaved ? ' ✔' : '')),
+					}, (this.state.justSaved ? ('✔ ' + (this.state.wasSaveOverwrite ? 'Overwritten' : 'Saved')) : 'Save Fixture')),
 					detail.DetailComponent({
 						layout: this.state.layout,
 						box: this.state.selectedBox || this.state.layout.root,
