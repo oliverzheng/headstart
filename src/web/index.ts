@@ -13,10 +13,15 @@ var browserFixtures = require('browserFixtures');
 var PageComponent = React.createClass({
 	getInitialState() {
 		var root: inf.Box = add.createBox(600, 600);
+
+		this.refreshFixtures();
+
 		return {
 			layout: new l.Layout(root),
 			selectedBox: null,
 			rootComponent: c.Component.fromBox(root),
+
+			fixtureNames: <any[]>[],
 
 			fixtureDisabled: true,
 
@@ -29,6 +34,12 @@ var PageComponent = React.createClass({
 			justCompared: false,
 			comparison: false,
 		};
+	},
+
+	refreshFixtures() {
+		browserFixtures.getFixtureNames((names: any[]) => {
+			this.setState({fixtureNames: names});
+		});
 	},
 
 	onBoxClicked(box: inf.Box) {
@@ -85,6 +96,7 @@ var PageComponent = React.createClass({
 			this.state.rootComponent,
 			browserFixtures.writeFixture,
 			(data) => {
+				this.refreshFixtures();
 				this.setState({
 					justSaved: true,
 					wasSaveOverwrite: data.overwritten
@@ -122,6 +134,24 @@ var PageComponent = React.createClass({
 	},
 
 	render() {
+		var names = this.state.fixtureNames.slice(0);
+		var newName = '[New fixture]';
+		names.unshift(newName);
+		var fixtureSelect = React.DOM.select({
+				onChange: (event: any) => {
+					var name = event.target.value;
+					if (name === newName)
+						name = '';
+					var input = this.refs.fixtureName.getDOMNode();
+					input.value = name;
+					input.focus();
+					this.setState({fixtureDisabled: !name});
+				},
+			},
+			names.map((name: string) => {
+				return React.DOM.option(null, name);
+			})
+		);
 		return (
 			React.DOM.div(null,
 				lc.LayoutComponent({
@@ -130,6 +160,7 @@ var PageComponent = React.createClass({
 					selectedBox: this.state.selectedBox,
 				}),
 				React.DOM.div({className: 'rightSide'},
+					fixtureSelect,
 					React.DOM.input({
 						placeholder: 'Fixture Name',
 						ref: 'fixtureName',
@@ -138,15 +169,16 @@ var PageComponent = React.createClass({
 					React.DOM.button({
 						onClick: this.loadFixture,
 						disabled: this.state.fixtureDisabled || this.state.justLoaded,
-					}, (this.state.justLoaded ? (this.state.loadError || '✔ Loaded') : 'Load Fixture')),
+					}, (this.state.justLoaded ? (this.state.loadError || '✔ Loaded') : 'Load')),
 					React.DOM.button({
 						onClick: this.saveFixture,
 						disabled: this.state.fixtureDisabled || this.state.justSaved,
-					}, (this.state.justSaved ? ('✔ ' + (this.state.wasSaveOverwrite ? 'Overwritten' : 'Saved')) : 'Save Fixture')),
+					}, (this.state.justSaved ? ('✔ ' + (this.state.wasSaveOverwrite ? 'Overwritten' : 'Saved')) : 'Save')),
 					React.DOM.button({
 						onClick: this.compareFixture,
-						disabled: this.state.fixtureDisabled,
-					}, (this.state.justCompared ? (this.state.comparison ? '✔ Equal' : '✘ Not Equal') : 'Compare Fixture')),
+						disabled: this.state.fixtureDisabled || this.state.justCompared,
+					}, (this.state.justCompared ? (this.state.comparison ? '✔ Equal' : '✘ Not Equal') : 'Compare')),
+					React.DOM.hr(null),
 					detail.DetailComponent({
 						layout: this.state.layout,
 						box: this.state.selectedBox || this.state.layout.root,
