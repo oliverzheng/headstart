@@ -53,6 +53,45 @@ export interface Repr {
 	ordered?: boolean;
 }
 
+export function reprEqual(repr1: Repr, repr2: Repr): boolean {
+	if (repr1.title !== repr2.title)
+		return false;
+
+	if (!!repr1.ordered !== !!repr2.ordered)
+		return false;
+
+	if (!!repr1.children !== !!repr2.children)
+		return false;
+
+	if (!repr1.children)
+		return true;
+
+	if (repr1.children.length !== repr2.children.length)
+		return false;
+
+	if (repr1.ordered) {
+		return repr1.children.every((child, i) => reprEqual(child, repr2.children[i]));
+	} else {
+		var reprsEqualed = 0;
+		var children2 = repr2.children.slice(0);
+		for (var i = 0; i < repr1.children.length; ++i) {
+			var child1 = repr1.children[i];
+			var foundChild2 = false;
+			for (var j = 0; j < children2.length; ++j) {
+				var child2 = children2[j];
+				if (reprEqual(child1, child2)) {
+					children2.splice(j, 1);
+					foundChild2 = true;
+					break;
+				}
+			}
+			if (!foundChild2)
+				return false;
+		}
+		return true;
+	}
+}
+
 export class BaseAttribute {
 	component: c.Component;
 

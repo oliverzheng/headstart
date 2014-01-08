@@ -5,6 +5,7 @@ import detail = require('./detail');
 import add = require('./add');
 import comp = require('./component');
 import c = require('../core/html/Component');
+import Attributes = require('../core/html/Attributes');
 import fixtures = require('../test/fixtures');
 
 var browserFixtures = require('browserFixtures');
@@ -16,11 +17,17 @@ var PageComponent = React.createClass({
 			layout: new l.Layout(root),
 			selectedBox: null,
 			rootComponent: c.Component.fromBox(root),
+
 			fixtureDisabled: true,
+
 			justLoaded: false,
+			loadError: null,
+
 			justSaved: false,
 			wasSaveOverwrite: false,
-			loadError: null,
+
+			justCompared: false,
+			comparison: false,
 		};
 	},
 
@@ -39,12 +46,10 @@ var PageComponent = React.createClass({
 
 	loadFixture() {
 		var name = this.refs.fixtureName.getDOMNode().value;
-		if (!name)
-			return;
 		fixtures.load(
 			name,
 			browserFixtures.readFixture,
-			(root: inf.Box, component: c.Component) => {
+			(root: inf.Box, componentRepr: Attributes.Repr) => {
 				this.setState({
 					layout: new l.Layout(root),
 					rootComponent: c.Component.fromBox(root),
@@ -55,25 +60,25 @@ var PageComponent = React.createClass({
 					this.setState({ justLoaded: false });
 				}, 1000);
 			},
-			(error) => {
-				this.setState({
-					loadError: '✘ ' + error.statusText,
-					justLoaded: true,
-				});
-				setTimeout(() => {
-					this.setState({
-						loadError: null,
-						justLoaded: false,
-					});
-				}, 1000);
-			}
+			this.readError
 		);
+	},
+
+	readError(error: any) {
+		this.setState({
+			loadError: '✘ ' + error.statusText,
+			justLoaded: true,
+		});
+		setTimeout(() => {
+			this.setState({
+				loadError: null,
+				justLoaded: false,
+			});
+		}, 1000);
 	},
 
 	saveFixture() {
 		var name = this.refs.fixtureName.getDOMNode().value;
-		if (!name)
-			return;
 		fixtures.save(
 			name,
 			this.state.layout.root,
@@ -89,6 +94,25 @@ var PageComponent = React.createClass({
 				}, 1000);
 			},
 			(error) => window.alert('Error saving: ' + error)
+		);
+	},
+
+	compareFixture() {
+		var name = this.refs.fixtureName.getDOMNode().value;
+		fixtures.compare(
+			name,
+			this.state.rootComponent,
+			browserFixtures.readFixture,
+			(result) => {
+				this.setState({
+					justCompared: true,
+					comparison: result,
+				});
+				setTimeout(() => {
+					this.setState({ justCompared: false });
+				}, 1000);
+			},
+			this.readError
 		);
 	},
 
@@ -119,6 +143,10 @@ var PageComponent = React.createClass({
 						onClick: this.saveFixture,
 						disabled: this.state.fixtureDisabled || this.state.justSaved,
 					}, (this.state.justSaved ? ('✔ ' + (this.state.wasSaveOverwrite ? 'Overwritten' : 'Saved')) : 'Save Fixture')),
+					React.DOM.button({
+						onClick: this.compareFixture,
+						disabled: this.state.fixtureDisabled,
+					}, (this.state.justCompared ? (this.state.comparison ? '✔ Equal' : '✘ Not Equal') : 'Compare Fixture')),
 					detail.DetailComponent({
 						layout: this.state.layout,
 						box: this.state.selectedBox || this.state.layout.root,
