@@ -219,12 +219,13 @@ var PageComponent = React.createClass({
 					selectedBox: this.state.selectedBox,
 				}),
 				React.DOM.div({className: 'rightSide'},
-					fixtureSelect,
 					React.DOM.input({
 						placeholder: 'Fixture Name',
 						ref: 'fixtureName',
 						onChange: this.onFixtureNameChange,
 					}),
+					fixtureSelect,
+					React.DOM.br(),
 					React.DOM.button({
 						onClick: this.loadFixture,
 						disabled: this.state.fixtureDisabled || this.state.justLoaded,
