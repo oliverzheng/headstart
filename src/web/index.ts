@@ -6,6 +6,8 @@ import add = require('./add');
 import comp = require('./component');
 import c = require('../core/html/Component');
 import Attributes = require('../core/html/Attributes');
+import RuleRunner = require('../core/html/RuleRunner');
+import Context = require('../core/html/Context');
 import fixtures = require('../test/fixtures');
 
 var browserFixtures = require('browserFixtures');
@@ -33,6 +35,10 @@ var PageComponent = React.createClass({
 
 			justCompared: false,
 			comparison: false,
+
+			comparingAll: false,
+			justComparedAll: false,
+			allComparisonResult: false,
 		};
 	},
 
@@ -68,6 +74,9 @@ var PageComponent = React.createClass({
 					justLoaded: true,
 				});
 				setTimeout(() => {
+					this.refs.rootComponent.runRules();
+				}, 0);
+				setTimeout(() => {
 					this.setState({ justLoaded: false });
 				}, 1000);
 			},
@@ -90,6 +99,7 @@ var PageComponent = React.createClass({
 
 	saveFixture() {
 		var name = this.refs.fixtureName.getDOMNode().value;
+		this.refs.rootComponent.runRules();
 		fixtures.save(
 			name,
 			this.state.layout.root,
@@ -111,6 +121,7 @@ var PageComponent = React.createClass({
 
 	compareFixture() {
 		var name = this.refs.fixtureName.getDOMNode().value;
+		this.refs.rootComponent.runRules();
 		fixtures.compare(
 			name,
 			this.state.rootComponent,
@@ -126,6 +137,54 @@ var PageComponent = React.createClass({
 			},
 			this.readError
 		);
+	},
+
+	loadAndCompareAll() {
+		(function loadNext(index: number) {
+			if (index >= this.state.fixtureNames.length) {
+				this.setState({
+					comparingAll: false,
+					justComparedAll: true,
+					allComparisonResult: true,
+				});
+				setTimeout(() => {
+					this.setState({justComparedAll: false});
+				}, 1000);
+				this.refs.fixtureName.getDOMNode().value = '';
+				return;
+			} else {
+				this.setState({
+					comparingAll: true,
+					justComparedAll: false,
+				});
+			}
+
+			var fixtureName = this.state.fixtureNames[index];
+			this.refs.fixtureName.getDOMNode().value = fixtureName;
+
+			fixtures.load(
+				fixtureName,
+				browserFixtures.readFixture,
+				(root: inf.Box, oldRepr: Attributes.Repr) => {
+					var component = c.Component.fromBox(root);
+					RuleRunner.runOn(component, Context.ie6AndAbove, []);
+
+					if (Attributes.reprEqual(component.repr(), oldRepr)) {
+						loadNext.bind(this)(index + 1);
+					} else {
+						this.setState({
+							comparingAll: false,
+							justComparedAll: true,
+							allComparisonResult: false,
+						});
+						setTimeout(() => {
+							this.setState({justComparedAll: false});
+						}, 1000);
+					}
+				},
+				() => {}
+			);
+		}).bind(this)(0);
 	},
 
 	onFixtureNameChange() {
@@ -178,6 +237,16 @@ var PageComponent = React.createClass({
 						onClick: this.compareFixture,
 						disabled: this.state.fixtureDisabled || this.state.justCompared,
 					}, (this.state.justCompared ? (this.state.comparison ? '✔ Equal' : '✘ Not Equal') : 'Compare')),
+					React.DOM.button({
+						onClick: this.loadAndCompareAll,
+						disabled: this.state.comparingAll || this.state.justComparedAll,
+					}, (this.state.comparingAll
+							? 'Comparing all'
+							: (this.state.justComparedAll
+								? (this.state.allComparisonResult ? '✔ Equal' : '✘ Not Equal')
+								: 'Load & Compare All')
+						)
+					),
 					React.DOM.hr(null),
 					detail.DetailComponent({
 						layout: this.state.layout,
@@ -186,7 +255,10 @@ var PageComponent = React.createClass({
 						updateSelectedBox: this.onBoxClicked,
 					}),
 					React.DOM.hr(),
-					comp.RootComponent({component: this.state.rootComponent})
+					comp.RootComponent({
+						component: this.state.rootComponent,
+						ref: 'rootComponent',
+					})
 				)
 			)
 		);
