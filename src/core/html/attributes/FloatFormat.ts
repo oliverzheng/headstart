@@ -72,14 +72,28 @@ class FloatFormat extends Markup {
 		var alignment = Alignment.getFrom(this.component, sinf.horiz);
 		assert(!!alignment);
 
-		return alignment.near || [];
+		if (!alignment.near)
+			return [];
+
+		var stack = StackedChildren.getFrom(alignment.near);
+		if (!stack)
+			return [];
+
+		return stack.get();
 	}
 
 	getRight(): c.Component[] {
 		var alignment = Alignment.getFrom(this.component, sinf.horiz);
 		assert(!!alignment);
 
-		return alignment.far || [];
+		if (!alignment.far)
+			return [];
+
+		var stack = StackedChildren.getFrom(alignment.far);
+		if (!stack)
+			return [];
+
+		return stack.get();
 	}
 }
 

@@ -86,9 +86,6 @@ class StackedChildren extends Attributes.BaseAttribute {
 		if (!components || components.length === 0)
 			return null;
 
-		if (components.length === 1)
-			return { component: components[0], attributes: [] };
-
 		return {
 			component: new c.Component,
 			attributes: [new StackedChildren(components)],

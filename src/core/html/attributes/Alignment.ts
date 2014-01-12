@@ -205,7 +205,13 @@ class Alignment extends Attributes.BaseAttribute {
 		}
 		var aggregates = [
 			near, afterNear, center, afterCenter, far
-		].map(StackedChildren.aggregate);
+		].map((components) => {
+			if (!components || components.length === 0)
+				return null;
+			if (components.some(hasBoxContent)) {
+				return StackedChildren.aggregate(components);
+			}
+		});
 		var results = aggregates.filter((result) => !!result);
 
 		results.push({
