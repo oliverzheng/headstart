@@ -53,7 +53,7 @@
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "22",
+		"id": "1",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -70,115 +70,79 @@
 				"children": [
 					{
 						"title": "Left Component",
-						"id": "26",
+						"id": "2",
 						"children": [
 							{
-								"title": "Stacked Children",
+								"title": "BoxAttribute",
+								"id": "1"
+							},
+							{
+								"title": "NodeAttribute"
+							},
+							{
+								"title": "Width (40px explicit)"
+							},
+							{
+								"title": "Height (40px explicit)"
+							},
+							{
+								"title": "BlockFormat"
+							},
+							{
+								"title": "CSSAttribute",
 								"children": [
 									{
-										"title": "Component",
-										"id": "23",
-										"children": [
-											{
-												"title": "BoxAttribute",
-												"id": "1"
-											},
-											{
-												"title": "NodeAttribute"
-											},
-											{
-												"title": "Width (40px explicit)"
-											},
-											{
-												"title": "Height (40px explicit)"
-											},
-											{
-												"title": "BlockFormat"
-											},
-											{
-												"title": "CSSAttribute",
-												"children": [
-													{
-														"title": "float: left"
-													},
-													{
-														"title": "width: 40px"
-													},
-													{
-														"title": "height: 40px"
-													},
-													{
-														"title": "display: block"
-													}
-												]
-											}
-										]
+										"title": "float: left"
+									},
+									{
+										"title": "width: 40px"
+									},
+									{
+										"title": "height: 40px"
+									},
+									{
+										"title": "display: block"
 									}
-								],
-								"ordered": true
-							},
-							{
-								"title": "Width (40px implicit)"
-							},
-							{
-								"title": "Height (40px implicit)"
+								]
 							}
 						]
 					},
 					{
 						"title": "Right Component",
-						"id": "27",
+						"id": "4",
 						"children": [
 							{
-								"title": "Stacked Children",
+								"title": "BoxAttribute",
+								"id": "3"
+							},
+							{
+								"title": "NodeAttribute"
+							},
+							{
+								"title": "Width (40px explicit)"
+							},
+							{
+								"title": "Height (40px explicit)"
+							},
+							{
+								"title": "BlockFormat"
+							},
+							{
+								"title": "CSSAttribute",
 								"children": [
 									{
-										"title": "Component",
-										"id": "25",
-										"children": [
-											{
-												"title": "BoxAttribute",
-												"id": "3"
-											},
-											{
-												"title": "NodeAttribute"
-											},
-											{
-												"title": "Width (40px explicit)"
-											},
-											{
-												"title": "Height (40px explicit)"
-											},
-											{
-												"title": "BlockFormat"
-											},
-											{
-												"title": "CSSAttribute",
-												"children": [
-													{
-														"title": "float: right"
-													},
-													{
-														"title": "width: 40px"
-													},
-													{
-														"title": "height: 40px"
-													},
-													{
-														"title": "display: block"
-													}
-												]
-											}
-										]
+										"title": "float: right"
+									},
+									{
+										"title": "width: 40px"
+									},
+									{
+										"title": "height: 40px"
+									},
+									{
+										"title": "display: block"
 									}
-								],
-								"ordered": true
-							},
-							{
-								"title": "Width (40px implicit)"
-							},
-							{
-								"title": "Height (40px implicit)"
+								]
 							}
 						]
 					}

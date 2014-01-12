@@ -42,33 +42,34 @@ export var RootComponent = React.createClass({
 	},
 });
 
+export function serializeRepr(repr: Attributes.Repr) {
+	if (!repr) {
+		return;
+	}
+	var children: Attributes.Repr[] = repr.children || [];
+	var list = repr.ordered ? React.DOM.ol : React.DOM.ul;
+	var title = repr.title;
+	if (repr.id != null)
+		title += ' (id #' + repr.id + ')';
+
+	return React.DOM.div(null,
+		React.DOM.div(null, title),
+		list(null,
+			children.map(
+				(child) => React.DOM.li(null, serializeRepr(child))
+			)
+		)
+	);
+}
+
 export var ComponentComponent = React.createClass({
 	render() {
 		var component = <c.Component>this.props.component;
 		return this.transferPropsTo(
 			React.DOM.div(null,
-				this.serializeRepr(component.repr())
+				serializeRepr(component.repr())
 			)
 		);
 	},
 
-	serializeRepr(repr: Attributes.Repr) {
-		if (!repr) {
-			return;
-		}
-		var children: Attributes.Repr[] = repr.children || [];
-		var list = repr.ordered ? React.DOM.ol : React.DOM.ul;
-		var title = repr.title;
-		if (repr.id != null)
-			title += ' (id #' + repr.id + ')';
-
-		return React.DOM.div(null,
-			React.DOM.div(null, title),
-			list(null,
-				children.map(
-					(child) => React.DOM.li(null, this.serializeRepr(child))
-				)
-			)
-		);
-	}
 });

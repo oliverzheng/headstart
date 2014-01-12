@@ -10,9 +10,9 @@ import getCrossAlignment = require('../patterns/getCrossAlignment');
 import LengthAttribute = require('../attributes/LengthAttribute');
 import sinf = require('../../spec/interfaces');
 
-class FloatFormat extends Markup {
+class HorizontalCenter extends Markup {
 	getType() {
-		return Attributes.Type.FLOAT_FORMAT;
+		return Attributes.Type.HORIZONTAL_CENTER_FORMAT;
 	}
 
 	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
@@ -40,20 +40,10 @@ class FloatFormat extends Markup {
 	}
 
 	static from(component: c.Component): boolean {
-		return Markup.from(component, Attributes.Type.FLOAT_FORMAT);
-	}
-
-	static isTopHorizontal(component: c.Component): boolean {
-		return (
-			getDirection(component) === sinf.horiz &&
-			getCrossAlignment(component) === sinf.near
-		);
+		return Markup.from(component, Attributes.Type.HORIZONTAL_CENTER_FORMAT);
 	}
 
 	static alignRule(component: c.Component): Rules.RuleResult[] {
-		if (!FloatFormat.isTopHorizontal(component))
-			return;
-
 		var alignment = Alignment.getFrom(component, sinf.horiz);
 		if (!alignment)
 			return;
@@ -64,7 +54,7 @@ class FloatFormat extends Markup {
 
 		return [{
 			component: component,
-			attributes: [new FloatFormat()],
+			attributes: [new HorizontalCenter()],
 		}]
 	}
 
@@ -74,9 +64,6 @@ class FloatFormat extends Markup {
 
 		if (!alignment.near)
 			return [];
-
-		if (!alignment.isNearAggregated)
-			return [alignment.near];
 
 		var stack = StackedChildren.getFrom(alignment.near);
 		if (!stack)
@@ -92,9 +79,6 @@ class FloatFormat extends Markup {
 		if (!alignment.far)
 			return [];
 
-		if (!alignment.isFarAggregated)
-			return [alignment.far];
-
 		var stack = StackedChildren.getFrom(alignment.far);
 		if (!stack)
 			return [];
@@ -103,4 +87,4 @@ class FloatFormat extends Markup {
 	}
 }
 
-export = FloatFormat;
+export = HorizontalCenter;

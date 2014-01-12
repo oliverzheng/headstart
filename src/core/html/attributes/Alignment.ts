@@ -16,23 +16,39 @@ import util = require('../../../util');
 // between the three, making up five positions.
 class Alignment extends Attributes.BaseAttribute {
 	isHoriz: boolean;
+
 	near: c.Component;
 	afterNear: c.Component;
 	center: c.Component;
 	afterCenter: c.Component;
 	far: c.Component;
 
+	isNearAggregated: boolean;
+	isAfterNearAggregated: boolean;
+	isCenterAggregated: boolean;
+	isAfterCenterAggregated: boolean;
+	isFarAggregated: boolean;
+
 	constructor(
-		isHoriz: boolean, near: c.Component, afterNear: c.Component, center: c.Component, afterCenter: c.Component, far: c.Component
+		isHoriz: boolean,
+		near: c.Component, afterNear: c.Component, center: c.Component, afterCenter: c.Component, far: c.Component,
+		isNearAggregated: boolean, isAfterNearAggregated: boolean, isCenterAggregated: boolean, isAfterCenterAggregated: boolean, isFarAggregated: boolean
 	) {
 		super();
 
 		this.isHoriz = isHoriz;
+
 		this.near = near;
 		this.afterNear = afterNear;
 		this.center = center;
 		this.afterCenter = afterCenter;
 		this.far = far;
+
+		this.isNearAggregated = isNearAggregated;
+		this.isAfterNearAggregated = isAfterNearAggregated;
+		this.isCenterAggregated = isCenterAggregated;
+		this.isAfterCenterAggregated = isAfterCenterAggregated;
+		this.isFarAggregated = isFarAggregated;
 	}
 
 	static getFrom(component: c.Component, direction: sinf.Direction): Alignment {
@@ -62,11 +78,19 @@ class Alignment extends Attributes.BaseAttribute {
 		var attr = <Alignment>attribute;
 
 		return (
+			this.isHoriz === attr.isHoriz &&
+
 			this.near === attr.near &&
 			this.afterNear == attr.afterNear &&
 			this.center == attr.center &&
 			this.afterCenter == attr.afterCenter &&
-			this.far == attr.far
+			this.far == attr.far &&
+
+			this.isNearAggregated === attr.isNearAggregated &&
+			this.isAfterNearAggregated == attr.isAfterNearAggregated &&
+			this.isCenterAggregated == attr.isCenterAggregated &&
+			this.isAfterCenterAggregated == attr.isAfterCenterAggregated &&
+			this.isFarAggregated == attr.isFarAggregated
 		);
 	}
 
@@ -76,30 +100,45 @@ class Alignment extends Attributes.BaseAttribute {
 		if (this.near) {
 			var repr = this.near.repr();
 			repr.title = (this.isHoriz ? 'Left' : 'Top') + ' ' + repr.title;
+			if (this.isNearAggregated) {
+				repr.title += ' (aggregated)';
+			}
 			children.push(repr);
 		}
 
 		if (this.afterNear) {
 			var repr = this.afterNear.repr();
 			repr.title = (this.isHoriz ? 'After Left' : 'After Top') + ' ' + repr.title;
+			if (this.isAfterNearAggregated) {
+				repr.title += ' (aggregated)';
+			}
 			children.push(repr);
 		}
 
 		if (this.center) {
 			var repr = this.center.repr();
 			repr.title = 'Center ' + repr.title;
+			if (this.isCenterAggregated) {
+				repr.title += ' (aggregated)';
+			}
 			children.push(repr);
 		}
 
 		if (this.afterCenter) {
 			var repr = this.afterCenter.repr();
 			repr.title = 'After Center ' + repr.title;
+			if (this.isAfterCenterAggregated) {
+				repr.title += ' (aggregated)';
+			}
 			children.push(repr);
 		}
 
 		if (this.far) {
 			var repr = this.far.repr();
 			repr.title = (this.isHoriz ? 'Right' : 'Bottom') + ' ' + repr.title;
+			if (this.isFarAggregated) {
+				repr.title += ' (aggregated)';
+			}
 			children.push(repr);
 		}
 
@@ -205,13 +244,11 @@ class Alignment extends Attributes.BaseAttribute {
 		}
 		var aggregates = [
 			near, afterNear, center, afterCenter, far
-		].map((components) => {
-			if (!components || components.length === 0)
-				return null;
-			if (components.some(hasBoxContent)) {
-				return StackedChildren.aggregate(components);
-			}
-		});
+		].map(
+			(components) => (components && components.some(hasBoxContent)) ? components : null
+		).map(
+			StackedChildren.aggregate
+		);
 		var results = aggregates.filter((result) => !!result);
 
 		results.push({
@@ -222,7 +259,12 @@ class Alignment extends Attributes.BaseAttribute {
 				aggregates[1] && aggregates[1].component,
 				aggregates[2] && aggregates[2].component,
 				aggregates[3] && aggregates[3].component,
-				aggregates[4] && aggregates[4].component
+				aggregates[4] && aggregates[4].component,
+				aggregates[0] && near && near.length > 1,
+				aggregates[1] && afterNear && afterNear.length > 1,
+				aggregates[2] && center && center.length > 1,
+				aggregates[3] && afterCenter && afterCenter.length > 1,
+				aggregates[4] && far && far.length > 1
 			)],
 			deleteAttributes: [Attributes.Type.STACKED_CHILDREN],
 		});

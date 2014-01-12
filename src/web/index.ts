@@ -35,6 +35,7 @@ var PageComponent = React.createClass({
 
 			justCompared: false,
 			comparison: false,
+			oldRepr: null,
 
 			comparingAll: false,
 			justComparedAll: false,
@@ -72,6 +73,7 @@ var PageComponent = React.createClass({
 					rootComponent: c.Component.fromBox(root),
 					selectedBox: null,
 					justLoaded: true,
+					oldRepr: null,
 				});
 				setTimeout(() => {
 					this.refs.rootComponent.runRules();
@@ -109,7 +111,8 @@ var PageComponent = React.createClass({
 				this.refreshFixtures();
 				this.setState({
 					justSaved: true,
-					wasSaveOverwrite: data.overwritten
+					wasSaveOverwrite: data.overwritten,
+					oldRepr: null,
 				});
 				setTimeout(() => {
 					this.setState({ justSaved: false });
@@ -126,10 +129,11 @@ var PageComponent = React.createClass({
 			name,
 			this.state.rootComponent,
 			browserFixtures.readFixture,
-			(result) => {
+			(result, oldRepr) => {
 				this.setState({
 					justCompared: true,
 					comparison: result,
+					oldRepr: result ? null : oldRepr,
 				});
 				setTimeout(() => {
 					this.setState({ justCompared: false });
@@ -140,6 +144,10 @@ var PageComponent = React.createClass({
 	},
 
 	loadAndCompareAll() {
+		this.setState({
+			oldRepr: null,
+		});
+
 		(function loadNext(index: number) {
 			if (index >= this.state.fixtureNames.length) {
 				this.setState({
@@ -211,6 +219,20 @@ var PageComponent = React.createClass({
 				return React.DOM.option(null, name);
 			})
 		);
+		var oldRepr: any;
+		if (this.state.oldRepr) {
+			oldRepr = React.DOM.div(null,
+				React.DOM.a({
+					href: '#',
+					onClick: () => {
+						this.setState({
+							oldRepr: null
+						});
+					}
+				}, 'Close'),
+				comp.serializeRepr(this.state.oldRepr)
+			);
+		}
 		return (
 			React.DOM.div(null,
 				lc.LayoutComponent({
@@ -248,6 +270,7 @@ var PageComponent = React.createClass({
 								: 'Load & Compare All')
 						)
 					),
+					oldRepr,
 					React.DOM.hr(null),
 					detail.DetailComponent({
 						layout: this.state.layout,

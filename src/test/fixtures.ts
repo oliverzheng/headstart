@@ -41,10 +41,10 @@ export function compare(
 		name: string,
 		newComponent: c.Component,
 		readFunc: ReadFunc,
-		successCb: (result: boolean) => any,
+		successCb: (result: boolean, oldRepr: Attributes.Repr) => any,
 		errorCb: (error: any) => any
 	) {
 	load(name, readFunc, (root, componentRepr) => {
-		successCb(Attributes.reprEqual(newComponent.repr(), componentRepr));
+		successCb(Attributes.reprEqual(newComponent.repr(), componentRepr), componentRepr);
 	}, errorCb);
 }
