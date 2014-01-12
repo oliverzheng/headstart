@@ -17,6 +17,7 @@ import BlockFormat = require('./attributes/BlockFormat');
 import Alignment = require('./attributes/Alignment');
 import FloatFormat = require('./attributes/FloatFormat');
 import Margin = require('./attributes/Margin');
+import HorizontalCenter = require('./attributes/HorizontalCenter');
 import CSSAttribute = require('./attributes/CSSAttribute');
 
 export interface RuleWithName {
@@ -185,6 +186,7 @@ var defaultRuleGroups: RuleGroup[] = [{
 		{name: 'BlockFormat.explicitFixedWidthBlockRule', rule: BlockFormat.explicitFixedWidthBlockRule},
 		{name: 'FloatFormat.alignRule', rule: FloatFormat.alignRule},
 		{name: 'Margin.marginRule', rule: Margin.marginRule},
+		{name: 'HorizontalCenter.marginAutoRule', rule: HorizontalCenter.marginAutoRule},
 	],
 }, {
 	// Apply all CSS

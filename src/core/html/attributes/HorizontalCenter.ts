@@ -3,87 +3,53 @@ import Attributes = require('../Attributes');
 import Markup = require('../Markup');
 import c = require('../Component');
 import Rules = require('../Rules');
-import StackedChildren = require('../attributes/StackedChildren');
+import NodeAttribute = require('../attributes/NodeAttribute');
 import Alignment = require('../attributes/Alignment');
-import getDirection = require('../patterns/getDirection');
-import getCrossAlignment = require('../patterns/getCrossAlignment');
 import LengthAttribute = require('../attributes/LengthAttribute');
 import sinf = require('../../spec/interfaces');
 
 class HorizontalCenter extends Markup {
 	getType() {
-		return Attributes.Type.HORIZONTAL_CENTER_FORMAT;
+		return Attributes.Type.HORIZONTAL_CENTER;
 	}
 
 	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
-		var css: { component: c.Component; css: { [name: string]: string; }; }[] = [];
-
-		css.push.apply(css, this.getLeft().map((left) => {
-			return {
-				component: left,
-				css: {
-					float: 'left',
-				}
-			};
-		}));
-
-		css.push.apply(css, this.getRight().map((right) => {
-			return {
-				component: right,
-				css: {
-					float: 'right',
-				}
-			};
-		}));
-
-		return css;
+		return [{
+			component: this.getCenter(),
+			css: {
+				'margin-left': 'auto',
+				'margin-right': 'auto',
+			},
+		}];
 	}
 
 	static from(component: c.Component): boolean {
-		return Markup.from(component, Attributes.Type.HORIZONTAL_CENTER_FORMAT);
+		return Markup.from(component, Attributes.Type.HORIZONTAL_CENTER);
 	}
 
-	static alignRule(component: c.Component): Rules.RuleResult[] {
+	static marginAutoRule(component: c.Component): Rules.RuleResult[] {
 		var alignment = Alignment.getFrom(component, sinf.horiz);
 		if (!alignment)
 			return;
 
-		// Only aligned children on the left and right can be floated
-		if (alignment.afterNear || alignment.afterCenter || alignment.center)
+		// Only aligned children in the center
+		if (!alignment.center || alignment.afterNear || alignment.afterCenter || alignment.near || alignment.far)
 			return;
 
 		return [{
 			component: component,
 			attributes: [new HorizontalCenter()],
+		}, {
+			component: alignment.center,
+			attributes: [new NodeAttribute()],
 		}]
 	}
 
-	getLeft(): c.Component[] {
+	getCenter(): c.Component {
 		var alignment = Alignment.getFrom(this.component, sinf.horiz);
 		assert(!!alignment);
 
-		if (!alignment.near)
-			return [];
-
-		var stack = StackedChildren.getFrom(alignment.near);
-		if (!stack)
-			return [];
-
-		return stack.get();
-	}
-
-	getRight(): c.Component[] {
-		var alignment = Alignment.getFrom(this.component, sinf.horiz);
-		assert(!!alignment);
-
-		if (!alignment.far)
-			return [];
-
-		var stack = StackedChildren.getFrom(alignment.far);
-		if (!stack)
-			return [];
-
-		return stack.get();
+		return alignment.center;
 	}
 }
 

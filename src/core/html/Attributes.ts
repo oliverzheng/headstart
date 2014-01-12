@@ -44,6 +44,8 @@ export enum Type {
 	BLOCK_FORMAT,
 
 	FLOAT_FORMAT,
+
+	HORIZONTAL_CENTER,
 }
 
 export interface Repr {
