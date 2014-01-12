@@ -12,6 +12,31 @@ import fixtures = require('../test/fixtures');
 
 var browserFixtures = require('browserFixtures');
 
+var STASH_FIXTURE_NAME = 'stash.tmp';
+
+function reloadWithState(state: any) {
+	window.location.href = window.location.pathname + '#' + JSON.stringify(state);
+	window.location.reload();
+}
+
+function reloadWithFixture(fixtureName: string) {
+	var state = getUrlState();
+	state.fixtureName = fixtureName;
+	reloadWithState(state);
+}
+
+function getUrlState(): any {
+	var hash = window.location.hash.substr(1);
+	if (hash)
+		return JSON.parse(hash);
+	else
+		return {};
+}
+
+function getUrlFixtureName(): string {
+	return getUrlState().fixtureName;
+}
+
 var PageComponent = React.createClass({
 	getInitialState() {
 		var root: inf.Box = add.createBox(600, 600);
@@ -43,9 +68,18 @@ var PageComponent = React.createClass({
 		};
 	},
 
+	componentDidMount() {
+		var fixtureName = getUrlState().fixtureName;
+		if (fixtureName) {
+			this.refs.fixtureName.getDOMNode().value = fixtureName;
+			this.onFixtureNameChange();
+			this.loadFixture();
+		}
+	},
+
 	refreshFixtures() {
 		browserFixtures.getFixtureNames((names: any[]) => {
-			this.setState({fixtureNames: names});
+			this.setState({fixtureNames: names.filter((name) => name !== STASH_FIXTURE_NAME)});
 		});
 	},
 
@@ -99,7 +133,7 @@ var PageComponent = React.createClass({
 		}, 1000);
 	},
 
-	saveFixture() {
+	saveFixture(e: any, id: any, cb: () => any = null) {
 		var name = this.refs.fixtureName.getDOMNode().value;
 		this.refs.rootComponent.runRules();
 		fixtures.save(
@@ -108,6 +142,8 @@ var PageComponent = React.createClass({
 			this.state.rootComponent,
 			browserFixtures.writeFixture,
 			(data) => {
+				if (cb) cb();
+
 				this.refreshFixtures();
 				this.setState({
 					justSaved: true,
@@ -270,6 +306,12 @@ var PageComponent = React.createClass({
 								: 'Load & Compare All')
 						)
 					),
+					React.DOM.button({
+						onClick: (e: any, id: any) => {
+							this.refs.fixtureName.getDOMNode().value = STASH_FIXTURE_NAME;
+							this.saveFixture(e, id, () => reloadWithFixture(STASH_FIXTURE_NAME));
+						},
+					}, 'Stash & Reload'),
 					oldRepr,
 					React.DOM.hr(null),
 					detail.DetailComponent({
