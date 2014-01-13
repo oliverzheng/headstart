@@ -184,6 +184,7 @@ var defaultRuleGroups: RuleGroup[] = [{
 	rules: [
 		{name: 'BlockFormat.verticalRule', rule: BlockFormat.verticalRule},
 		{name: 'BlockFormat.explicitFixedWidthBlockRule', rule: BlockFormat.explicitFixedWidthBlockRule},
+		{name: 'BlockFormat.implicitExpandWidthBlockRule', rule: BlockFormat.implicitExpandWidthBlockRule},
 		{name: 'FloatFormat.alignRule', rule: FloatFormat.alignRule},
 		{name: 'Margin.marginRule', rule: Margin.marginRule},
 		{name: 'HorizontalCenter.marginAutoRule', rule: HorizontalCenter.marginAutoRule},

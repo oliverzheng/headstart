@@ -16,6 +16,10 @@ class CSSAttribute extends Attributes.BaseAttribute {
 		this.styles = styles;
 	}
 
+	static getFrom(component: c.Component): CSSAttribute {
+		return <CSSAttribute>component.getAttr(Attributes.Type.CSS);
+	}
+
 	getType() {
 		return Attributes.Type.CSS;
 	}

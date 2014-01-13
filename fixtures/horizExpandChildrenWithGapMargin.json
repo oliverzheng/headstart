@@ -1,0 +1,177 @@
+{
+	"spec": {
+		"id": "0",
+		"w": {
+			"unit": 0,
+			"value": 600
+		},
+		"h": {
+			"unit": 0,
+			"value": 600
+		},
+		"direction": 2,
+		"children": [
+			{
+				"id": "1",
+				"w": {
+					"unit": 3,
+					"value": 40
+				},
+				"h": {
+					"unit": 0,
+					"value": 40
+				},
+				"direction": 2,
+				"content": 3
+			},
+			{
+				"id": "2",
+				"w": {
+					"unit": 3,
+					"value": 40
+				},
+				"h": {
+					"unit": 0,
+					"value": 40
+				},
+				"direction": 2,
+				"content": 0
+			},
+			{
+				"id": "3",
+				"w": {
+					"unit": 3,
+					"value": 40
+				},
+				"h": {
+					"unit": 0,
+					"value": 40
+				},
+				"direction": 2,
+				"content": 3
+			}
+		]
+	},
+	"componentRepr": {
+		"title": "Component",
+		"id": "27",
+		"children": [
+			{
+				"title": "BoxAttribute",
+				"id": "0"
+			},
+			{
+				"title": "Stacked Children",
+				"children": [
+					{
+						"title": "Component",
+						"id": "28",
+						"children": [
+							{
+								"title": "BoxAttribute",
+								"id": "1"
+							},
+							{
+								"title": "NodeAttribute"
+							},
+							{
+								"title": "Width (600px implicit, 1% implicit)"
+							},
+							{
+								"title": "Height (40px explicit)"
+							},
+							{
+								"title": "BlockFormat"
+							},
+							{
+								"title": "Margin"
+							},
+							{
+								"title": "CSSAttribute",
+								"children": [
+									{
+										"title": "height: 40px"
+									},
+									{
+										"title": "display: block"
+									},
+									{
+										"title": "margin-bottom: 40px"
+									}
+								]
+							}
+						]
+					},
+					{
+						"title": "Component",
+						"id": "29",
+						"children": [
+							{
+								"title": "BoxAttribute",
+								"id": "2"
+							},
+							{
+								"title": "Width (600px implicit, 1% implicit)"
+							},
+							{
+								"title": "Height (40px explicit)"
+							}
+						]
+					},
+					{
+						"title": "Component",
+						"id": "30",
+						"children": [
+							{
+								"title": "BoxAttribute",
+								"id": "3"
+							},
+							{
+								"title": "NodeAttribute"
+							},
+							{
+								"title": "Width (600px implicit, 1% implicit)"
+							},
+							{
+								"title": "Height (40px explicit)"
+							},
+							{
+								"title": "BlockFormat"
+							},
+							{
+								"title": "Margin"
+							},
+							{
+								"title": "CSSAttribute",
+								"children": [
+									{
+										"title": "height: 40px"
+									},
+									{
+										"title": "display: block"
+									},
+									{
+										"title": "margin-top: 40px"
+									}
+								]
+							}
+						]
+					}
+				],
+				"ordered": true
+			},
+			{
+				"title": "Width (600px explicit)"
+			},
+			{
+				"title": "Height (600px explicit)"
+			},
+			{
+				"title": "NodeAttribute"
+			},
+			{
+				"title": "BlockFormat"
+			}
+		]
+	}
+}

@@ -163,6 +163,10 @@ export class Component {
 		return parent;
 	}
 
+	isRoot(): boolean {
+		return this.getParent() == null;
+	}
+
 	getParent(): Component {
 		var parentAttr = <ParentAttribute>this.getAttr(Attributes.Type.PARENT);
 		if (parentAttr) {

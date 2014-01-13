@@ -55,6 +55,39 @@ class BlockFormat extends Markup {
 			attributes: [new BlockFormat()],
 		}]
 	}
+
+	static implicitExpandWidthBlockRule(component: c.Component): Rules.RuleResult[] {
+		if (!NodeAttribute.getFrom(component))
+			return;
+
+		var attr = LengthAttribute.getFrom(component, sinf.horiz);
+		if (!attr || !attr.px.isSet())
+			return;
+
+		var direction = getDirection(component);
+		if (direction !== sinf.vert)
+			return;
+
+		var childrenAttr = StackedChildren.getFrom(component);
+		if (!childrenAttr)
+			return;
+
+		return childrenAttr.get().map((child) => {
+			if (!NodeAttribute.getFrom(child))
+				return;
+
+			var childWidth = LengthAttribute.getFrom(component, sinf.horiz);
+			if (!childWidth)
+				return;
+
+			if (childWidth.looksEqual(attr)) {
+				return {
+					component: child,
+					attributes: [new BlockFormat()],
+				};
+			}
+		}).filter((x) => !!x);
+	}
 }
 
 export = BlockFormat;
