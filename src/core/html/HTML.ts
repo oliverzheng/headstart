@@ -1,10 +1,14 @@
+import assert = require('assert');
+
 import c = require('./Component');
 import CSSAttribute = require('./attributes/CSSAttribute');
+import TextContent = require('./attributes/TextContent');
 import NodeAttribute = require('./attributes/NodeAttribute');
 
 export class DOMNode {
 	tagName: string;
 	children: DOMNode[] = [];
+	content: string;
 	styles: { [styleName: string]: string; } = {};
 
 	constructor(tagName: string) {
@@ -21,9 +25,16 @@ export class DOMNode {
 
 	static fromComponent(component: c.Component): DOMNode[] {
 		var childrenNodes: DOMNode[] = [];
+
 		component.getChildren().forEach((child) => {
 			childrenNodes.push.apply(childrenNodes, DOMNode.fromComponent(child));
 		});
+
+		var textContent = TextContent.getFrom(component);
+		var text: string = (textContent && textContent.value) || null;
+
+		// Only one of these apply
+		assert(!(text && (childrenNodes.length > 0)));
 
 		var nodeAttr = NodeAttribute.getFrom(component);
 		if (nodeAttr && !component.isRoot()) {
@@ -34,6 +45,7 @@ export class DOMNode {
 				node.styles = css.styles;
 			}
 			node.children = childrenNodes;
+			node.content = text;
 			return [node];
 		} else {
 			return childrenNodes;

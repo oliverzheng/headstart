@@ -18,6 +18,7 @@ import Alignment = require('./attributes/Alignment');
 import FloatFormat = require('./attributes/FloatFormat');
 import Margin = require('./attributes/Margin');
 import HorizontalCenter = require('./attributes/HorizontalCenter');
+import TextContent = require('./attributes/TextContent');
 import CSSAttribute = require('./attributes/CSSAttribute');
 
 export interface RuleWithName {
@@ -188,6 +189,7 @@ var defaultRuleGroups: RuleGroup[] = [{
 		{name: 'FloatFormat.alignRule', rule: FloatFormat.alignRule},
 		{name: 'Margin.marginRule', rule: Margin.marginRule},
 		{name: 'HorizontalCenter.marginAutoRule', rule: HorizontalCenter.marginAutoRule},
+		{name: 'TextContent.staticTextRule', rule: TextContent.staticTextRule},
 	],
 }, {
 	// Apply all CSS

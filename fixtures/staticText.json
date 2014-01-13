@@ -1,0 +1,103 @@
+{
+	"spec": {
+		"id": "0",
+		"w": {
+			"unit": 0,
+			"value": 600
+		},
+		"h": {
+			"unit": 0,
+			"value": 600
+		},
+		"direction": 2,
+		"children": [
+			{
+				"id": "1",
+				"w": {
+					"unit": 3,
+					"value": 40
+				},
+				"h": {
+					"unit": 0,
+					"value": 40
+				},
+				"direction": 2,
+				"content": 1,
+				"staticContent": {
+					"text": {
+						"fontSize": 3,
+						"lineHeight": 3,
+						"value": "asdf",
+						"inputMinLines": null,
+						"inputMaxLines": null,
+						"outputMaxLines": null
+					}
+				}
+			}
+		]
+	},
+	"componentRepr": {
+		"title": "Component",
+		"id": "3",
+		"children": [
+			{
+				"title": "BoxAttribute",
+				"id": "0"
+			},
+			{
+				"title": "Stacked Children",
+				"children": [
+					{
+						"title": "Component",
+						"id": "4",
+						"children": [
+							{
+								"title": "BoxAttribute",
+								"id": "1"
+							},
+							{
+								"title": "Width (600px implicit, 1% implicit)"
+							},
+							{
+								"title": "Height (40px explicit)"
+							},
+							{
+								"title": "NodeAttribute"
+							},
+							{
+								"title": "BlockFormat"
+							},
+							{
+								"title": "TextContent (value: asdf)"
+							},
+							{
+								"title": "CSSAttribute",
+								"children": [
+									{
+										"title": "height: 40px"
+									},
+									{
+										"title": "display: block"
+									}
+								]
+							}
+						]
+					}
+				],
+				"ordered": true
+			},
+			{
+				"title": "Width (600px explicit)"
+			},
+			{
+				"title": "Height (600px explicit)"
+			},
+			{
+				"title": "NodeAttribute"
+			},
+			{
+				"title": "BlockFormat"
+			}
+		]
+	}
+}

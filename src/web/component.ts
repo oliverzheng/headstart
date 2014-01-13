@@ -1,3 +1,5 @@
+import assert = require('assert');
+
 import inf = require('../core/spec/interfaces');
 import l = require('../core/spec/layout');
 import Attributes = require('../core/html/Attributes');
@@ -95,6 +97,7 @@ export var DOMNodeComponent = React.createClass({
 			React.DOM.div(null, node.children.map(
 				(child) => DOMNodeComponent({node: child, depth: depth+1})
 			)),
+			node.content ? React.DOM.div(null, spaces + '  ' + node.content) : null,
 			React.DOM.span(null, spaces + '</' + node.tagName + '>')
 		);
 	},

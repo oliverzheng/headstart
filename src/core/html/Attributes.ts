@@ -46,6 +46,8 @@ export enum Type {
 	FLOAT_FORMAT,
 
 	HORIZONTAL_CENTER,
+
+	TEXT_CONTENT,
 }
 
 export interface Repr {
