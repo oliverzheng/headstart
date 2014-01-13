@@ -133,9 +133,11 @@ var PageComponent = React.createClass({
 		}, 1000);
 	},
 
-	saveFixture(e: any, id: any, cb: () => any = null) {
+	saveFixture(e: any, id: any, runRules: boolean = true, cb: () => any = null) {
 		var name = this.refs.fixtureName.getDOMNode().value;
-		this.refs.rootComponent.runRules();
+		if (runRules) {
+			this.refs.rootComponent.runRules();
+		}
 		fixtures.save(
 			name,
 			this.state.layout.root,
@@ -311,7 +313,7 @@ var PageComponent = React.createClass({
 					React.DOM.button({
 						onClick: (e: any, id: any) => {
 							this.refs.fixtureName.getDOMNode().value = STASH_FIXTURE_NAME;
-							this.saveFixture(e, id, () => reloadWithFixture(STASH_FIXTURE_NAME));
+							this.saveFixture(e, id, false, () => reloadWithFixture(STASH_FIXTURE_NAME));
 						},
 					}, 'Stash & Reload'),
 					oldRepr,

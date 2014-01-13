@@ -2,6 +2,7 @@ import inf = require('../core/spec/interfaces');
 import l = require('../core/spec/layout');
 import Attributes = require('../core/html/Attributes');
 import c = require('../core/html/Component');
+import HTML = require('../core/html/HTML');
 import RuleRunner = require('../core/html/RuleRunner');
 import Context = require('../core/html/Context');
 
@@ -35,8 +36,12 @@ export var RootComponent = React.createClass({
 						})
 					)
 				),
+				React.DOM.strong(null, 'HTML:'),
 				React.DOM.pre(null,
-				this.state.logs.join('\n'))
+					HTML.DOMNode.fromComponent(this.props.component).map((node) => DOMNodeComponent({depth: 0, node: node}))
+				),
+				React.DOM.pre(null,
+					this.state.logs.join('\n'))
 			)
 		);
 	},
@@ -71,5 +76,26 @@ export var ComponentComponent = React.createClass({
 			)
 		);
 	},
+});
 
+export var DOMNodeComponent = React.createClass({
+	render() {
+		var node = <HTML.DOMNode>this.props.node;
+		var depth = <number>this.props.depth;
+		var spaces = Array(depth + 1).join('  ');
+
+		var openTag = '<' + node.tagName;
+		var css = node.reprCss();
+		if (css) {
+			openTag += ' styles="' + css + '"';
+		}
+		openTag += '>';
+		return React.DOM.div(null,
+			React.DOM.span(null, spaces + openTag),
+			React.DOM.div(null, node.children.map(
+				(child) => DOMNodeComponent({node: child, depth: depth+1})
+			)),
+			React.DOM.span(null, spaces + '</' + node.tagName + '>')
+		);
+	},
 });
