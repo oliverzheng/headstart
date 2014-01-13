@@ -228,9 +228,16 @@ export var defaultContent = Content.NONE;
 
 
 export interface StaticText {
-	value: string;
-	font: string;
-	singleLine: boolean;
+	fontSize: number;
+	lineHeight: number;
+
+	// Input
+	value?: string;
+	inputMinLines?: number;
+	inputMaxLines?: number;
+
+	// Output
+	outputMaxLines?: number;
 }
 
 export interface StaticBackground {

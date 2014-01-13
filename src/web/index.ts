@@ -195,6 +195,7 @@ var PageComponent = React.createClass({
 					this.setState({justComparedAll: false});
 				}, 1000);
 				this.refs.fixtureName.getDOMNode().value = '';
+				this.onFixtureNameChange();
 				return;
 			} else {
 				this.setState({
@@ -205,6 +206,7 @@ var PageComponent = React.createClass({
 
 			var fixtureName = this.state.fixtureNames[index];
 			this.refs.fixtureName.getDOMNode().value = fixtureName;
+			this.onFixtureNameChange();
 
 			fixtures.load(
 				fixtureName,

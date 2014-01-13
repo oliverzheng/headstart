@@ -80,8 +80,22 @@ export var DetailComponent = React.createClass({
 		this.props.onBoxChanged(this.props.box);
 	},
 
-	changeStaticContent(staticContent: inf.StaticContent) {
-		this.props.box.staticContent = staticContent;
+	onStaticContentChanged() {
+		var fontSize = this.refs.staticTextFontSize.getDOMNode().value;
+		var text: inf.StaticText;
+		if (fontSize) {
+			text = {
+				fontSize: parseInt(fontSize, 10),
+				lineHeight: parseInt(this.refs.staticTextLineHeight.getDOMNode().value, 10) || null,
+				value: this.refs.staticTextValue.getDOMNode().value,
+				inputMinLines: parseInt(this.refs.staticTextInputMinLines.getDOMNode().value, 10) || null,
+				inputMaxLines: parseInt(this.refs.staticTextInputMaxLines.getDOMNode().value, 10) || null,
+				outputMaxLines: parseInt(this.refs.staticTextOutputMaxLines.getDOMNode().value, 10) || null,
+			};
+		}
+		this.props.box.staticContent = {
+			text: text,
+		};
 		this.props.onBoxChanged(this.props.box);
 	},
 
@@ -188,41 +202,94 @@ export var DetailComponent = React.createClass({
 			React.DOM.div({}, children),
 		];
 
-		var staticThings: any;
+		var staticText: any;
 		if (box.content === inf.Content.STATIC) {
-			var isSingleLine = (
-				box.staticContent &&
-				box.staticContent.text &&
-				box.staticContent.text.singleLine
-			);
-			if (isSingleLine) {
-				var staticText = React.DOM.div({className: 'staticContent'},
-					React.DOM.strong(null, 'Static Content: '),
-					React.DOM.strong({className: 'staticContent'}, 'Single Line'),
-					React.DOM.a(
-						{href: '#', onClick: (event: any) => {
-							this.changeStaticContent({
-								text: { singleLine: false }
-							});
-						}, className: 'staticContent' },
-						'Multi line'
-					)
-				);
-			} else {
-				var staticText = React.DOM.div({className: 'staticContent'},
-					React.DOM.strong(null, 'Static Content: '),
-					React.DOM.a(
-						{href: '#', onClick: (event: any) => {
-							this.changeStaticContent({
-								text: { singleLine: true }
-							});
-						}, className: 'staticContent' },
-						'Single line'
-					),
-					React.DOM.strong({className: 'staticContent'}, 'Multi Line')
-				);
+			var staticTextFontSize: number;
+			var staticTextLineHeight: number;
+			var staticTextValue: string;
+			var staticTextInputMinLines: number;
+			var staticTextInputMaxLines: number;
+			var staticTextOutputMaxLines: number;
+			if (box.staticContent && box.staticContent.text) {
+				staticTextFontSize = box.staticContent.text.fontSize;
+				staticTextLineHeight = box.staticContent.text.lineHeight || staticTextFontSize;
+				staticTextValue = box.staticContent.text.value;
+				staticTextInputMinLines = box.staticContent.text.inputMinLines;
+				staticTextInputMaxLines = box.staticContent.text.inputMaxLines;
+				staticTextOutputMaxLines = box.staticContent.text.outputMaxLines;
 			}
-			staticThings = staticText;
+			var staticText = React.DOM.div(null,
+				React.DOM.div(null,
+					React.DOM.hr(),
+					React.DOM.div(null,
+						React.DOM.strong(null, 'Static Text Font Size: '),
+						React.DOM.input({
+							type: 'text',
+							value: staticTextFontSize,
+							className: 'staticContent',
+							ref: 'staticTextFontSize',
+							onChange: this.onStaticContentChanged,
+						}),
+						React.DOM.span(null, 'px')
+					),
+					React.DOM.div({ className: staticTextFontSize ? '' : 'disabled'},
+						React.DOM.strong(null, 'Static Text Line Height: '),
+						React.DOM.input({
+							type: 'text',
+							disabled: !staticTextFontSize,
+							value: staticTextLineHeight,
+							className: 'staticContent',
+							ref: 'staticTextLineHeight',
+							onChange: this.onStaticContentChanged,
+						}),
+						React.DOM.span(null, 'px')
+					),
+					React.DOM.div({ className: staticTextFontSize ? '' : 'disabled'},
+						React.DOM.strong(null, 'Static Text Value: '),
+						React.DOM.input({
+							type: 'text',
+							disabled: !staticTextFontSize,
+							value: staticTextValue,
+							className: 'staticContent',
+							ref: 'staticTextValue',
+							onChange: this.onStaticContentChanged,
+						})
+					),
+					React.DOM.div({ className: staticTextFontSize ? '' : 'disabled'},
+						React.DOM.strong(null, 'Static Text Input Min Lines: '),
+						React.DOM.input({
+							disabled: !staticTextFontSize,
+							type: 'text',
+							value: staticTextInputMinLines,
+							className: 'staticContent',
+							ref: 'staticTextInputMinLines',
+							onChange: this.onStaticContentChanged,
+						})
+					),
+					React.DOM.div({ className: staticTextFontSize ? '' : 'disabled'},
+						React.DOM.strong(null, 'Static Text Input Max Lines: '),
+						React.DOM.input({
+							type: 'text',
+							disabled: !staticTextFontSize,
+							value: staticTextInputMaxLines,
+							className: 'staticContent',
+							ref: 'staticTextInputMaxLines',
+							onChange: this.onStaticContentChanged,
+						})
+					),
+					React.DOM.div({ className: staticTextFontSize ? '' : 'disabled'},
+						React.DOM.strong(null, 'Static Text Output Max Lines: '),
+						React.DOM.input({
+							type: 'text',
+							disabled: !staticTextFontSize,
+							value: staticTextOutputMaxLines,
+							className: 'staticContent',
+							ref: 'staticTextOutputMaxLines',
+							onChange: this.onStaticContentChanged,
+						})
+					)
+				)
+			);
 		}
 
 		var isRoot = box === this.props.layout.root;
@@ -248,7 +315,7 @@ export var DetailComponent = React.createClass({
 			React.DOM.hr(null),
 			parent,
 			childrenMarkup,
-			staticThings,
+			staticText,
 			React.DOM.hr(null),
 			(box !== this.props.layout.root)
 				? React.DOM.button({onClick: this.deleteBox}, 'Delete Box')
