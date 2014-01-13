@@ -1,6 +1,5 @@
 import inf = require('../core/spec/interfaces');
 import add = require('./add');
-import HTMLComponent = require('./html');
 
 var LengthComponent = React.createClass({
 	onValueChanged(event: any) {
@@ -101,13 +100,9 @@ export var DetailComponent = React.createClass({
 
 	render() {
 		var box: inf.Box = this.props.box;
-		var html = React.DOM.div(null,
-			HTMLComponent({layout: this.props.layout}),
-			React.DOM.hr()
-		);
 
 		if (!box) {
-			return React.DOM.div({className: 'detail'}, html);
+			return React.DOM.div({className: 'detail'});
 		}
 
 		var children = (box.children || <inf.Box[]>[]).map((child) => {
@@ -295,7 +290,6 @@ export var DetailComponent = React.createClass({
 		var isRoot = box === this.props.layout.root;
 		return React.DOM.div(
 			{className: 'detail'},
-			html,
 			React.DOM.div(null,
 				React.DOM.strong(null, 'Box ID: '),
 				box.id
