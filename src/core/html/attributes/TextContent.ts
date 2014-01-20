@@ -14,11 +14,15 @@ class TextContent extends Markup {
 	}
 
 	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
+		var css = {
+			'font-size': this.getText().fontSize.toString() + 'px',
+		};
+		if (this.getText().fontFamily) {
+			css['font-family'] = this.getText().fontFamily;
+		}
 		return [{
 			component: this.component,
-			css: {
-				'font-size': this.getText().fontSize.toString() + 'px',
-			},
+			css: css,
 		}];
 	}
 

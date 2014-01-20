@@ -87,6 +87,7 @@ export var DetailComponent = React.createClass({
 				fontSize: parseInt(fontSize, 10),
 				lineHeight: parseInt(this.refs.staticTextLineHeight.getDOMNode().value, 10) || null,
 				value: this.refs.staticTextValue.getDOMNode().value,
+				fontFamily: this.refs.staticTextFontFamily.getDOMNode().value,
 				inputMinLines: parseInt(this.refs.staticTextInputMinLines.getDOMNode().value, 10) || null,
 				inputMaxLines: parseInt(this.refs.staticTextInputMaxLines.getDOMNode().value, 10) || null,
 				outputMaxLines: parseInt(this.refs.staticTextOutputMaxLines.getDOMNode().value, 10) || null,
@@ -202,6 +203,7 @@ export var DetailComponent = React.createClass({
 			var staticTextFontSize: number;
 			var staticTextLineHeight: number;
 			var staticTextValue: string;
+			var staticTextFontFamily: string;
 			var staticTextInputMinLines: number;
 			var staticTextInputMaxLines: number;
 			var staticTextOutputMaxLines: number;
@@ -209,6 +211,7 @@ export var DetailComponent = React.createClass({
 				staticTextFontSize = box.staticContent.text.fontSize;
 				staticTextLineHeight = box.staticContent.text.lineHeight || staticTextFontSize;
 				staticTextValue = box.staticContent.text.value;
+				staticTextFontFamily = box.staticContent.text.fontFamily;
 				staticTextInputMinLines = box.staticContent.text.inputMinLines;
 				staticTextInputMaxLines = box.staticContent.text.inputMaxLines;
 				staticTextOutputMaxLines = box.staticContent.text.outputMaxLines;
@@ -247,6 +250,17 @@ export var DetailComponent = React.createClass({
 							value: staticTextValue,
 							className: 'staticContent',
 							ref: 'staticTextValue',
+							onChange: this.onStaticContentChanged,
+						})
+					),
+					React.DOM.div({ className: staticTextFontSize ? '' : 'disabled'},
+						React.DOM.strong(null, 'Static Text Font Family: '),
+						React.DOM.input({
+							type: 'text',
+							disabled: !staticTextFontSize,
+							value: staticTextFontFamily,
+							className: 'staticContent',
+							ref: 'staticTextFontFamily',
 							onChange: this.onStaticContentChanged,
 						})
 					),

@@ -230,6 +230,7 @@ export var defaultContent = Content.NONE;
 export interface StaticText {
 	fontSize: number;
 	lineHeight: number;
+	fontFamily: string;
 
 	// Input
 	value?: string;
