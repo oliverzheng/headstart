@@ -1,0 +1,401 @@
+{
+	"spec": {
+		"id": "0",
+		"w": {
+			"unit": 0,
+			"value": 600
+		},
+		"h": {
+			"unit": 0,
+			"value": 600
+		},
+		"direction": 2,
+		"children": [
+			{
+				"id": "1",
+				"w": {
+					"unit": 0,
+					"value": 40
+				},
+				"h": {
+					"unit": 0,
+					"value": 40
+				},
+				"direction": 1,
+				"children": [
+					{
+						"id": "2",
+						"w": {
+							"unit": 4,
+							"value": 40
+						},
+						"h": {
+							"unit": 3,
+							"value": 40
+						},
+						"direction": 2,
+						"content": 1,
+						"staticContent": {
+							"text": {
+								"fontSize": 12,
+								"lineHeight": 12,
+								"value": "Herp",
+								"inputMinLines": null,
+								"inputMaxLines": null,
+								"outputMaxLines": null
+							}
+						}
+					},
+					{
+						"id": "3",
+						"w": {
+							"unit": 0,
+							"value": 20
+						},
+						"h": {
+							"unit": 3,
+							"value": 40
+						},
+						"direction": 2,
+						"content": 0,
+						"staticContent": {
+							"text": {
+								"fontSize": 12,
+								"lineHeight": 12,
+								"value": "Derp",
+								"inputMinLines": null,
+								"inputMaxLines": null,
+								"outputMaxLines": null
+							}
+						}
+					},
+					{
+						"id": "4",
+						"w": {
+							"unit": 4,
+							"value": 40
+						},
+						"h": {
+							"unit": 3,
+							"value": 40
+						},
+						"direction": 2,
+						"content": 1,
+						"staticContent": {
+							"text": {
+								"fontSize": 12,
+								"lineHeight": 12,
+								"value": "Pina",
+								"inputMinLines": null,
+								"inputMaxLines": null,
+								"outputMaxLines": null
+							}
+						}
+					},
+					{
+						"id": "5",
+						"w": {
+							"unit": 0,
+							"value": 20
+						},
+						"h": {
+							"unit": 3,
+							"value": 40
+						},
+						"direction": 2
+					},
+					{
+						"id": "6",
+						"w": {
+							"unit": 4,
+							"value": 40
+						},
+						"h": {
+							"unit": 3,
+							"value": 40
+						},
+						"direction": 2,
+						"content": 1,
+						"staticContent": {
+							"text": {
+								"fontSize": 12,
+								"lineHeight": 10,
+								"value": "Pina",
+								"inputMinLines": 1,
+								"inputMaxLines": 1,
+								"outputMaxLines": null
+							}
+						}
+					}
+				]
+			}
+		]
+	},
+	"componentRepr": {
+		"title": "Component",
+		"id": "41",
+		"children": [
+			{
+				"title": "BoxAttribute",
+				"id": "0"
+			},
+			{
+				"title": "Stacked Children",
+				"children": [
+					{
+						"title": "Component",
+						"id": "42",
+						"children": [
+							{
+								"title": "BoxAttribute",
+								"id": "1"
+							},
+							{
+								"title": "Width (40px explicit)"
+							},
+							{
+								"title": "Height (40px explicit)"
+							},
+							{
+								"title": "Horizontal Alignment",
+								"children": [
+									{
+										"title": "Left Component (aggregated)",
+										"id": "48",
+										"children": [
+											{
+												"title": "Stacked Children",
+												"children": [
+													{
+														"title": "Component",
+														"id": "43",
+														"children": [
+															{
+																"title": "BoxAttribute",
+																"id": "2"
+															},
+															{
+																"title": "TextContent (value: Herp)"
+															},
+															{
+																"title": "NodeAttribute"
+															},
+															{
+																"title": "LineHeight (box line height: 12, used line height: 12)"
+															},
+															{
+																"title": "InlineFormat"
+															},
+															{
+																"title": "Height (40px implicit, 1% implicit)"
+															},
+															{
+																"title": "Margin"
+															},
+															{
+																"title": "CSSAttribute",
+																"children": [
+																	{
+																		"title": "float: left"
+																	},
+																	{
+																		"title": "font-size: 12px"
+																	},
+																	{
+																		"title": "line-height: 12px"
+																	},
+																	{
+																		"title": "display: inline"
+																	},
+																	{
+																		"title": "margin-right: 20px"
+																	}
+																]
+															}
+														]
+													},
+													{
+														"title": "Component",
+														"id": "44",
+														"children": [
+															{
+																"title": "BoxAttribute",
+																"id": "3"
+															},
+															{
+																"title": "Height (40px implicit, 1% implicit)"
+															},
+															{
+																"title": "Width (20px explicit)"
+															}
+														]
+													},
+													{
+														"title": "Component",
+														"id": "45",
+														"children": [
+															{
+																"title": "BoxAttribute",
+																"id": "4"
+															},
+															{
+																"title": "TextContent (value: Pina)"
+															},
+															{
+																"title": "NodeAttribute"
+															},
+															{
+																"title": "LineHeight (box line height: 12, used line height: 12)"
+															},
+															{
+																"title": "InlineFormat"
+															},
+															{
+																"title": "Height (40px implicit, 1% implicit)"
+															},
+															{
+																"title": "Margin"
+															},
+															{
+																"title": "CSSAttribute",
+																"children": [
+																	{
+																		"title": "float: left"
+																	},
+																	{
+																		"title": "font-size: 12px"
+																	},
+																	{
+																		"title": "line-height: 12px"
+																	},
+																	{
+																		"title": "display: inline"
+																	},
+																	{
+																		"title": "margin-left: 20px"
+																	},
+																	{
+																		"title": "margin-right: 20px"
+																	}
+																]
+															}
+														]
+													},
+													{
+														"title": "Component",
+														"id": "46",
+														"children": [
+															{
+																"title": "BoxAttribute",
+																"id": "5"
+															},
+															{
+																"title": "Height (40px implicit, 1% implicit)"
+															},
+															{
+																"title": "Width (20px explicit)"
+															}
+														]
+													},
+													{
+														"title": "Component",
+														"id": "47",
+														"children": [
+															{
+																"title": "BoxAttribute",
+																"id": "6"
+															},
+															{
+																"title": "TextContent (value: Pina)"
+															},
+															{
+																"title": "NodeAttribute"
+															},
+															{
+																"title": "LineHeight (box line height: 10, used line height: 10)"
+															},
+															{
+																"title": "InlineFormat"
+															},
+															{
+																"title": "Height (40px implicit, 1% implicit)"
+															},
+															{
+																"title": "Margin"
+															},
+															{
+																"title": "CSSAttribute",
+																"children": [
+																	{
+																		"title": "float: left"
+																	},
+																	{
+																		"title": "font-size: 12px"
+																	},
+																	{
+																		"title": "line-height: 10px"
+																	},
+																	{
+																		"title": "display: inline"
+																	},
+																	{
+																		"title": "margin-left: 20px"
+																	}
+																]
+															}
+														]
+													}
+												],
+												"ordered": true
+											},
+											{
+												"title": "Height (40px implicit, 1% implicit)"
+											}
+										]
+									}
+								],
+								"ordered": true
+							},
+							{
+								"title": "NodeAttribute"
+							},
+							{
+								"title": "BlockFormat"
+							},
+							{
+								"title": "FloatFormat"
+							},
+							{
+								"title": "CSSAttribute",
+								"children": [
+									{
+										"title": "width: 40px"
+									},
+									{
+										"title": "height: 40px"
+									},
+									{
+										"title": "display: block"
+									}
+								]
+							}
+						]
+					}
+				],
+				"ordered": true
+			},
+			{
+				"title": "Width (600px explicit)"
+			},
+			{
+				"title": "Height (600px explicit)"
+			},
+			{
+				"title": "NodeAttribute"
+			},
+			{
+				"title": "BlockFormat"
+			}
+		]
+	}
+}

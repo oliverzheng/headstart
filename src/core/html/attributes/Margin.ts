@@ -38,7 +38,7 @@ class Margin extends Markup {
 	}
 
 	getCSS() {
-		var direction = getDirection(this.component);
+		var direction = getDirection(this.component.getParent());
 		var prev = getPrevSpacing(this.component);
 		var next = getNextSpacing(this.component);
 
