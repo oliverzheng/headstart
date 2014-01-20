@@ -6,6 +6,7 @@ import Markup = require('../Markup');
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
 import BoxAttribute = require('./BoxAttribute');
+import NodeAttribute = require('./NodeAttribute');
 
 class TextContent extends Markup {
 	getType() {
@@ -60,7 +61,10 @@ class TextContent extends Markup {
 		if (text.value) {
 			return [{
 				component: component,
-				attributes: [new TextContent()],
+				attributes: [
+					new TextContent(),
+					new NodeAttribute(),
+				],
 			}];
 		}
 	}

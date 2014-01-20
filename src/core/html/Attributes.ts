@@ -43,6 +43,8 @@ export enum Type {
 
 	BLOCK_FORMAT,
 
+	INLINE_FORMAT,
+
 	FLOAT_FORMAT,
 
 	HORIZONTAL_CENTER,

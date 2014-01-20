@@ -14,6 +14,7 @@ import sizeRule = require('./rules/sizeRule');
 import cssVerticalBottomRule = require('./rules/cssVerticalBottomRule');
 
 import BlockFormat = require('./attributes/BlockFormat');
+import InlineFormat = require('./attributes/InlineFormat');
 import Alignment = require('./attributes/Alignment');
 import FloatFormat = require('./attributes/FloatFormat');
 import Margin = require('./attributes/Margin');
@@ -148,6 +149,7 @@ var defaultRuleGroups: RuleGroup[] = [{
 		{name: 'percentChildRule', rule: percentChildRule},
 		{name: 'TextContent.staticTextRule', rule: TextContent.staticTextRule},
 		{name: 'LineHeight.staticTextRule', rule: LineHeight.staticTextRule},
+		{name: 'InlineFormat.shrinkWidthToTextRule', rule: InlineFormat.shrinkWidthToTextRule},
 	],
 }, {
 	// Calculate sizes
