@@ -192,30 +192,9 @@ task('superclean', ['clean'], function() {
 });
 
 task('open', function() {
-	var cmd = 'node ' + __dirname + '/expressApp.js';
-	var ex = jake.createExec(cmd);
-	var error = false;
-	ex.addListener('error', function(msg) {
-		console.log(RED_COLOR + 'Failed.' + RESET_COLOR);
-		console.log(msg);
-		fail('Express app failed to launch');
-		error = true;
-	});
-	var launched = false;
-	ex.addListener('stdout', function(msg) {
-		process.stdout.write(msg);
-		if (!launched && !error) {
-			launched = true;
-			setTimeout(function() {
-				var cmd = 'open http://localhost:3000';
-				var browser = jake.createExec(cmd);
-				browser.run();
-			}, 100); // Wait for error to be set
-		}
-	});
-
-	console.log('Executing ' + cmd);
-	ex.run();
+	var cmd = 'open http://localhost:3000';
+	var browser = jake.createExec(cmd);
+	browser.run();
 });
 
 task('serve', function() {
