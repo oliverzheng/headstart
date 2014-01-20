@@ -270,6 +270,82 @@ class Alignment extends Attributes.BaseAttribute {
 		});
 		return results;
 	}
+
+	static leftAlignRule(component: c.Component): Rules.RuleResult[] {
+		if (Alignment.isAggregateInAlignment(component))
+			return;
+
+		var direction = getDirection(component);
+		if (direction !== sinf.horiz) {
+			return;
+		}
+		var groups = groupChildren(component, (child) => {
+			var boxAttr = child.boxAttr();
+			if (!boxAttr) {
+				return false;
+			}
+			var box = boxAttr.getBox();
+
+			return sutil.lengthEquals(direction === sinf.horiz ? box.w : box.h, sinf.expand);
+		});
+		if (!groups || groups.length !== 1 || groups[0].matched) {
+			return;
+		}
+
+		var stackedChildren = StackedChildren.getFrom(component);
+		if (!stackedChildren)
+			return;
+		var children = stackedChildren.getComponentChildren();
+		if (children.length <= 1)
+			return;
+
+		var aggregate = StackedChildren.aggregate(children);
+		return [{
+			component: component,
+			attributes: [new Alignment(
+				true,
+				aggregate.component,
+				null,
+				null,
+				null,
+				null,
+				true,
+				false,
+				false,
+				false,
+				false
+			)],
+			deleteAttributes: [Attributes.Type.STACKED_CHILDREN],
+		}, aggregate];
+	}
+
+	static isAggregateInAlignment(component: c.Component): boolean {
+		var parent = component.getParent();
+		if (!parent)
+			return false;
+
+		var alignment = Alignment.getHorizFrom(parent);
+		if (alignment && (
+			alignment.near === component ||
+			alignment.afterNear === component ||
+			alignment.center === component ||
+			alignment.afterCenter === component ||
+			alignment.far === component)) {
+			return true;
+		}
+
+		var alignment = Alignment.getVertFrom(parent);
+		if (alignment && (
+			alignment.near === component ||
+			alignment.afterNear === component ||
+			alignment.center === component ||
+			alignment.afterCenter === component ||
+			alignment.far === component)) {
+			return true;
+		}
+
+		return false;
+	}
 }
 
 export = Alignment;

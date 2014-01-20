@@ -166,6 +166,7 @@ var defaultRuleGroups: RuleGroup[] = [{
 
 		{name: 'NodeAttribute.unfoldSameDirectionRule', rule: NodeAttribute.unfoldSameDirectionRule},
 		{name: 'Alignment.expandRule', rule: Alignment.expandRule},
+		{name: 'Alignment.leftAlignRule', rule: Alignment.leftAlignRule},
 		{name: 'coalesceSpacesRule', rule: coalesceSpacesRule},
 
 		/*
