@@ -1,6 +1,7 @@
 import assert = require('assert');
 import Attributes = require('../Attributes');
 import StackedChildren = require('./StackedChildren');
+import NodeAttribute = require('./NodeAttribute');
 import Rules = require('../Rules');
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
@@ -251,23 +252,31 @@ class Alignment extends Attributes.BaseAttribute {
 		);
 		var results = aggregates.filter((result) => !!result);
 
+		var alignment = new Alignment(
+			direction === sinf.horiz,
+			aggregates[0] && aggregates[0].component,
+			aggregates[1] && aggregates[1].component,
+			aggregates[2] && aggregates[2].component,
+			aggregates[3] && aggregates[3].component,
+			aggregates[4] && aggregates[4].component,
+			aggregates[0] && near && near.length > 1,
+			aggregates[1] && afterNear && afterNear.length > 1,
+			aggregates[2] && center && center.length > 1,
+			aggregates[3] && afterCenter && afterCenter.length > 1,
+			aggregates[4] && far && far.length > 1
+		);
 		results.push({
 			component: component,
-			attributes: [new Alignment(
-				direction === sinf.horiz,
-				aggregates[0] && aggregates[0].component,
-				aggregates[1] && aggregates[1].component,
-				aggregates[2] && aggregates[2].component,
-				aggregates[3] && aggregates[3].component,
-				aggregates[4] && aggregates[4].component,
-				aggregates[0] && near && near.length > 1,
-				aggregates[1] && afterNear && afterNear.length > 1,
-				aggregates[2] && center && center.length > 1,
-				aggregates[3] && afterCenter && afterCenter.length > 1,
-				aggregates[4] && far && far.length > 1
-			)],
+			attributes: [alignment],
 			deleteAttributes: [Attributes.Type.STACKED_CHILDREN],
 		});
+
+		if (alignment.center || alignment.far) {
+			results.push({
+				component: component,
+				attributes: [new NodeAttribute],
+			});
+		}
 		return results;
 	}
 
@@ -345,6 +354,18 @@ class Alignment extends Attributes.BaseAttribute {
 		}
 
 		return false;
+	}
+
+	static getAlignmentContainer(child: c.Component, direction: sinf.Direction): c.Component {
+		var alignment = Alignment.getForChild(child, direction);
+		return alignment ? alignment.component : null;
+	}
+
+	static getForChild(component: c.Component, direction: sinf.Direction): Alignment {
+		do {
+			component = component.getParent();
+		} while (Alignment.isAggregateInAlignment(component));
+		return Alignment.getFrom(component, direction);
 	}
 }
 

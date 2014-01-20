@@ -48,6 +48,8 @@ export enum Type {
 	HORIZONTAL_CENTER,
 
 	TEXT_CONTENT,
+
+	LINE_HEIGHT,
 }
 
 export interface Repr {

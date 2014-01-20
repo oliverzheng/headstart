@@ -106,8 +106,8 @@ class NodeAttribute extends Attributes.BaseAttribute {
 
 		var width = LengthAttribute.getFrom(component, sinf.horiz);
 		var height = LengthAttribute.getFrom(component, sinf.vert);
-		if (width.px.isSet() && width.px.isExplicit ||
-			height.px.isSet() && height.px.isExplicit) {
+		if (width && width.px.isSet() && width.px.isExplicit ||
+			height && height.px.isSet() && height.px.isExplicit) {
 			return [{
 				component: component,
 				attributes: [new NodeAttribute()],

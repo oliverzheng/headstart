@@ -19,6 +19,7 @@ import FloatFormat = require('./attributes/FloatFormat');
 import Margin = require('./attributes/Margin');
 import HorizontalCenter = require('./attributes/HorizontalCenter');
 import TextContent = require('./attributes/TextContent');
+import LineHeight = require('./attributes/LineHeight');
 import CSSAttribute = require('./attributes/CSSAttribute');
 
 export interface RuleWithName {
@@ -146,6 +147,7 @@ var defaultRuleGroups: RuleGroup[] = [{
 		{name: 'dynamicBox', rule: NodeAttribute.dynamicBoxRule},
 		{name: 'percentChildRule', rule: percentChildRule},
 		{name: 'TextContent.staticTextRule', rule: TextContent.staticTextRule},
+		{name: 'LineHeight.staticTextRule', rule: LineHeight.staticTextRule},
 	],
 }, {
 	// Calculate sizes
@@ -164,9 +166,9 @@ var defaultRuleGroups: RuleGroup[] = [{
 		// Size calculation
 		{name: 'sizeRule.sizeByChildrenSum', rule: sizeRule.sizeByChildrenSum},
 
-		{name: 'NodeAttribute.unfoldSameDirectionRule', rule: NodeAttribute.unfoldSameDirectionRule},
 		{name: 'Alignment.expandRule', rule: Alignment.expandRule},
 		{name: 'Alignment.leftAlignRule', rule: Alignment.leftAlignRule},
+		{name: 'NodeAttribute.unfoldSameDirectionRule', rule: NodeAttribute.unfoldSameDirectionRule},
 		{name: 'coalesceSpacesRule', rule: coalesceSpacesRule},
 
 		/*

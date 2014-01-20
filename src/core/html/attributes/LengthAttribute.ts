@@ -133,7 +133,7 @@ class LengthAttribute extends Markup {
 			repr.push(this.pct.repr('%'));
 		}
 		if (this.lines.isSet()) {
-			repr.push(this.pct.repr(' lines'));
+			repr.push(this.lines.repr(' lines'));
 		}
 		r.title = (this.direction === sinf.horiz) ? 'Width' : 'Height';
 		r.title += ' (' + repr.join(', ') + ')';

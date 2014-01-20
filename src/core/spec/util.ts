@@ -340,3 +340,15 @@ export function rectOffset(rect1: inf.Rect, rect2: inf.Rect): inf.Position {
 		y: rect1.y - rect2.y,
 	};
 }
+
+export function textExactLines(text: inf.StaticText): number {
+	if (!text.inputMinLines || !text.inputMaxLines ||
+		text.inputMinLines !== text.inputMaxLines) {
+		return;
+	}
+	var lines = text.inputMinLines;
+	if (text.outputMaxLines && text.outputMaxLines !== lines) {
+		return;
+	}
+	return lines;
+}

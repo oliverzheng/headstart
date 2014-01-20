@@ -59,10 +59,13 @@
 								"title": "TextContent (value: Text Value Eh)"
 							},
 							{
+								"title": "LineHeight (box line height: 15, used line height: 15)"
+							},
+							{
 								"title": "Width (40px explicit)"
 							},
 							{
-								"title": "Height (30px implicit)"
+								"title": "Height (30px implicit, 2 lines explicit)"
 							},
 							{
 								"title": "NodeAttribute"

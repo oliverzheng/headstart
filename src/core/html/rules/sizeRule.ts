@@ -437,21 +437,21 @@ export function sizeShrinkHeightToText(component: c.Component): Rules.RuleResult
 
 	var text = textAttr.getText();
 	// Only do exactly N lines for now
-	if (!text.inputMinLines || !text.inputMaxLines ||
-		text.inputMinLines !== text.inputMaxLines) {
+	var lines = util.textExactLines(text);
+	if (lines == null)
 		return;
-	}
-	var lines = text.inputMinLines;
-	if (text.outputMaxLines && text.outputMaxLines !== lines) {
-		return;
-	}
 
 	var height = lines * text.lineHeight;
 
 	return [{
 		component: component,
 		attributes: [
-			new LengthAttribute(sinf.vert, Measurement.implicit(height))
+			new LengthAttribute(
+				sinf.vert,
+				Measurement.implicit(height),
+				null,
+				Measurement.explicit(lines)
+			)
 		],
 	}];
 }

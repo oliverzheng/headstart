@@ -17,7 +17,6 @@ class TextContent extends Markup {
 			component: this.component,
 			css: {
 				'font-size': this.getText().fontSize.toString() + 'px',
-				'line-height': this.getText().lineHeight.toString() + 'px',
 			},
 		}];
 	}

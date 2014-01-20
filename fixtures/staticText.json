@@ -56,6 +56,12 @@
 								"id": "1"
 							},
 							{
+								"title": "TextContent (value: asdf)"
+							},
+							{
+								"title": "LineHeight (box line height: 3, used line height: 3)"
+							},
+							{
 								"title": "Width (600px implicit, 1% implicit)"
 							},
 							{
@@ -66,9 +72,6 @@
 							},
 							{
 								"title": "BlockFormat"
-							},
-							{
-								"title": "TextContent (value: asdf)"
 							},
 							{
 								"title": "CSSAttribute",
