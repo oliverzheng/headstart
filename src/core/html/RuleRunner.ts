@@ -145,6 +145,7 @@ var defaultRuleGroups: RuleGroup[] = [{
 	rules: [
 		{name: 'dynamicBox', rule: NodeAttribute.dynamicBoxRule},
 		{name: 'percentChildRule', rule: percentChildRule},
+		{name: 'TextContent.staticTextRule', rule: TextContent.staticTextRule},
 	],
 }, {
 	// Calculate sizes
@@ -154,6 +155,7 @@ var defaultRuleGroups: RuleGroup[] = [{
 		{name: 'sizeRule.sizePercentChildren', rule: sizeRule.sizePercentChildren},
 		{name: 'sizeRule.sizeExpandedChildren', rule: sizeRule.sizeExpandedChildren},
 		{name: 'sizeRule.sizeShrink', rule: sizeRule.sizeShrink},
+		{name: 'sizeRule.sizeShrinkHeightToText', rule: sizeRule.sizeShrinkHeightToText},
 	],
 }, {
 	// Hierarchy changing rules
@@ -189,7 +191,6 @@ var defaultRuleGroups: RuleGroup[] = [{
 		{name: 'FloatFormat.alignRule', rule: FloatFormat.alignRule},
 		{name: 'Margin.marginRule', rule: Margin.marginRule},
 		{name: 'HorizontalCenter.marginAutoRule', rule: HorizontalCenter.marginAutoRule},
-		{name: 'TextContent.staticTextRule', rule: TextContent.staticTextRule},
 	],
 }, {
 	// Apply all CSS

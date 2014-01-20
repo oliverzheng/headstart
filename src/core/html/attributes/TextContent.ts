@@ -2,21 +2,24 @@ import assert = require('assert');
 
 import Rules = require('../Rules');
 import Attributes = require('../Attributes');
+import Markup = require('../Markup');
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
 import BoxAttribute = require('./BoxAttribute');
 
-class TextContent extends Attributes.BaseAttribute {
-	value: string;
-
-	constructor(value: string) {
-		super();
-
-		this.value = value;
-	}
-
+class TextContent extends Markup {
 	getType() {
 		return Attributes.Type.TEXT_CONTENT;
+	}
+
+	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
+		return [{
+			component: this.component,
+			css: {
+				'font-size': this.getText().fontSize.toString() + 'px',
+				'line-height': this.getText().lineHeight.toString() + 'px',
+			},
+		}];
 	}
 
 	static getFrom(component: c.Component): TextContent {
@@ -24,16 +27,17 @@ class TextContent extends Attributes.BaseAttribute {
 	}
 
 	equals(attribute: Attributes.BaseAttribute) {
-		if (!this.isSameAttrType(attribute)) { return false; }
-		var attr = <TextContent>attribute;
-
-		return this.value === attr.value;
+		return this.isSameAttrType(attribute);
 	}
 
 	repr(): Attributes.Repr {
 		var repr = super.repr();
-		repr.title += ' (value: ' + this.value + ')';
+		repr.title += ' (value: ' + this.getText().value + ')';
 		return repr;
+	}
+
+	getText() {
+		return this.component.boxAttr().getBox().staticContent.text;
 	}
 
 	static staticTextRule(component: c.Component): Rules.RuleResult[] {
@@ -57,7 +61,7 @@ class TextContent extends Attributes.BaseAttribute {
 		if (text.value) {
 			return [{
 				component: component,
-				attributes: [new TextContent(text.value)],
+				attributes: [new TextContent()],
 			}];
 		}
 	}

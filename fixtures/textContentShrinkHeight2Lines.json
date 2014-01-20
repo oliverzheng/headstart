@@ -14,22 +14,22 @@
 			{
 				"id": "1",
 				"w": {
-					"unit": 3,
+					"unit": 0,
 					"value": 40
 				},
 				"h": {
-					"unit": 0,
+					"unit": 4,
 					"value": 40
 				},
 				"direction": 2,
 				"content": 1,
 				"staticContent": {
 					"text": {
-						"fontSize": 3,
-						"lineHeight": 3,
-						"value": "asdf",
-						"inputMinLines": null,
-						"inputMaxLines": null,
+						"fontSize": 12,
+						"lineHeight": 15,
+						"value": "Text Value Eh",
+						"inputMinLines": 2,
+						"inputMaxLines": 2,
 						"outputMaxLines": null
 					}
 				}
@@ -38,7 +38,7 @@
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "3",
+		"id": "51",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -49,17 +49,20 @@
 				"children": [
 					{
 						"title": "Component",
-						"id": "4",
+						"id": "52",
 						"children": [
 							{
 								"title": "BoxAttribute",
 								"id": "1"
 							},
 							{
-								"title": "Width (600px implicit, 1% implicit)"
+								"title": "TextContent (value: Text Value Eh)"
 							},
 							{
-								"title": "Height (40px explicit)"
+								"title": "Width (40px explicit)"
+							},
+							{
+								"title": "Height (30px implicit)"
 							},
 							{
 								"title": "NodeAttribute"
@@ -68,19 +71,16 @@
 								"title": "BlockFormat"
 							},
 							{
-								"title": "TextContent (value: asdf)"
-							},
-							{
 								"title": "CSSAttribute",
 								"children": [
 									{
-										"title": "font-size: 3px"
+										"title": "font-size: 12px"
 									},
 									{
-										"title": "line-height: 3px"
+										"title": "line-height: 15px"
 									},
 									{
-										"title": "height: 40px"
+										"title": "width: 40px"
 									},
 									{
 										"title": "display: block"

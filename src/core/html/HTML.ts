@@ -31,7 +31,7 @@ export class DOMNode {
 		});
 
 		var textContent = TextContent.getFrom(component);
-		var text: string = (textContent && textContent.value) || null;
+		var text: string = (textContent && textContent.getText().value) || null;
 
 		// Only one of these apply
 		assert(!(text && (childrenNodes.length > 0)));

@@ -6,6 +6,7 @@ import StackedChildren = require('../attributes/StackedChildren');
 import Measurement = require('../attributes/Measurement');
 import PositionAttribute = require('../attributes/PositionAttribute');
 import LengthAttribute = require('../attributes/LengthAttribute');
+import TextContent = require('../attributes/TextContent');
 import matchChildren = require('../patterns/matchChildren');
 import hasBoxContent = require('../patterns/hasBoxContent');
 import getDirection = require('../patterns/getDirection');
@@ -421,4 +422,36 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 	}
 
 	return results;
+}
+
+export function sizeShrinkHeightToText(component: c.Component): Rules.RuleResult[] {
+	var textAttr = TextContent.getFrom(component);
+	if (!textAttr) {
+		return;
+	}
+	var box = component.boxAttr().getBox();
+	var shrinkHeight = box.h.unit === sinf.LengthUnit.SHRINK;
+	if (!shrinkHeight) {
+		return;
+	}
+
+	var text = textAttr.getText();
+	// Only do exactly N lines for now
+	if (!text.inputMinLines || !text.inputMaxLines ||
+		text.inputMinLines !== text.inputMaxLines) {
+		return;
+	}
+	var lines = text.inputMinLines;
+	if (text.outputMaxLines && text.outputMaxLines !== lines) {
+		return;
+	}
+
+	var height = lines * text.lineHeight;
+
+	return [{
+		component: component,
+		attributes: [
+			new LengthAttribute(sinf.vert, Measurement.implicit(height))
+		],
+	}];
 }
