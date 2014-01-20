@@ -134,12 +134,10 @@ export var DetailComponent = React.createClass({
 				);
 			} else {
 				var classNames = 'content';
-				/*
-				var disabled = children.length > 0 && content !== inf.Content.NONE;
+				var disabled = children.length > 0 && content === inf.Content.STATIC;
 				if (disabled) {
 					classNames += ' disabled';
 				}
-				*/
 				var disabled = false;
 				return React.DOM.a(
 					{className: classNames, key: content, href: '#', onClick: (event: any) => {
@@ -184,8 +182,10 @@ export var DetailComponent = React.createClass({
 			}
 		});
 
+		var disableChildren = box.content === inf.Content.STATIC;
+
 		var childrenMarkup = [
-			React.DOM.button({onClick: this.addChild}, 'Add Child'),
+			React.DOM.button({onClick: disableChildren ? null : this.addChild, disabled: disableChildren}, 'Add Child'),
 			React.DOM.div({},
 				React.DOM.strong(null, 'Direction:'),
 				React.DOM.span(null, directions)
