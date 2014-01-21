@@ -134,7 +134,7 @@ export var noDirection = Direction.NONE;
 export var horiz = Direction.HORIZONTAL;
 export var vert = Direction.VERTICAL;
 
-export var directions = [noDirection, horiz, vert];
+export var directions = [horiz, vert];
 
 
 export enum OVERFLOW {
