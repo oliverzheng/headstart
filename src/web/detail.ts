@@ -1,3 +1,5 @@
+import assert = require('assert');
+
 import inf = require('../core/spec/interfaces');
 import add = require('./add');
 
@@ -64,6 +66,27 @@ export var DetailComponent = React.createClass({
 		this.props.onBoxChanged(this.props.box);
 	},
 
+	moveBoxUp(box: inf.Box) {
+		var index = box.parent.children.indexOf(box);
+		assert(index !== -1 && index > 0);
+
+		box.parent.children.splice(index, 1);
+		box.parent.children.splice(index - 1, 0, box);
+
+		this.props.onBoxChanged(box.parent);
+	},
+
+	moveBoxDown(box: inf.Box) {
+		var children = box.parent.children;
+		var index = children.indexOf(box);
+		assert(index !== -1 && index < (children.length - 1));
+
+		children.splice(index, 1);
+		children.splice(index + 1, 0, box);
+
+		this.props.onBoxChanged(box.parent);
+	},
+
 	changeDirection(direction: inf.Direction) {
 		this.props.box.direction = direction;
 		this.props.onBoxChanged(this.props.box);
@@ -103,14 +126,35 @@ export var DetailComponent = React.createClass({
 			return React.DOM.div({className: 'detail'});
 		}
 
-		var children = (box.children || <inf.Box[]>[]).map((child) => {
-			return React.DOM.p({key: child.id}, React.DOM.a({
-				href: '#',
-				onClick: (event: any) => {
-					this.props.updateSelectedBox(child);
-					event.preventDefault();
-				},
-			}, 'child id: ' + child.id));
+		var children = (box.children || <inf.Box[]>[]).map((child, i, array) => {
+			var isFirst = i === 0;
+			var isLast = i === array.length - 1;
+
+			return React.DOM.p({key: child.id},
+				React.DOM.a({
+					href: '#',
+					onClick: (event: any) => {
+						this.props.updateSelectedBox(child);
+						event.preventDefault();
+					},
+				}, 'child id: ' + child.id),
+				' ',
+				(!isLast) ? React.DOM.a({
+						href: '#',
+						onClick: (event: any) => {
+							this.moveBoxDown(child);
+							event.preventDefault();
+						},
+					}, '▼') : null,
+				' ',
+				(!isFirst) ? React.DOM.a({
+						href: '#',
+						onClick: (event: any) => {
+							this.moveBoxUp(child);
+							event.preventDefault();
+						},
+					}, '▲') : null
+			);
 		});
 
 		var parent: any = null;
