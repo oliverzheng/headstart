@@ -1,5 +1,5 @@
 import inf = require('../core/spec/interfaces');
-import l = require('../core/spec/layout');
+import Preview = require('../core/html/Preview');
 
 export var BoxComponent = React.createClass({
 	onClick(event: any) {
@@ -8,13 +8,13 @@ export var BoxComponent = React.createClass({
 	},
 
 	render() {
-		var layout: l.Layout = this.props.layout;
+		var preview: Preview = this.props.preview;
 		var box: inf.Box = this.props.box;
-		var rect = layout.getRect(box);
+		var rect = preview.getBounds(box);
 		var children = (box.children || <inf.Box[]>[]).map((child) => {
 			return this.transferPropsTo(
 				BoxComponent({
-					layout: layout,
+					preview: preview,
 					box: child,
 					key: child.id,
 				})

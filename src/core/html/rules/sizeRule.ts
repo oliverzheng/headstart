@@ -306,9 +306,12 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 	}
 
 	var children = StackedChildren.getFrom(component);
-	if (!children)
-		return;
-	var childrenComponents = children.get();
+	var childrenComponents: c.Component[];
+	if (children) {
+		childrenComponents = children.get();
+	} else {
+		childrenComponents = [];
+	}
 	var direction = getDirection(component);
 	assert(!!direction);
 
@@ -317,7 +320,11 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 
 	var results: Rules.RuleResult[] = [];
 
-	if (shrinkWidth) {
+	var box = component.boxAttr() ? component.boxAttr().getBox() : null;
+	var staticText = (box && box.staticContent) ? box.staticContent.text : null;
+	var hasStaticText = !!staticText;
+
+	if (shrinkWidth && !hasStaticText) {
 		var horizSizedWidths = childrenComponents.map((child) => {
 			return LengthAttribute.getFrom(child, sinf.horiz);
 		}).filter((length) => length && length.px.isSet());
@@ -369,7 +376,7 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 		}
 	}
 
-	if (shrinkHeight) {
+	if (shrinkHeight && !hasStaticText) {
 		var vertSizedHeights = childrenComponents.map((child) => {
 			return LengthAttribute.getFrom(child, sinf.vert);
 		}).filter((length) => length && length.px.isSet());

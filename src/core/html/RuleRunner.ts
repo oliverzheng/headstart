@@ -141,8 +141,7 @@ export interface RuleGroup {
 	rules: RuleWithName[];
 }
 
-var defaultRuleGroups: RuleGroup[] = [{
-	// User specified rules
+var userSpecifiedRules: RuleGroup = {
 	independent: true,
 	rules: [
 		{name: 'dynamicBox', rule: NodeAttribute.dynamicBoxRule},
@@ -151,8 +150,9 @@ var defaultRuleGroups: RuleGroup[] = [{
 		{name: 'LineHeight.staticTextRule', rule: LineHeight.staticTextRule},
 		{name: 'InlineFormat.shrinkWidthToTextRule', rule: InlineFormat.shrinkWidthToTextRule},
 	],
-}, {
-	// Calculate sizes
+};
+
+var sizeCalculationRules: RuleGroup = {
 	independent: true,
 	rules: [
 		{name: 'sizeRule.sizeUserExplicit', rule: sizeRule.sizeUserExplicit},
@@ -161,7 +161,12 @@ var defaultRuleGroups: RuleGroup[] = [{
 		{name: 'sizeRule.sizeShrink', rule: sizeRule.sizeShrink},
 		{name: 'sizeRule.sizeShrinkHeightToText', rule: sizeRule.sizeShrinkHeightToText},
 	],
-}, {
+};
+
+export var defaultRuleGroups: RuleGroup[] = [
+	userSpecifiedRules,
+	sizeCalculationRules,
+{
 	// Hierarchy changing rules
 	independent: false,
 	rules: [
@@ -204,6 +209,11 @@ var defaultRuleGroups: RuleGroup[] = [{
 		{name: 'CSSAttribute.applyCssRule', rule: CSSAttribute.applyCssRule},
 	],
 }];
+
+export var renderingRuleGroups: RuleGroup[] = [
+	userSpecifiedRules,
+	sizeCalculationRules,
+];
 
 export function runOn(component: c.Component, context: Context.Context, logs: string[], ruleGroups: RuleGroup[] = defaultRuleGroups) {
 	ruleGroups.forEach((group) => {

@@ -74,29 +74,26 @@ export var DetailComponent = React.createClass({
 		this.props.onBoxChanged(this.props.box);
 	},
 
-	changeAlignment(alignment: inf.Alignment) {
-		this.props.box.alignment = alignment;
-		this.props.onBoxChanged(this.props.box);
-	},
-
 	onStaticContentChanged() {
 		var fontSize = this.refs.staticTextFontSize.getDOMNode().value;
+		var lineHeight = this.refs.staticTextLineHeight.getDOMNode().value || fontSize;
 		var text: inf.StaticText;
 		if (fontSize) {
 			text = {
 				fontSize: parseInt(fontSize, 10),
-				lineHeight: parseInt(this.refs.staticTextLineHeight.getDOMNode().value, 10) || null,
+				lineHeight: parseInt(lineHeight, 10) || null,
 				value: this.refs.staticTextValue.getDOMNode().value,
 				fontFamily: this.refs.staticTextFontFamily.getDOMNode().value,
 				inputMinLines: parseInt(this.refs.staticTextInputMinLines.getDOMNode().value, 10) || null,
 				inputMaxLines: parseInt(this.refs.staticTextInputMaxLines.getDOMNode().value, 10) || null,
 				outputMaxLines: parseInt(this.refs.staticTextOutputMaxLines.getDOMNode().value, 10) || null,
 			};
+
+			this.props.box.staticContent = {
+				text: text,
+			};
+			this.props.onBoxChanged(this.props.box);
 		}
-		this.props.box.staticContent = {
-			text: text,
-		};
-		this.props.onBoxChanged(this.props.box);
 	},
 
 	render() {
@@ -167,22 +164,6 @@ export var DetailComponent = React.createClass({
 			}
 		});
 
-		var alignments = inf.alignments.map((alignment) => {
-			if (alignment === (box.alignment || inf.defaultAlignment)) {
-				return React.DOM.strong(
-					{className: 'alignment', key: alignment},
-					inf.Alignment[alignment]
-				);
-			} else {
-				return React.DOM.a(
-					{className: 'alignment', key: alignment, href: '#', onClick: (event: any) => {
-						this.changeAlignment(alignment);
-					}},
-					inf.Alignment[alignment]
-				);
-			}
-		});
-
 		var disableChildren = box.content === inf.Content.STATIC;
 
 		var childrenMarkup = [
@@ -190,10 +171,6 @@ export var DetailComponent = React.createClass({
 			React.DOM.div({},
 				React.DOM.strong(null, 'Direction:'),
 				React.DOM.span(null, directions)
-			),
-			React.DOM.div({},
-				React.DOM.strong(null, 'Alignment:'),
-				React.DOM.span(null, alignments)
 			),
 			React.DOM.div({}, children),
 		];
@@ -301,7 +278,7 @@ export var DetailComponent = React.createClass({
 			);
 		}
 
-		var isRoot = box === this.props.layout.root;
+		var isRoot = this.props.box === this.props.rootBox;
 		return React.DOM.div(
 			{className: 'detail'},
 			React.DOM.div(null,
@@ -325,7 +302,7 @@ export var DetailComponent = React.createClass({
 			childrenMarkup,
 			staticText,
 			React.DOM.hr(null),
-			(box !== this.props.layout.root)
+			(!isRoot)
 				? React.DOM.button({onClick: this.deleteBox}, 'Delete Box')
 				: null
 		);

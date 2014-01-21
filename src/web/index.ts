@@ -1,10 +1,11 @@
 import lc = require('./layout');
 import inf = require('../core/spec/interfaces');
-import l = require('../core/spec/layout');
+import sutil = require('../core/spec/util');
 import detail = require('./detail');
 import add = require('./add');
 import comp = require('./component');
 import c = require('../core/html/Component');
+import Preview = require('../core/html/Preview');
 import Attributes = require('../core/html/Attributes');
 import RuleRunner = require('../core/html/RuleRunner');
 import Context = require('../core/html/Context');
@@ -44,7 +45,8 @@ var PageComponent = React.createClass({
 		this.refreshFixtures();
 
 		return {
-			layout: new l.Layout(root),
+			rootBox: root,
+			preview: new Preview(root),
 			selectedBox: null,
 			rootComponent: c.Component.fromBox(root),
 
@@ -90,9 +92,11 @@ var PageComponent = React.createClass({
 	},
 
 	onBoxChanged(box: inf.Box) {
+		sutil.refreshParents(this.state.rootBox);
+		this.state.preview.update();
 		this.setState({
-			layout: this.state.layout,
-			rootComponent: c.Component.fromBox(this.state.layout.root),
+			preview: this.state.preview,
+			rootComponent: c.Component.fromBox(this.state.rootBox),
 		});
 	},
 
@@ -103,7 +107,8 @@ var PageComponent = React.createClass({
 			browserFixtures.readFixture,
 			(root: inf.Box, componentRepr: Attributes.Repr) => {
 				this.setState({
-					layout: new l.Layout(root),
+					rootBox: root,
+					preview: new Preview(root),
 					rootComponent: c.Component.fromBox(root),
 					selectedBox: null,
 					justLoaded: true,
@@ -140,7 +145,7 @@ var PageComponent = React.createClass({
 		}
 		fixtures.save(
 			name,
-			this.state.layout.root,
+			this.state.rootBox,
 			this.state.rootComponent,
 			browserFixtures.writeFixture,
 			(data) => {
@@ -276,7 +281,8 @@ var PageComponent = React.createClass({
 		return (
 			React.DOM.div(null,
 				lc.LayoutComponent({
-					layout: this.state.layout,
+					rootBox: this.state.rootBox,
+					preview: this.state.preview,
 					onBoxClicked: this.onBoxClicked,
 					selectedBox: this.state.selectedBox,
 				}),
@@ -319,8 +325,8 @@ var PageComponent = React.createClass({
 					oldRepr,
 					React.DOM.hr(null),
 					detail.DetailComponent({
-						layout: this.state.layout,
-						box: this.state.selectedBox || this.state.layout.root,
+						box: this.state.selectedBox || this.state.rootBox,
+						rootBox: this.state.rootBox,
 						onBoxChanged: this.onBoxChanged,
 						updateSelectedBox: this.onBoxClicked,
 					}),

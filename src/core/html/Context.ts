@@ -91,3 +91,5 @@ export var ie10AndAbove: Context = Context.unsupportBrowsers([{
 	vendor: BROWSER_VENDOR.IE,
 	maxVersion: 10,
 }]);
+
+export var defaultContext = ie6AndAbove;
