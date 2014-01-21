@@ -21,6 +21,8 @@ export var RootComponent = React.createClass({
 
 		RuleRunner.runOn(component, Context.ie6AndAbove, logs);
 
+		this.props.onRulesRun();
+
 		this.setState({logs: logs});
 	},
 
@@ -39,7 +41,7 @@ export var RootComponent = React.createClass({
 				),
 				React.DOM.strong(null, 'HTML:'),
 				React.DOM.pre(null,
-					HTML.DOMNode.fromComponent(this.props.component).map((node) => DOMNodeComponent({depth: 0, node: node}))
+					HTML.DOMNode.fromComponent(this.props.component).map((node) => node.toString())
 				),
 				React.DOM.pre(null,
 					this.state.logs.join('\n'))
@@ -75,29 +77,6 @@ export var ComponentComponent = React.createClass({
 			React.DOM.div(null,
 				serializeRepr(component.repr())
 			)
-		);
-	},
-});
-
-export var DOMNodeComponent = React.createClass({
-	render() {
-		var node = <HTML.DOMNode>this.props.node;
-		var depth = <number>this.props.depth;
-		var spaces = Array(depth + 1).join('  ');
-
-		var openTag = '<' + node.tagName;
-		var css = node.reprCss();
-		if (css) {
-			openTag += ' styles="' + css + '"';
-		}
-		openTag += '>';
-		return React.DOM.div(null,
-			React.DOM.span(null, spaces + openTag),
-			React.DOM.div(null, node.children.map(
-				(child) => DOMNodeComponent({node: child, depth: depth+1})
-			)),
-			node.content ? React.DOM.div(null, spaces + '  ' + node.content) : null,
-			React.DOM.span(null, spaces + '</' + node.tagName + '>')
 		);
 	},
 });

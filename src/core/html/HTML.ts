@@ -23,6 +23,27 @@ export class DOMNode {
 		return styles.join('; ');
 	}
 
+	toString(depth: number = 0): string {
+		var spaces = Array(depth + 1).join('  ');
+
+		var str = spaces + '<' + this.tagName;
+		var css = this.reprCss();
+		if (css) {
+			str += ' style="' + css + '"';
+		}
+		str += '>\n';
+
+		if (this.content) {
+			str += spaces + '  ' + this.content + '\n';
+		} else {
+			str += this.children.map((child) => child.toString(depth + 1)).join('');
+		}
+
+		str += spaces + '</' + this.tagName + '>\n';
+
+		return str;
+	}
+
 	static fromComponent(component: c.Component): DOMNode[] {
 		var childrenNodes: DOMNode[] = [];
 

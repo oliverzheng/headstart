@@ -16,6 +16,7 @@ export var BoxComponent = React.createClass({
 				BoxComponent({
 					preview: preview,
 					box: child,
+					rootBox: this.props.rootBox,
 					key: child.id,
 				})
 			);
@@ -23,6 +24,9 @@ export var BoxComponent = React.createClass({
 		var className = 'box';
 		if (this.props.selectedBox === box) {
 			className += ' selected';
+		}
+		if (this.props.rootBox === box) {
+			className += ' root';
 		}
 		return this.transferPropsTo(
 			React.DOM.div({

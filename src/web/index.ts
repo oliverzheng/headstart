@@ -8,6 +8,7 @@ import c = require('../core/html/Component');
 import Preview = require('../core/html/Preview');
 import Attributes = require('../core/html/Attributes');
 import RuleRunner = require('../core/html/RuleRunner');
+import HTML = require('../core/html/HTML');
 import Context = require('../core/html/Context');
 import fixtures = require('../test/fixtures');
 
@@ -49,6 +50,7 @@ var PageComponent = React.createClass({
 			preview: new Preview(root),
 			selectedBox: null,
 			rootComponent: c.Component.fromBox(root),
+			html: '',
 
 			fixtureNames: <any[]>[],
 
@@ -94,9 +96,17 @@ var PageComponent = React.createClass({
 	onBoxChanged(box: inf.Box) {
 		sutil.refreshParents(this.state.rootBox);
 		this.state.preview.update();
+
 		this.setState({
 			preview: this.state.preview,
 			rootComponent: c.Component.fromBox(this.state.rootBox),
+		});
+	},
+
+	onRulesRun() {
+		var html = HTML.DOMNode.fromComponent(this.state.rootComponent).map((node) => node.toString()).join('');
+		this.setState({
+			html: html,
 		});
 	},
 
@@ -280,12 +290,6 @@ var PageComponent = React.createClass({
 		}
 		return (
 			React.DOM.div(null,
-				lc.LayoutComponent({
-					rootBox: this.state.rootBox,
-					preview: this.state.preview,
-					onBoxClicked: this.onBoxClicked,
-					selectedBox: this.state.selectedBox,
-				}),
 				React.DOM.div({className: 'rightSide'},
 					React.DOM.input({
 						placeholder: 'Fixture Name',
@@ -332,10 +336,21 @@ var PageComponent = React.createClass({
 					}),
 					React.DOM.hr(),
 					comp.RootComponent({
+						onRulesRun: this.onRulesRun,
 						component: this.state.rootComponent,
 						ref: 'rootComponent',
 					})
-				)
+				),
+				lc.LayoutComponent({
+					rootBox: this.state.rootBox,
+					preview: this.state.preview,
+					onBoxClicked: this.onBoxClicked,
+					selectedBox: this.state.selectedBox,
+				}),
+				React.DOM.div({
+					className: 'renderedHTML',
+					dangerouslySetInnerHTML: {__html: this.state.html},
+				})
 			)
 		);
 	}

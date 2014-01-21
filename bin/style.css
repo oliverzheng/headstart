@@ -2,6 +2,10 @@
 	position: relative;
 }
 
+.layout, .renderedHTML {
+	width: 600px;
+}
+
 
 .rightSide {
 	width: 600px;
@@ -30,6 +34,11 @@
 	cursor: pointer;
 }
 
+.box.root {
+	position: relative;
+	border-style: dashed !important;
+}
+
 .box.selected {
 	border-color: #BCF;
 	box-shadow: 0px 0px 5px #BCF;
@@ -49,6 +58,11 @@
 	margin-top: -1px;
 	margin-left: -1px;
 	position: relative;
+}
+
+.renderedHTML {
+	margin-top: 20px;
+	border: 1px solid #BCF;
 }
 
 .components {

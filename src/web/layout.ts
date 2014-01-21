@@ -9,6 +9,7 @@ export var LayoutComponent = React.createClass({
 				box.BoxComponent({
 					preview: this.props.preview,
 					box: this.props.rootBox,
+					rootBox: this.props.rootBox,
 					selectedBox: this.props.selectedBox,
 					onBoxClicked: this.props.onBoxClicked,
 				})
