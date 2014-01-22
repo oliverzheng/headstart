@@ -100,9 +100,13 @@ export var DetailComponent = React.createClass({
 	onStaticContentChanged() {
 		var fontSize = this.refs.staticTextFontSize.getDOMNode().value;
 		var lineHeight = this.refs.staticTextLineHeight.getDOMNode().value || fontSize;
-		var text: inf.StaticText;
+
+		if (!this.props.box.staticContent) {
+			this.props.box.staticContent = {};
+		}
+
 		if (fontSize) {
-			text = {
+			var text: inf.StaticText = {
 				fontSize: parseInt(fontSize, 10),
 				lineHeight: parseInt(lineHeight, 10) || null,
 				value: this.refs.staticTextValue.getDOMNode().value,
@@ -112,11 +116,57 @@ export var DetailComponent = React.createClass({
 				outputMaxLines: parseInt(this.refs.staticTextOutputMaxLines.getDOMNode().value, 10) || null,
 			};
 
-			this.props.box.staticContent = {
-				text: text,
-			};
-			this.props.onBoxChanged(this.props.box);
+			this.props.box.staticContent.text = text;
+		} else {
+			this.props.box.staticContent.text = null;
 		}
+
+		var useStaticImage = this.refs.staticImageEnable.getDOMNode().checked;
+		if (useStaticImage) {
+			var sourceDimension: { w: number; h: number; } = null;
+			var width = this.refs.staticImageWidth.getDOMNode().value;
+			var height = this.refs.staticImageHeight.getDOMNode().value;
+			if (width && height) {
+				sourceDimension = {
+					w: parseInt(width, 10),
+					h: parseInt(height, 10),
+				};
+			}
+			var image: inf.StaticImage = {
+				url: this.refs.staticImageUrl.getDOMNode().value || null,
+				sourceDimension: sourceDimension,
+				accessible: this.refs.staticImageAccessible.getDOMNode().checked,
+			};
+
+			this.props.box.staticContent.image = image;
+		} else {
+			this.props.box.staticContent.image = null;
+		}
+
+		var staticFillColor = this.refs.staticFillColor.getDOMNode().value;
+		if (staticFillColor) {
+			this.props.box.staticContent.fill = { color: staticFillColor };
+		} else {
+			this.props.box.staticContent.fill = null;
+		}
+
+		this.props.onBoxChanged(this.props.box);
+	},
+
+	onStaticImageURLEntered() {
+		var path: string = this.refs.staticImageUrl.getDOMNode().value;
+		var url: any = new window['URL'](path);
+		if (!url.isExternal()) {
+			return;
+		}
+
+		window['Qimage'](path).then((img: any) => {
+			this.refs.staticImageWidth.getDOMNode().value = img.width;
+			this.refs.staticImageHeight.getDOMNode().value = img.height;
+			this.onStaticContentChanged();
+		}, (err: any) => {
+			console.log('Could not retrieve ' + path + ':', err);
+		});
 	},
 
 	render() {
@@ -220,6 +270,8 @@ export var DetailComponent = React.createClass({
 		];
 
 		var staticText: any;
+		var staticImage: any;
+		var staticFill: any;
 		if (box.content === inf.Content.STATIC) {
 			var staticTextFontSize: number;
 			var staticTextLineHeight: number;
@@ -237,12 +289,13 @@ export var DetailComponent = React.createClass({
 				staticTextInputMaxLines = box.staticContent.text.inputMaxLines;
 				staticTextOutputMaxLines = box.staticContent.text.outputMaxLines;
 			}
-			var staticText = React.DOM.div(null,
+			staticText = React.DOM.div(null,
 				React.DOM.div(null,
 					React.DOM.hr(),
 					React.DOM.div(null,
 						React.DOM.strong(null, 'Static Text Font Size: '),
 						React.DOM.input({
+							className: 'lengthValue',
 							type: 'text',
 							value: staticTextFontSize,
 							className: 'staticContent',
@@ -254,6 +307,7 @@ export var DetailComponent = React.createClass({
 					React.DOM.div({ className: staticTextFontSize ? '' : 'disabled'},
 						React.DOM.strong(null, 'Static Text Line Height: '),
 						React.DOM.input({
+							className: 'lengthValue',
 							type: 'text',
 							disabled: !staticTextFontSize,
 							value: staticTextLineHeight,
@@ -320,6 +374,107 @@ export var DetailComponent = React.createClass({
 					)
 				)
 			);
+
+			var hasStaticImage: boolean = false;
+			var staticImageUrl: string;
+			var staticImageWidth: number;
+			var staticImageHeight: number;
+			var staticImageAccessible: boolean;
+			if (box.staticContent && box.staticContent.image) {
+				hasStaticImage = true;
+				staticImageUrl = box.staticContent.image.url;
+				var sourceDimension = box.staticContent.image.sourceDimension;
+				if (sourceDimension) {
+					staticImageWidth = sourceDimension.w;
+					staticImageHeight = sourceDimension.h;
+				}
+				staticImageAccessible = box.staticContent.image.accessible;
+			}
+			var staticImage = React.DOM.div(null,
+				React.DOM.div(null,
+					React.DOM.hr(),
+					React.DOM.div(null,
+						React.DOM.strong(null, 'Static Image: '),
+						React.DOM.input({
+							type: 'checkbox',
+							checked: hasStaticImage,
+							className: 'staticContent',
+							ref: 'staticImageEnable',
+							onChange: this.onStaticContentChanged,
+						}),
+						React.DOM.span(null, 'Enable')
+					),
+					React.DOM.div({ className: hasStaticImage ? '' : 'disabled'},
+						React.DOM.strong(null, 'Static Image URL: '),
+						React.DOM.input({
+							type: 'text',
+							disabled: !hasStaticImage,
+							value: staticImageUrl,
+							className: 'staticContent',
+							ref: 'staticImageUrl',
+							onChange: this.onStaticContentChanged,
+							onBlur: this.onStaticImageURLEntered,
+						})
+					),
+					React.DOM.div({ className: hasStaticImage ? '' : 'disabled'},
+						React.DOM.strong(null, 'Static Image Source Dimension Width: '),
+						React.DOM.input({
+							className: 'lengthValue',
+							type: 'text',
+							disabled: !hasStaticImage,
+							value: staticImageWidth,
+							className: 'staticContent',
+							ref: 'staticImageWidth',
+							onChange: this.onStaticContentChanged,
+						}),
+						React.DOM.span(null, 'px')
+					),
+					React.DOM.div({ className: hasStaticImage ? '' : 'disabled'},
+						React.DOM.strong(null, 'Static Image Source Dimension Height: '),
+						React.DOM.input({
+							className: 'lengthValue',
+							type: 'text',
+							disabled: !hasStaticImage,
+							value: staticImageHeight,
+							className: 'staticContent',
+							ref: 'staticImageHeight',
+							onChange: this.onStaticContentChanged,
+						}),
+						React.DOM.span(null, 'px')
+					),
+					React.DOM.div({ className: hasStaticImage ? '' : 'disabled'},
+						React.DOM.strong(null, 'Static Image Accessible (use <img>): '),
+						React.DOM.input({
+							disabled: !hasStaticImage,
+							checked: staticImageAccessible,
+							type: 'checkbox',
+							className: 'staticContent',
+							ref: 'staticImageAccessible',
+							onChange: this.onStaticContentChanged,
+						})
+					)
+				)
+			);
+
+			var staticFillColor: string;
+			if (box.staticContent && box.staticContent.fill) {
+				staticFillColor = box.staticContent.fill.color;
+			}
+			staticFill = React.DOM.div(null,
+				React.DOM.div(null,
+					React.DOM.hr(),
+					React.DOM.div(null,
+						React.DOM.strong(null, 'Static Fill: '),
+						React.DOM.input({
+							type: 'text',
+							value: staticFillColor,
+							className: 'staticContent',
+							ref: 'staticFillColor',
+							onBlur: this.onStaticContentChanged,
+						})
+					)
+				)
+			);
 		}
 
 		var isRoot = this.props.box === this.props.rootBox;
@@ -345,10 +500,31 @@ export var DetailComponent = React.createClass({
 			parent,
 			childrenMarkup,
 			staticText,
+			staticImage,
+			staticFill,
 			React.DOM.hr(null),
 			(!isRoot)
 				? React.DOM.button({onClick: this.deleteBox}, 'Delete Box')
 				: null
 		);
-	}
+	},
+
+	setupColorPicker() {
+		if (!this.refs || !this.refs.staticFillColor)
+			return;
+
+		var fillColor = this.refs.staticFillColor.getDOMNode();
+		if (fillColor.color) {
+			return;
+		}
+		new window['jscolor'].color(fillColor, {required: false, hash: true});
+	},
+
+	componentDidMount() {
+		this.setupColorPicker();
+	},
+
+	componentDidUpdate() {
+		this.setupColorPicker();
+	},
 });

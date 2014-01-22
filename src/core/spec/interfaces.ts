@@ -241,18 +241,23 @@ export interface StaticText {
 	outputMaxLines?: number;
 }
 
-export interface StaticBackground {
+export interface StaticFill {
 	color?: string;
-	images?: {
-		resource: string;
-		repeatX: boolean;
-		repeatY: boolean;
-	}[];
+}
+
+export interface StaticImage {
+	url?: string;
+	sourceDimension?: {
+		w: number;
+		h: number;
+	};
+	accessible: boolean; // i.e. must use <img> for screen readers, Google, etc.
 }
 
 export interface StaticContent {
 	text?: StaticText;
-	background?: StaticBackground;
+	fill?: StaticFill;
+	image?: StaticImage;
 }
 
 

@@ -4,9 +4,14 @@
 		<link rel="stylesheet" href="style.css" />
 	<body>
 		<script src="/bower_components/react/react.js"></script>
+		<script src="/bower_components/q/q.js"></script>
+		<script src="/bower_components/qimage/build/qimage.min.js"></script>
 		<script src="/bower_components/requirejs/require.js"></script>
 		<script src="/bower_components/jquery/jquery.js"></script>
+		<script src="/bower_components/kurl/url.js"></script>
+		<script src="/bower_components/jscolor/jscolor.js"></script>
 		<script>
+			jscolor.getDir(); // Does require.js remove existing <script> tags or something?!
 			require(['browserFixtures', '../lib/src/web/index.js'], function(_, index) {
 				index.render(document.body);
 			});

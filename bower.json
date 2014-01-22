@@ -18,6 +18,9 @@
   "dependencies": {
     "requirejs": "latest",
     "react": "0.4.1",
-    "jquery": "2.0.3"
+    "jquery": "2.0.3",
+    "qimage": "latest",
+    "kurl": "git://github.com/yeikos/js.url.git",
+    "jscolor": "git://github.com/oliverzheng/jscolor.git"
   }
 }
