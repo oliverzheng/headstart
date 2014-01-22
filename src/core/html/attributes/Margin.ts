@@ -46,8 +46,15 @@ class Margin extends Markup {
 		if (direction === sinf.horiz) {
 			if (prev)
 				css['margin-left'] = LengthAttribute.getFrom(prev, sinf.horiz).px.value + 'px';
-			if (next)
-				css['margin-right'] = LengthAttribute.getFrom(next, sinf.horiz).px.value + 'px';
+			if (next) {
+				// There is no margin folding for horizontal margins. We only
+				// want to apply a margin-right if there won't be a component
+				// using the same space as margin-left.
+				var nextNext = StackedChildren.getNextSibling(next);
+				if (!nextNext) {
+					css['margin-right'] = LengthAttribute.getFrom(next, sinf.horiz).px.value + 'px';
+				}
+			}
 		} else {
 			if (prev)
 				css['margin-top'] = LengthAttribute.getFrom(prev, sinf.vert).px.value + 'px';
