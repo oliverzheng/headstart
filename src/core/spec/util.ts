@@ -1,4 +1,5 @@
-import inf = require('./interfaces')
+import assert = require('assert');
+import inf = require('./interfaces');
 
 export function sortNumbers(numbers: number[]) {
 	/* Damn it JavaScript. Why is this not built in? Go home, you are drunk. */
@@ -67,6 +68,35 @@ export function refreshParents(root: inf.Box): void {
 				refresh(child);
 			});
 	})(root);
+}
+
+export function isAncestor(ancestor: inf.Box, descendant: inf.Box): boolean {
+	while (descendant) {
+		if (descendant === ancestor)
+			return true;
+		descendant = descendant.parent;
+	}
+	return false;
+}
+
+export function reparent(box: inf.Box, newParent: inf.Box) {
+	assert(box.parent && newParent);
+
+	if (box.parent === newParent) {
+		return;
+	}
+
+	assert(!isAncestor(box, newParent));
+
+	var index = box.parent.children.indexOf(box);
+	box.parent.children.splice(index, 1);
+
+	if (!newParent.children) {
+		newParent.children = [];
+	}
+	newParent.children.push(box);
+
+	refreshParents(newParent);
 }
 
 /**

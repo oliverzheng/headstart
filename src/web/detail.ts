@@ -1,6 +1,7 @@
 import assert = require('assert');
 
 import inf = require('../core/spec/interfaces');
+import sutil = require('../core/spec/util');
 import add = require('./add');
 
 var LengthComponent = React.createClass({
@@ -85,6 +86,12 @@ export var DetailComponent = React.createClass({
 		children.splice(index + 1, 0, box);
 
 		this.props.onBoxChanged(box.parent);
+	},
+
+	moveBoxToNewParent(child: inf.Box, parent: inf.Box) {
+		sutil.reparent(child, parent);
+
+		this.props.onBoxChanged(parent);
 	},
 
 	changeDirection(direction: inf.Direction) {
@@ -176,6 +183,8 @@ export var DetailComponent = React.createClass({
 			return React.DOM.div({className: 'detail'});
 		}
 
+		var isRoot = this.props.box === this.props.rootBox;
+
 		var children = (box.children || <inf.Box[]>[]).map((child, i, array) => {
 			var isFirst = i === 0;
 			var isLast = i === array.length - 1;
@@ -189,6 +198,14 @@ export var DetailComponent = React.createClass({
 					},
 				}, 'child id: ' + child.id),
 				' ',
+				(!isFirst) ? React.DOM.a({
+						href: '#',
+						onClick: (event: any) => {
+							this.moveBoxUp(child);
+							event.preventDefault();
+						},
+					}, '▲') : null,
+				' ',
 				(!isLast) ? React.DOM.a({
 						href: '#',
 						onClick: (event: any) => {
@@ -197,13 +214,21 @@ export var DetailComponent = React.createClass({
 						},
 					}, '▼') : null,
 				' ',
-				(!isFirst) ? React.DOM.a({
+				(!isRoot) ? React.DOM.a({
 						href: '#',
 						onClick: (event: any) => {
-							this.moveBoxUp(child);
+							this.moveBoxToNewParent(child, this.props.box.parent);
 							event.preventDefault();
 						},
-					}, '▲') : null
+					}, 'Push to parent ⤴') : null,
+				' ',
+				(!isLast) ? React.DOM.a({
+						href: '#',
+						onClick: (event: any) => {
+							this.moveBoxToNewParent(child, box.children[i + 1]);
+							event.preventDefault();
+						},
+					}, 'Push to next sibling ⤵') : null
 			);
 		});
 
@@ -477,7 +502,6 @@ export var DetailComponent = React.createClass({
 			);
 		}
 
-		var isRoot = this.props.box === this.props.rootBox;
 		return React.DOM.div(
 			{className: 'detail'},
 			React.DOM.div(null,
