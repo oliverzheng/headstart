@@ -20,6 +20,7 @@ import FloatFormat = require('./attributes/FloatFormat');
 import Margin = require('./attributes/Margin');
 import HorizontalCenter = require('./attributes/HorizontalCenter');
 import TextContent = require('./attributes/TextContent');
+import Background = require('./attributes/Background');
 import LineHeight = require('./attributes/LineHeight');
 import CSSAttribute = require('./attributes/CSSAttribute');
 
@@ -190,6 +191,7 @@ export var defaultRuleGroups: RuleGroup[] = [
 	independent: true,
 	rules: [
 		{name: 'NodeAttribute.explicitLengthContentRule', rule: NodeAttribute.explicitLengthContentRule},
+		{name: 'Background.backgroundFillRule', rule: Background.backgroundFillRule},
 	]
 }, {
 	// Attributes that require nodes

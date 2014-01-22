@@ -52,6 +52,8 @@ export enum Type {
 	TEXT_CONTENT,
 
 	LINE_HEIGHT,
+
+	BACKGROUND,
 }
 
 export interface Repr {
