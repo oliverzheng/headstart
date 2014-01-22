@@ -1,5 +1,6 @@
 d.ts
 lib
 node_modules
+bower_components
 .DS_Store
 fixtures/stash.tmp.json

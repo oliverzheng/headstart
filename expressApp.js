@@ -35,6 +35,7 @@ app.post('/fixture/:name', function(req, res) {
 app.use('/bin', express.static('bin'));
 app.use('/lib', express.static('lib'));
 app.use('/fixture', express.static('fixtures'));
+app.use('/bower_components', express.static('bower_components'));
 
 app.listen(3000);
 console.log('Listening on port 3000');
