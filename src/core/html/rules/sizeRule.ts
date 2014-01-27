@@ -294,139 +294,81 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 
 export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 	var boxAttr = component.boxAttr();
-	if (!boxAttr) {
-		return;
-	}
+	assert(boxAttr);
 	var box = boxAttr.getBox();
 
-	var shrinkWidth = box.w.unit === sinf.LengthUnit.SHRINK;
-	var shrinkHeight = box.h.unit === sinf.LengthUnit.SHRINK;
-	if (!shrinkWidth && !shrinkHeight) {
+	var staticText = box.staticContent ? box.staticContent.text : null;
+	var hasStaticText = !!staticText;
+	if (hasStaticText) {
 		return;
 	}
 
-	var children = StackedChildren.getFrom(component);
-	var childrenComponents: c.Component[];
-	if (children) {
-		childrenComponents = children.get();
-	} else {
-		childrenComponents = [];
-	}
-	var direction = getDirection(component);
-	assert(!!direction);
+	var componentDirection = getDirection(component);
+	assert(!!componentDirection);
 
+	var childrenAttr = StackedChildren.getFrom(component);
+	var children = childrenAttr ? childrenAttr.getComponentChildren() : <c.Component[]>[];
 	// This can only be used for when the entire tree is a box tree.
-	assert(childrenComponents.every((child) => <boolean>child.boxAttr()));
+	assert(children.every((child) => <boolean>child.boxAttr()));
 
 	var results: Rules.RuleResult[] = [];
 
-	var box = component.boxAttr() ? component.boxAttr().getBox() : null;
-	var staticText = (box && box.staticContent) ? box.staticContent.text : null;
-	var hasStaticText = !!staticText;
+	util.forEachDirection((direction) => {
+		var shrinks = util.getLength<sinf.Length>(box, direction).unit === sinf.LengthUnit.SHRINK;
+		if (!shrinks)
+			return;
 
-	if (shrinkWidth && !hasStaticText) {
-		var horizSizedWidths = childrenComponents.map((child) => {
-			return LengthAttribute.getFrom(child, sinf.horiz);
+		var sizedLengths = children.map((child) => {
+			return LengthAttribute.getFrom(child, direction);
 		}).filter((length) => length && length.px.isSet());
-		var horizPctAndExpandChildren = childrenComponents.filter((child) => {
+		var pctAndExpandChildren = children.filter((child) => {
 			var box = child.boxAttr().getBox();
+			var unit = util.getLength<sinf.Length>(box, direction).unit;
 			return (
-				box.w.unit === sinf.LengthUnit.PERCENT ||
-				box.w.unit === sinf.LengthUnit.EXPAND
+				unit === sinf.LengthUnit.PERCENT ||
+				unit === sinf.LengthUnit.EXPAND
 			);
 		});
-		if ((horizSizedWidths.length + horizPctAndExpandChildren.length) !==
-			childrenComponents.length) {
+		if ((sizedLengths.length + pctAndExpandChildren.length) !==
+			children.length) {
 			// We need all the explicit lengths to be calculated first
 			return;
 		}
 
-		if (direction === sinf.horiz) {
-			var widthSum: LengthAttribute;
-			if (horizSizedWidths.length > 0) {
-				widthSum = horizSizedWidths.reduce(LengthAttribute.add).makeImplicit();
+		if (componentDirection === direction) {
+			var lengthSum: LengthAttribute;
+			if (sizedLengths.length > 0) {
+				lengthSum = sizedLengths.reduce(LengthAttribute.add).makeImplicit();
 			} else {
-				widthSum = LengthAttribute.getHorizZero();
+				lengthSum = LengthAttribute.getZero(direction);
 			}
 			results.push({
 				component: component,
-				attributes: [widthSum],
+				attributes: [lengthSum],
 			});
 
 			results.push.apply(results,
-				horizPctAndExpandChildren.map((child) => {
+				pctAndExpandChildren.map((child) => {
 					return {
 						component: child,
-						attributes: [LengthAttribute.getHorizZeroPx()],
+						attributes: [LengthAttribute.getZeroPx(direction)],
 					};
 				})
 			);
 		} else {
-			var maxWidth: LengthAttribute;
-			if (horizSizedWidths.length > 0) {
-				horizSizedWidths.sort(LengthAttribute.compare);
-				maxWidth = horizSizedWidths[horizSizedWidths.length - 1].makeImplicit();
+			var maxLength: LengthAttribute;
+			if (sizedLengths.length > 0) {
+				sizedLengths.sort(LengthAttribute.compare);
+				maxLength = sizedLengths[sizedLengths.length - 1].makeImplicit();
 			} else {
-				maxWidth = LengthAttribute.getHorizZero();
+				maxLength = LengthAttribute.getZero(direction);
 			}
 			results.push({
 				component: component,
-				attributes: [maxWidth],
+				attributes: [maxLength],
 			});
 		}
-	}
-
-	if (shrinkHeight && !hasStaticText) {
-		var vertSizedHeights = childrenComponents.map((child) => {
-			return LengthAttribute.getFrom(child, sinf.vert);
-		}).filter((length) => length && length.px.isSet());
-		var vertPctAndExpandChildren = childrenComponents.filter((child) => {
-			var box = child.boxAttr().getBox();
-			return (
-				box.h.unit === sinf.LengthUnit.PERCENT ||
-				box.h.unit === sinf.LengthUnit.EXPAND
-			);
-		});
-		if ((vertSizedHeights.length + vertPctAndExpandChildren.length) !==
-			childrenComponents.length) {
-			// We need all the explicit lengths to be calculated first
-			return;
-		}
-
-		if (direction === sinf.vert) {
-			var heightSum: LengthAttribute;
-			if (vertSizedHeights.length > 0) {
-				heightSum = vertSizedHeights.reduce(LengthAttribute.add).makeImplicit();
-			} else {
-				heightSum = LengthAttribute.getVertZero();
-			}
-			results.push({
-				component: component,
-				attributes: [heightSum],
-			});
-
-			results.push.apply(results,
-				vertPctAndExpandChildren.map((child) => {
-					return {
-						component: child,
-						attributes: [LengthAttribute.getVertZeroPx()],
-					};
-				})
-			);
-		} else {
-			var maxHeight: LengthAttribute;
-			if (vertSizedHeights.length > 0) {
-				vertSizedHeights.sort(LengthAttribute.compare);
-				maxHeight = vertSizedHeights[vertSizedHeights.length - 1].makeImplicit();
-			} else {
-				maxHeight = LengthAttribute.getVertZero();
-			}
-			results.push({
-				component: component,
-				attributes: [maxHeight],
-			});
-		}
-	}
+	});
 
 	return results;
 }

@@ -382,3 +382,24 @@ export function textExactLines(text: inf.StaticText): number {
 	}
 	return lines;
 }
+
+export function getLength<LengthType>(obj: any, direction: inf.Direction): LengthType {
+	if (direction === inf.horiz) {
+		return <LengthType>(obj.w);
+	} else if (direction === inf.vert) {
+		return <LengthType>(obj.h);
+	}
+}
+
+export function getPosition<PositionType>(obj: any, direction: inf.Direction): PositionType {
+	if (direction === inf.horiz) {
+		return <PositionType>(obj.x);
+	} else if (direction === inf.vert) {
+		return <PositionType>(obj.y);
+	}
+}
+
+export function forEachDirection(callback: (direction: inf.Direction) => any) {
+	callback(inf.horiz);
+	callback(inf.vert);
+}
