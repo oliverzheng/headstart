@@ -20,6 +20,20 @@ export function load(
 	readFunc(name, (body) => {
 		sutil.refreshParents(body.spec);
 		successCb(body.spec, body.componentRepr);
+
+		var maxComponentID = 0;
+		(function getMaxID(repr: Attributes.Repr) {
+			if (repr.id) {
+				var id = parseInt(repr.id, 10);
+				if (id > maxComponentID)
+					maxComponentID = id;
+			}
+
+			if (repr.children)
+				repr.children.forEach(getMaxID);
+		})(body.componentRepr);
+
+		c.Component.increaseIDToAtLeast(maxComponentID);
 	}, errorCb);
 }
 

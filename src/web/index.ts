@@ -39,6 +39,23 @@ function getUrlFixtureName(): string {
 	return getUrlState().fixtureName;
 }
 
+function getMaxID(box: inf.Box): number {
+	var ids: number[] = [];
+	if (box.children) {
+		ids = box.children.map(getMaxID).filter((num) => {
+			return num != null;
+		});
+	}
+	if (box.id) {
+		ids.push(parseInt(box.id, 10));
+	}
+
+	if (ids.length > 0)
+		return Math.max.apply(Math, ids);
+	else
+		return null;
+}
+
 var PageComponent = React.createClass({
 	getInitialState() {
 		var root: inf.Box = add.createBox(600, 600);
@@ -116,6 +133,8 @@ var PageComponent = React.createClass({
 			name,
 			browserFixtures.readFixture,
 			(root: inf.Box, componentRepr: Attributes.Repr) => {
+				add.increaseIDToAtLeast(getMaxID(root));
+
 				this.setState({
 					rootBox: root,
 					preview: new Preview(root),

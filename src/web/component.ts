@@ -26,12 +26,19 @@ export var RootComponent = React.createClass({
 		this.setState({logs: logs});
 	},
 
+	debug() {
+		debugger;
+	},
+
 	render() {
 		return (
 			React.DOM.div({ className: 'components' },
 				React.DOM.button({
 					onClick: this.runRules,
 				}, 'Run rules'),
+				React.DOM.button({
+					onClick: this.debug,
+				}, 'Debugger'),
 				React.DOM.ul(null,
 					React.DOM.li(null,
 						ComponentComponent({

@@ -181,4 +181,9 @@ export class Component {
 			children: this.attributes.map((attr) => attr.repr()).filter((attr) => !!attr), // Filter things like parent attribute
 		};
 	}
+
+	static increaseIDToAtLeast(atLeast: number) {
+		if (componentID < atLeast)
+			componentID = atLeast;
+	}
 }

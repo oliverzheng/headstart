@@ -23,3 +23,8 @@ export function addChild(parent: inf.Box, child: inf.Box) {
 	parent.children.push(child);
 	child.parent = parent;
 }
+
+export function increaseIDToAtLeast(atLeast: number) {
+	if (boxCounter < atLeast)
+		boxCounter = atLeast;
+}
