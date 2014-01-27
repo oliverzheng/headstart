@@ -150,10 +150,19 @@ class Alignment extends Attributes.BaseAttribute {
 		};
 	}
 
+	managesChildren(): boolean {
+		return true;
+	}
+
 	getComponentChildren() {
 		return [
 			this.near, this.afterNear, this.center, this.afterCenter, this.far
 		].filter((component) => !!component);
+	}
+
+	getChildPosition(child: c.Component, unknownDefaultPx: number): Attributes.ChildPosition {
+		// Same semantics for positioning. Maybe we should just subclass...
+		return StackedChildren.prototype.getChildPosition.call(this, child, unknownDefaultPx);
 	}
 
 	getSimpleAlignment(): sinf.Alignment {

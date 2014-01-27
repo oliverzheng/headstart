@@ -1,6 +1,8 @@
 import assert = require('assert');
 import c = require('./Component');
 
+import LengthAttribute = require('./attributes/LengthAttribute');
+
 export enum Type {
 	// Corresponds to a box in the visual spec
 	BOX,
@@ -102,6 +104,12 @@ export function reprEqual(repr1: Repr, repr2: Repr): boolean {
 	}
 }
 
+// Relative to parent's top left
+export interface ChildPosition {
+	x: LengthAttribute;
+	y: LengthAttribute;
+}
+
 export class BaseAttribute {
 	component: c.Component;
 
@@ -144,10 +152,14 @@ export class BaseAttribute {
 	}
 
 	managesChildren(): boolean {
-		return !!this.getComponentChildren();
+		return false;
 	}
 
 	getComponentChildren(): c.Component[] {
 		return;
+	}
+
+	getChildPosition(child: c.Component, unknownDefaultPx: number): ChildPosition {
+		throw new Error(this.getName() + ' does not implement this');
 	}
 }

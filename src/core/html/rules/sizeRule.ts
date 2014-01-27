@@ -294,7 +294,8 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 
 export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 	var boxAttr = component.boxAttr();
-	assert(boxAttr);
+	if (!boxAttr)
+		return;
 	var box = boxAttr.getBox();
 
 	var staticText = box.staticContent ? box.staticContent.text : null;
@@ -306,21 +307,22 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 	var componentDirection = getDirection(component);
 	assert(!!componentDirection);
 
-	var childrenAttr = StackedChildren.getFrom(component);
-	var children = childrenAttr ? childrenAttr.getComponentChildren() : <c.Component[]>[];
+	var children = component.getChildren();
 	// This can only be used for when the entire tree is a box tree.
-	assert(children.every((child) => <boolean>child.boxAttr()));
+	if (!children.every((child) => <boolean>child.boxAttr()))
+		return;
 
 	var results: Rules.RuleResult[] = [];
 
-	util.forEachDirection((direction) => {
+	util.forEachDirection((direction: sinf.Direction) => {
 		var shrinks = util.getLength<sinf.Length>(box, direction).unit === sinf.LengthUnit.SHRINK;
 		if (!shrinks)
 			return;
 
-		var sizedLengths = children.map((child) => {
-			return LengthAttribute.getFrom(child, direction);
-		}).filter((length) => length && length.px.isSet());
+		var sizedChildren = children.filter((child) => {
+			var length = LengthAttribute.getFrom(child, direction);
+			return length && length.px.isSet();
+		});
 		var pctAndExpandChildren = children.filter((child) => {
 			var box = child.boxAttr().getBox();
 			var unit = util.getLength<sinf.Length>(box, direction).unit;
@@ -329,44 +331,44 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 				unit === sinf.LengthUnit.EXPAND
 			);
 		});
-		if ((sizedLengths.length + pctAndExpandChildren.length) !==
-			children.length) {
+		if ((sizedChildren.length + pctAndExpandChildren.length) !== children.length) {
 			// We need all the explicit lengths to be calculated first
 			return;
 		}
 
-		if (componentDirection === direction) {
-			var lengthSum: LengthAttribute;
-			if (sizedLengths.length > 0) {
-				lengthSum = sizedLengths.reduce(LengthAttribute.add).makeImplicit();
-			} else {
-				lengthSum = LengthAttribute.getZero(direction);
-			}
-			results.push({
-				component: component,
-				attributes: [lengthSum],
-			});
+		var childrenManager = component.getChildrenManager();
+		var sizedPositions = sizedChildren.map((child) => {
+			return childrenManager.getChildPosition(child, 0);
+		});
+		// All the positions must be specified.
+		if (sizedPositions.some((position: Attributes.ChildPosition) => !util.getPosition(position, direction)))
+			return;
 
-			results.push.apply(results,
-				pctAndExpandChildren.map((child) => {
-					return {
-						component: child,
-						attributes: [LengthAttribute.getZeroPx(direction)],
-					};
-				})
-			);
-		} else {
-			var maxLength: LengthAttribute;
-			if (sizedLengths.length > 0) {
-				sizedLengths.sort(LengthAttribute.compare);
-				maxLength = sizedLengths[sizedLengths.length - 1].makeImplicit();
-			} else {
-				maxLength = LengthAttribute.getZero(direction);
-			}
-			results.push({
-				component: component,
-				attributes: [maxLength],
-			});
+		var sizedLengths = sizedChildren.map((child) => {
+			return LengthAttribute.getFrom(child, direction);
+		});
+
+		var bounds = sizedChildren.map((child, i) => {
+			var position = util.getPosition(sizedPositions[i], direction);
+			var length = sizedLengths[i];
+			assert(position.px.isSet() && length.px.isSet());
+			return position.add(length);
+		});
+
+		bounds.push(LengthAttribute.getZeroPx(direction));
+		var max = LengthAttribute.max(bounds);
+		results.push({
+			component: component,
+			attributes: [max],
+		});
+
+		if (componentDirection === direction) {
+			results.push.apply(results, pctAndExpandChildren.map((child) => {
+				return {
+					component: child,
+					attributes: [LengthAttribute.getZeroPx(direction)],
+				};
+			}));
 		}
 	});
 

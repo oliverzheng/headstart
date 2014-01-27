@@ -43,9 +43,11 @@ class Preview {
 		var component = this.getComponentForBox(box);
 		var bounds = { x: 0, y: 0, w: 0, h: 0 };
 		if (component !== this.rootComponent) {
-			var position = this.getPosition(component);
-			bounds.x = position.x;
-			bounds.y = position.y;
+			var position = component.getParent().getChildrenManager().getChildPosition(component, UNKNOWN_SIZE);
+			assert(position.x.px.isSet());
+			assert(position.y.px.isSet());
+			bounds.x = position.x.px.value;
+			bounds.y = position.y.px.value;
 		}
 
 		var width = LengthAttribute.getFrom(component, sinf.horiz);
@@ -55,33 +57,6 @@ class Preview {
 		bounds.w = widthPx;
 		bounds.h = heightPx;
 		return bounds;
-	}
-
-	private getPosition(child: c.Component): {x: number; y: number;} {
-		if (child === this.rootComponent) {
-			return {x: 0, y: 0};
-		}
-
-		var parent = child.getParent();
-		var stackedChildren = StackedChildren.getFrom(parent);
-
-		var direction = getDirection(parent);
-		var position = {x: 0, y: 0};
-		for (var i = 0; i < stackedChildren.get().length; ++i) {
-			var prevChild = stackedChildren.get()[i];
-			if (prevChild === child) {
-				break;
-			}
-
-			var length = LengthAttribute.getFrom(prevChild, direction);
-			var px = (length && length.px.isSet()) ? length.px.value : UNKNOWN_SIZE;
-			if (direction === sinf.horiz) {
-				position.x += px;
-			} else {
-				position.y += px;
-			}
-		}
-		return position;
 	}
 }
 

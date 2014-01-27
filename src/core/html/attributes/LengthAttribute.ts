@@ -317,6 +317,19 @@ class LengthAttribute extends Markup {
 			Measurement.implicit(0)
 		);
 	}
+
+	static getZero(direction: sinf.Direction) {
+		return new LengthAttribute(
+			direction,
+			Measurement.implicit(0),
+			Measurement.implicit(0),
+			Measurement.implicit(0)
+		);
+	}
+
+	static getZeroPx(direction: sinf.Direction) {
+		return new LengthAttribute(direction, Measurement.implicit(0));
+	}
 }
 
 export = LengthAttribute;

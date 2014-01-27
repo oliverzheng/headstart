@@ -116,14 +116,18 @@ export class Component {
 		}
 	}
 
-	getChildren(): Component[] {
+	getChildrenManager(): Attributes.BaseAttribute {
 		var childrenAttrs = this.attributes.filter((attr) => attr.managesChildren());
 		assert(childrenAttrs.length <= 1);
-		var childrenAttr = childrenAttrs[0];
-		if (!childrenAttr) {
+		return childrenAttrs[0];
+	}
+
+	getChildren(): Component[] {
+		var childrenManager = this.getChildrenManager();
+		if (!childrenManager) {
 			return [];
 		}
-		return childrenAttr.getComponentChildren();
+		return childrenManager.getComponentChildren();
 	}
 
 	iterateChildrenBreadthFirst(callback: (component: Component) => any): any {

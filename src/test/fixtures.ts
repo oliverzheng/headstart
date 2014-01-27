@@ -33,7 +33,7 @@ export function load(
 				repr.children.forEach(getMaxID);
 		})(body.componentRepr);
 
-		c.Component.increaseIDToAtLeast(maxComponentID);
+		c.Component.increaseIDToAtLeast(maxComponentID + 1);
 	}, errorCb);
 }
 

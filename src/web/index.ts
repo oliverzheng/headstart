@@ -133,7 +133,7 @@ var PageComponent = React.createClass({
 			name,
 			browserFixtures.readFixture,
 			(root: inf.Box, componentRepr: Attributes.Repr) => {
-				add.increaseIDToAtLeast(getMaxID(root));
+				add.increaseIDToAtLeast(getMaxID(root) + 1);
 
 				this.setState({
 					rootBox: root,

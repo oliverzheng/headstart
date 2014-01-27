@@ -1,6 +1,11 @@
+import assert = require('assert');
 import c = require('../Component');
 import Attributes = require('../Attributes');
 import Rules = require('../Rules');
+import getDirection = require('../patterns/getDirection');
+import Measurement = require('./Measurement');
+import LengthAttribute = require('./LengthAttribute');
+import sinf = require('../../spec/interfaces');
 
 import util = require('../../../util');
 
@@ -36,8 +41,49 @@ class StackedChildren extends Attributes.BaseAttribute {
 		return util.arraysEqual(this.children, attr.children);
 	}
 
+	managesChildren(): boolean {
+		return true;
+	}
+
 	getComponentChildren() {
 		return this.children;
+	}
+
+	getChildPosition(child: c.Component, unknownDefaultPx: number): Attributes.ChildPosition {
+		assert(this.getComponentChildren().indexOf(child) !== -1);
+
+		var direction = getDirection(this.component);
+		var position: Attributes.ChildPosition = {
+			x: LengthAttribute.getHorizZeroPx(),
+			y: LengthAttribute.getVertZeroPx(),
+		};
+		for (var i = 0; i < this.getComponentChildren().length; ++i) {
+			var prevChild = this.getComponentChildren()[i];
+			if (prevChild === child) {
+				break;
+			}
+
+			var length = LengthAttribute.getFrom(prevChild, direction);
+			var px = 0;
+			if (length && length.px.isSet()) {
+				// Awesome
+			} else if (unknownDefaultPx != null) {
+				length = new LengthAttribute(direction, Measurement.implicit(unknownDefaultPx));
+			} else {
+				if (direction == sinf.horiz) {
+					position.x = null;
+				} else {
+					position.y = null;
+				}
+				return position;
+			}
+			if (direction === sinf.horiz) {
+				position.x = position.x.add(length);
+			} else {
+				position.y = position.y.add(length);
+			}
+		}
+		return position;
 	}
 
 	repr(): Attributes.Repr {

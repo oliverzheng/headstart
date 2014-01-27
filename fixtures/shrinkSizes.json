@@ -58,6 +58,18 @@
 							"value": 40
 						},
 						"direction": 2
+					},
+					{
+						"id": "8",
+						"w": {
+							"unit": 4,
+							"value": 40
+						},
+						"h": {
+							"unit": 4,
+							"value": 40
+						},
+						"direction": 2
 					}
 				]
 			}
@@ -130,6 +142,22 @@
 											},
 											{
 												"title": "Width (20px implicit, 0.5% explicit)"
+											}
+										]
+									},
+									{
+										"title": "Component",
+										"id": "160",
+										"children": [
+											{
+												"title": "BoxAttribute",
+												"id": "8"
+											},
+											{
+												"title": "Width (0px implicit)"
+											},
+											{
+												"title": "Height (0px implicit)"
 											}
 										]
 									}
