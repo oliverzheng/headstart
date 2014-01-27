@@ -124,6 +124,7 @@ export var DetailComponent = React.createClass({
 			};
 
 			this.props.box.staticContent.text = text;
+			this.props.box.children = <inf.Box[]>[];
 		} else {
 			this.props.box.staticContent.text = null;
 		}
@@ -283,7 +284,11 @@ export var DetailComponent = React.createClass({
 			}
 		});
 
-		var disableChildren = box.content === inf.Content.STATIC;
+		var disableChildren = (
+			box.content === inf.Content.STATIC &&
+			box.staticContent &&
+			(box.staticContent.text || (box.staticContent.image && box.staticContent.image.accessible))
+		);
 
 		var childrenMarkup = [
 			React.DOM.button({onClick: disableChildren ? null : this.addChild, disabled: disableChildren}, 'Add Child'),
@@ -293,6 +298,8 @@ export var DetailComponent = React.createClass({
 			),
 			React.DOM.div({}, children),
 		];
+
+		var hasChildren = this.props.box.children && this.props.box.children.length > 0;
 
 		var staticText: any;
 		var staticImage: any;
@@ -318,8 +325,9 @@ export var DetailComponent = React.createClass({
 				React.DOM.div(null,
 					React.DOM.hr(),
 					React.DOM.div(null,
-						React.DOM.strong(null, 'Static Text Font Size: '),
+						React.DOM.strong({ className: hasChildren ? 'disabled' : '' }, 'Static Text Font Size: '),
 						React.DOM.input({
+							disabled: hasChildren,
 							className: 'lengthValue',
 							type: 'text',
 							value: staticTextFontSize,
@@ -467,10 +475,10 @@ export var DetailComponent = React.createClass({
 						}),
 						React.DOM.span(null, 'px')
 					),
-					React.DOM.div({ className: hasStaticImage ? '' : 'disabled'},
+					React.DOM.div({ className: (!hasStaticImage || hasChildren) ? 'disabled' : ''},
 						React.DOM.strong(null, 'Static Image Accessible (use <img>): '),
 						React.DOM.input({
-							disabled: !hasStaticImage,
+							disabled: !hasStaticImage || hasChildren,
 							checked: staticImageAccessible,
 							type: 'checkbox',
 							className: 'staticContent',
