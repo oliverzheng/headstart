@@ -7,6 +7,7 @@ import NodeAttribute = require('../attributes/NodeAttribute');
 import Alignment = require('../attributes/Alignment');
 import LengthAttribute = require('../attributes/LengthAttribute');
 import sinf = require('../../spec/interfaces');
+import reqs = require('../requirements');
 
 class HorizontalCenter extends Markup {
 	getType() {
@@ -28,13 +29,27 @@ class HorizontalCenter extends Markup {
 	}
 
 	static marginAutoRule(component: c.Component): Rules.RuleResult[] {
-		var alignment = Alignment.getFrom(component, sinf.horiz);
-		if (!alignment)
+		var centerChildRequirement = reqs.all([reqs.hasContent, reqs.c, reqs.fixedW]);
+		var satisfies = reqs.satisfies(component,
+			reqs.all([
+				// At least 1 center aligned element
+				reqs.anyChildren(centerChildRequirement),
+				reqs.allChildren(
+					reqs.eitherOr(
+						// Spaces
+						reqs.not(reqs.hasContent),
+						// Center aligned element
+						centerChildRequirement
+					)
+				),
+				reqs.fixedW,
+			])
+		);
+		if (!satisfies)
 			return;
 
-		// Only aligned children in the center
-		if (!alignment.center || alignment.afterNear || alignment.afterCenter || alignment.near || alignment.far)
-			return;
+		var alignment = Alignment.getFrom(component, sinf.horiz);
+		assert(alignment);
 
 		return [{
 			component: component,
