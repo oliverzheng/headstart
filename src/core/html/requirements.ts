@@ -82,6 +82,13 @@ export function anyChildren(requirement: Requirement): Requirement {
 	return requirement;
 }
 
+export function anyChildrenOptional(requirement: Requirement, optional: Requirement): Requirement {
+	return all([
+		anyChildren(requirement),
+		allChildren(eitherOr(requirement, optional)),
+	]);
+}
+
 export function parent(requirement: Requirement): Requirement {
 	requirement.target = Target.PARENT;
 	return requirement;
@@ -201,6 +208,14 @@ export var knownH: Requirement = {
 	h: inf.pxUnit,
 };
 
+export var shrinkW: Requirement = {
+	w: inf.shrinkUnit,
+}
+
+export var shrinkH: Requirement = {
+	h: inf.shrinkUnit,
+}
+
 export var fixedW: Requirement = eitherOr(
 	knownW,
 	all([
@@ -219,6 +234,10 @@ export var fixedH: Requirement = eitherOr(
 
 export var hasContent: Requirement = {
 	hasContent: true,
+};
+
+export var isContentText: Requirement = {
+	isText: true,
 };
 
 function satisfiesForTarget(component: c.Component, requirement: Requirement): boolean {

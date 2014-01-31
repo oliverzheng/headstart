@@ -12,6 +12,7 @@ import percentChildRule = require('./rules/percentChildRule');
 import coalesceSpacesRule = require('./rules/coalesceSpacesRule');
 import sizeRule = require('./rules/sizeRule');
 import cssVerticalBottomRule = require('./rules/cssVerticalBottomRule');
+import alignmentRules = require('./rules/alignmentRules');
 
 import BlockFormat = require('./attributes/BlockFormat');
 import InlineFormat = require('./attributes/InlineFormat');
@@ -203,6 +204,7 @@ export var defaultRuleGroups: RuleGroup[] = [
 		{name: 'FloatFormat.alignRule', rule: FloatFormat.alignRule},
 		{name: 'Margin.marginRule', rule: Margin.marginRule},
 		{name: 'HorizontalCenter.marginAutoRule', rule: HorizontalCenter.marginAutoRule},
+		{name: 'alignmentRules.horizontalCenterText', rule: alignmentRules.horizontalCenterText},
 	],
 }, {
 	// Apply all CSS

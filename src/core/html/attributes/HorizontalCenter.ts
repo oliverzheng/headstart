@@ -29,18 +29,18 @@ class HorizontalCenter extends Markup {
 	}
 
 	static marginAutoRule(component: c.Component): Rules.RuleResult[] {
-		var centerChildRequirement = reqs.all([reqs.hasContent, reqs.c, reqs.fixedW]);
 		var satisfies = reqs.satisfies(component,
 			reqs.all([
-				// At least 1 center aligned element
-				reqs.anyChildren(centerChildRequirement),
-				reqs.allChildren(
-					reqs.eitherOr(
-						// Spaces
-						reqs.not(reqs.hasContent),
-						// Center aligned element
-						centerChildRequirement
-					)
+				reqs.anyChildrenOptional(
+					// At least 1 center aligned element
+					reqs.all([
+						reqs.hasContent,
+						reqs.c,
+						reqs.fixedW,
+						reqs.not(reqs.isContentText),
+					]),
+					// Optional spaces
+					reqs.not(reqs.hasContent)
 				),
 				reqs.fixedW,
 			])
@@ -57,7 +57,7 @@ class HorizontalCenter extends Markup {
 		}, {
 			component: alignment.center,
 			attributes: [new NodeAttribute()],
-		}]
+		}];
 	}
 
 	getCenter(): c.Component {
