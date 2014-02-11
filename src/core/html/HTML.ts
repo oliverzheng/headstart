@@ -51,7 +51,17 @@ export class DOMNode {
 			childrenNodes.push.apply(childrenNodes, DOMNode.fromComponent(child));
 		});
 
-		var textContent = TextContent.getFrom(component);
+		var textContent: TextContent;
+		component.iterateChildrenBreadthFirst((descendent) => {
+			if (descendent !== component && descendent.nodeAttr()) {
+				return c.STOP_RECURSION;
+			}
+			var descendentText = TextContent.getFrom(descendent);
+			if (descendentText) {
+				assert(!textContent);
+				textContent = descendentText;
+			}
+		});
 		var text: string = (textContent && textContent.getText().value) || null;
 
 		// Only one of these apply

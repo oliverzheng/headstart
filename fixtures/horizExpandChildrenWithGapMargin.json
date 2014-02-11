@@ -115,6 +115,14 @@
 							},
 							{
 								"title": "Height (40px explicit)"
+							},
+							{
+								"title": "CSSAttribute",
+								"children": [
+									{
+										"title": "height: 40px"
+									}
+								]
 							}
 						]
 					},

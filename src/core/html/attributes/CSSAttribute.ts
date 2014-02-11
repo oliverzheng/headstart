@@ -4,8 +4,22 @@ import Attributes = require('../Attributes');
 import c = require('../Component');
 import sinf = require('../spec/interfaces');
 import Rules = require('../Rules');
+import hasBoxContent = require('../patterns/hasBoxContent');
 import Markup = require('../Markup');
 import NodeAttribute = require('./NodeAttribute');
+
+// Prop names mapped to default values
+var INHERITED_DEFAULTS: { [styleName: string]: string; } = {
+	'color': null,
+	'font-family': null,
+	'font-size': null,
+	'font-style': 'normal',
+	'font-weight': 'normal',
+	'line-height': null,
+	'text-align': 'left',
+};
+
+var INHERITED_PROPERTIES = Object.keys(INHERITED_DEFAULTS);
 
 class CSSAttribute extends Attributes.BaseAttribute {
 	styles: { [styleName: string]: string; } = {};
@@ -85,6 +99,152 @@ class CSSAttribute extends Attributes.BaseAttribute {
 		};
 	}
 
+	getInheritedStyles(): { [styleName: string]: string; } {
+		var newStyles: { [styleName: string]: string; } = {};
+		for (var propName in this.styles) {
+			if (INHERITED_PROPERTIES.indexOf(propName) !== -1) {
+				newStyles[propName] = this.styles[propName];
+			}
+		}
+		return newStyles;
+	}
+
+	getInheritedProperties(): string[] {
+		return Object.keys(this.getInheritedStyles());
+	}
+
+	needsNode(): boolean {
+		// If we have non inherited props, well yeah we need a node.
+		if (Object.keys(this.styles).some((prop) => (prop !== 'display' && INHERITED_PROPERTIES.indexOf(prop) === -1))) {
+			return true;
+		}
+
+		var inheritedStyles = this.getInheritedStyles();
+		for (var prop in inheritedStyles) {
+			var value = inheritedStyles[prop];
+			var inheritedValue = CSSAttribute.getInheritedValue(this.component, prop);
+			if (!inheritedValue || inheritedValue !== value) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	static getInheritedValue(component: c.Component, prop: string): string {
+		assert(INHERITED_PROPERTIES.indexOf(prop) !== -1);
+
+		var parent = component;
+		while (parent = parent.getParent()) {
+			var cssAttr = CSSAttribute.getFrom(parent);
+			if (cssAttr && cssAttr.styles[prop])
+				return cssAttr.styles[prop];
+		}
+		return null;
+	}
+
+	// Get a list of inherited properties that cascade to all children and have
+	// identical values.
+	static getCascadingInheritedStyles(component: c.Component): { [styleName: string]: string; } {
+		var inheritedProps = INHERITED_PROPERTIES.slice(0);
+		var inheritedStyles: { [styleName: string]: string; } = {};
+
+		component.iterateChildrenBreadthFirst((descendent) => {
+			var cssAttr = CSSAttribute.getFrom(descendent);
+			if (!cssAttr)
+				return;
+
+			var descendentStyles = cssAttr.getInheritedStyles();
+			var i = 0;
+			while (i < inheritedProps.length) {
+				var prop = inheritedProps[i];
+				var value = descendentStyles[prop];
+				if (value == null) {
+					++i;
+					continue;
+				}
+
+				if (inheritedStyles[value] != null &&
+					inheritedStyles[value] !== value) {
+					delete inheritedStyles[value];
+					inheritedProps.splice(i, 1);
+					continue;
+				} else {
+					inheritedStyles[prop] = value;
+					++i;
+				}
+			}
+		});
+		return inheritedStyles;
+	}
+
+	static inheritedStylesNodeRule(component: c.Component): Rules.RuleResult[] {
+		var cssAttr = CSSAttribute.getFrom(component);
+		if (cssAttr && cssAttr.needsNode() && hasBoxContent(component)) {
+			return [{
+				component: component,
+				attributes: [
+					new NodeAttribute(),
+				],
+			}];
+		}
+	}
+
+	static bubbleUpInheritedStylesRule(component: c.Component): Rules.RuleResult[] {
+		if (component.isRoot())
+			return;
+
+		var inheritedStyles = CSSAttribute.getCascadingInheritedStyles(component);
+		var parentInheritedStyles = CSSAttribute.getCascadingInheritedStyles(component.getParent());
+		// The root doesn't get generated
+		if (!component.getParent().isRoot()) {
+			// Generate keys first since we are going to mutate it
+			Object.keys(inheritedStyles).forEach((prop) => {
+				if (parentInheritedStyles[prop] != null) {
+					// The parent can do this too. Let's not worry about it.
+					delete inheritedStyles[prop];
+				}
+			});
+		}
+		if (Object.keys(inheritedStyles).length > 0) {
+			var results: Rules.RuleResult[] = [{
+				component: component,
+				attributes: [
+					new NodeAttribute(),
+					new CSSAttribute(inheritedStyles),
+				],
+			}];
+
+			// Delete these styles from children that'll inherit them.
+			component.iterateChildrenBreadthFirst((descendent) => {
+				if (descendent !== component) {
+					var cssAttr = CSSAttribute.getFrom(descendent);
+					if (cssAttr && Object.keys(cssAttr.styles).some((prop) => inheritedStyles[prop] != null)) {
+						var newStyles: { [styleName: string]: string; } = {};
+						for (var prop in cssAttr.styles) {
+							if (!inheritedStyles[prop]) {
+								newStyles[prop] = cssAttr.styles[prop];
+							}
+						}
+						if (Object.keys(newStyles).length > 0) {
+							results.push({
+								component: descendent,
+								replaceAttributes: [new CSSAttribute(newStyles)],
+							});
+						} else {
+							results.push({
+								component: descendent,
+								deleteAttributes: [Attributes.Type.CSS],
+							});
+						}
+					}
+				}
+			});
+
+			return results;
+		}
+	}
+
 	static applyCssRule(component: c.Component): Rules.RuleResult[] {
 		var markups: Markup[] = Markup.getMarkupAttributes(component);
 
@@ -99,14 +259,12 @@ class CSSAttribute extends Attributes.BaseAttribute {
 				component.iterateChildrenBreadthFirst((child) => {
 					if (child === css.component) {
 						componentFound = true;
-						if (NodeAttribute.getFrom(child)) {
-							results.push({
-								component: child,
-								attributes: [
-									new CSSAttribute(css.css),
-								],
-							});
-						}
+						results.push({
+							component: child,
+							attributes: [
+								new CSSAttribute(css.css),
+							],
+						});
 						return c.STOP_ITERATION;
 					}
 				});

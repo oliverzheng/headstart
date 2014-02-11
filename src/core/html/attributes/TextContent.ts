@@ -44,6 +44,31 @@ class TextContent extends Markup {
 		return this.component.boxAttr().getBox().staticContent.text;
 	}
 
+	static needsNodeRule(component: c.Component): Rules.RuleResult[] {
+		var textAttr = TextContent.getFrom(component);
+		if (!textAttr || component.nodeAttr())
+			return;
+
+		var nodeParent = component;
+		while (nodeParent = nodeParent.getParent()) {
+			if (nodeParent.nodeAttr())
+				break;
+		}
+		var needsNode = false;
+		nodeParent.iterateChildrenBreadthFirst((descendent) => {
+			if (descendent !== component && TextContent.getFrom(descendent)) {
+				needsNode = true;
+				return c.STOP_ITERATION;
+			}
+		});
+		if (needsNode) {
+			return [{
+				component: component,
+				attributes: [new NodeAttribute()],
+			}];
+		}
+	}
+
 	static staticTextRule(component: c.Component): Rules.RuleResult[] {
 		var boxAttr = component.boxAttr();
 		if (!boxAttr)
@@ -67,7 +92,6 @@ class TextContent extends Markup {
 				component: component,
 				attributes: [
 					new TextContent(),
-					new NodeAttribute(),
 				],
 			}];
 		}

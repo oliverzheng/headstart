@@ -207,10 +207,23 @@ export var defaultRuleGroups: RuleGroup[] = [
 		{name: 'alignmentRules.horizontalCenterText', rule: alignmentRules.horizontalCenterText},
 	],
 }, {
-	// Apply all CSS
 	independent: true,
 	rules: [
+		// Apply all CSS
 		{name: 'CSSAttribute.applyCssRule', rule: CSSAttribute.applyCssRule},
+	],
+}, {
+	independent: true,
+	rules: [
+		// Bubble up inherited rules to parent nodes
+		{name: 'CSSAttribute.bubbleUpInheritedStylesRule', rule: CSSAttribute.bubbleUpInheritedStylesRule},
+	],
+}, {
+	independent: true,
+	rules: [
+		// Create necessary nodes
+		{name: 'CSSAttribute.inheritedStylesNodeRule', rule: CSSAttribute.inheritedStylesNodeRule},
+		{name: 'TextContent.needsNodeRule', rule: TextContent.needsNodeRule},
 	],
 }];
 

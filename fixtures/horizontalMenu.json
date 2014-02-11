@@ -161,12 +161,6 @@
 																		"title": "float: left"
 																	},
 																	{
-																		"title": "font-size: 12px"
-																	},
-																	{
-																		"title": "line-height: 12px"
-																	},
-																	{
 																		"title": "display: inline"
 																	}
 																]
@@ -203,12 +197,6 @@
 																		"title": "float: left"
 																	},
 																	{
-																		"title": "font-size: 12px"
-																	},
-																	{
-																		"title": "line-height: 12px"
-																	},
-																	{
 																		"title": "display: inline"
 																	}
 																]
@@ -243,12 +231,6 @@
 																"children": [
 																	{
 																		"title": "float: left"
-																	},
-																	{
-																		"title": "font-size: 12px"
-																	},
-																	{
-																		"title": "line-height: 12px"
 																	},
 																	{
 																		"title": "display: inline"
@@ -288,6 +270,12 @@
 									},
 									{
 										"title": "display: block"
+									},
+									{
+										"title": "font-size: 12px"
+									},
+									{
+										"title": "line-height: 12px"
 									}
 								]
 							}

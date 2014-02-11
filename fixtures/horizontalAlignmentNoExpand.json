@@ -74,6 +74,26 @@
 											},
 											{
 												"title": "Height (40px explicit)"
+											},
+											{
+												"title": "Margin"
+											},
+											{
+												"title": "CSSAttribute",
+												"children": [
+													{
+														"title": "float: left"
+													},
+													{
+														"title": "width: 40px"
+													},
+													{
+														"title": "height: 40px"
+													},
+													{
+														"title": "margin-right: 40px"
+													}
+												]
 											}
 										]
 									},
@@ -90,6 +110,26 @@
 											},
 											{
 												"title": "Height (40px explicit)"
+											},
+											{
+												"title": "Margin"
+											},
+											{
+												"title": "CSSAttribute",
+												"children": [
+													{
+														"title": "float: left"
+													},
+													{
+														"title": "width: 40px"
+													},
+													{
+														"title": "height: 40px"
+													},
+													{
+														"title": "margin-left: 40px"
+													}
+												]
 											}
 										]
 									}

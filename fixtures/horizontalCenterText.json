@@ -115,9 +115,6 @@
 												"title": "TextContent (value: Derp)"
 											},
 											{
-												"title": "NodeAttribute"
-											},
-											{
 												"title": "LineHeight (box line height: 10, used line height: 10)"
 											},
 											{
@@ -126,12 +123,6 @@
 											{
 												"title": "CSSAttribute",
 												"children": [
-													{
-														"title": "font-size: 10px"
-													},
-													{
-														"title": "line-height: 10px"
-													},
 													{
 														"title": "display: inline"
 													}
@@ -156,6 +147,12 @@
 									},
 									{
 										"title": "display: block"
+									},
+									{
+										"title": "font-size: 10px"
+									},
+									{
+										"title": "line-height: 10px"
 									}
 								]
 							}

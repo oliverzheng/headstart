@@ -72,9 +72,6 @@ class Margin extends Markup {
 	}
 
 	static marginRule(component: c.Component): Rules.RuleResult[] {
-		if (!NodeAttribute.getFrom(component))
-			return;
-
 		var prev = getPrevSpacing(component);
 		var next = getNextSpacing(component);
 		if (prev || next) {

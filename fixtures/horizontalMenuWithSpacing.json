@@ -199,12 +199,6 @@
 																		"title": "float: left"
 																	},
 																	{
-																		"title": "font-size: 12px"
-																	},
-																	{
-																		"title": "line-height: 12px"
-																	},
-																	{
 																		"title": "display: inline"
 																	}
 																]
@@ -224,6 +218,17 @@
 															},
 															{
 																"title": "Width (20px explicit)"
+															},
+															{
+																"title": "CSSAttribute",
+																"children": [
+																	{
+																		"title": "float: left"
+																	},
+																	{
+																		"title": "width: 20px"
+																	}
+																]
 															}
 														]
 													},
@@ -260,12 +265,6 @@
 																		"title": "float: left"
 																	},
 																	{
-																		"title": "font-size: 12px"
-																	},
-																	{
-																		"title": "line-height: 12px"
-																	},
-																	{
 																		"title": "display: inline"
 																	},
 																	{
@@ -288,6 +287,17 @@
 															},
 															{
 																"title": "Width (20px explicit)"
+															},
+															{
+																"title": "CSSAttribute",
+																"children": [
+																	{
+																		"title": "float: left"
+																	},
+																	{
+																		"title": "width: 20px"
+																	}
+																]
 															}
 														]
 													},
@@ -322,12 +332,6 @@
 																"children": [
 																	{
 																		"title": "float: left"
-																	},
-																	{
-																		"title": "font-size: 12px"
-																	},
-																	{
-																		"title": "line-height: 10px"
 																	},
 																	{
 																		"title": "display: inline"
@@ -367,6 +371,12 @@
 									},
 									{
 										"title": "display: block"
+									},
+									{
+										"title": "font-size: 12px"
+									},
+									{
+										"title": "line-height: 10px"
 									}
 								]
 							}

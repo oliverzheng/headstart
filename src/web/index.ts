@@ -241,6 +241,13 @@ var PageComponent = React.createClass({
 			}
 
 			var fixtureName = this.state.fixtureNames[index];
+			var tmpSuffix = '.tmp';
+			if (fixtureName.indexOf(tmpSuffix, fixtureName.length - tmpSuffix.length) !== -1) {
+				setTimeout(() => {
+					loadNext.bind(this)(index + 1);
+				}, 0);
+				return;
+			}
 			this.refs.fixtureName.getDOMNode().value = fixtureName;
 			this.onFixtureNameChange();
 
