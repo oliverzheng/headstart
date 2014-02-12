@@ -134,7 +134,7 @@ export var sizePercentChildren: Rules.Rule = function(component: c.Component): R
 	var childrenComponents = children.get();
 
 	// This can only be used for when the entire tree is a box tree.
-	assert(childrenComponents.every((child) => <boolean>child.boxAttr()));
+	assert(childrenComponents.every((child) => !!child.boxAttr()));
 
 	var results: Rules.RuleResult[] = [];
 
@@ -187,7 +187,7 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 		if (direction === sinf.horiz) {
 			var sizedChildrenWidths = childrenComponents.map((child) => {
 				return LengthAttribute.getFrom(child, sinf.horiz);
-			}).filter((length) => <boolean>length);
+			}).filter((length) => !!length);
 
 			// We can't figure out the size of other EXPAND children if not all
 			// non-EXPAND children are sized.
@@ -245,7 +245,7 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 		if (direction === sinf.vert) {
 			var sizedChildrenHeights = childrenComponents.map((child) => {
 				return LengthAttribute.getFrom(child, sinf.vert);
-			}).filter((length) => <boolean>length);
+			}).filter((length) => !!length);
 
 			// We can't figure out the size of other EXPAND children if not all
 			// non-EXPAND children are sized.
@@ -309,7 +309,7 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 
 	var children = component.getChildren();
 	// This can only be used for when the entire tree is a box tree.
-	if (!children.every((child) => <boolean>child.boxAttr()))
+	if (!children.every((child) => !!child.boxAttr()))
 		return;
 
 	var results: Rules.RuleResult[] = [];
@@ -349,7 +349,7 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 		});
 
 		var bounds = sizedChildren.map((child, i) => {
-			var position = util.getPosition(sizedPositions[i], direction);
+			var position = util.getPosition<LengthAttribute>(sizedPositions[i], direction);
 			var length = sizedLengths[i];
 			assert(position.px.isSet() && length.px.isSet());
 			return position.add(length);

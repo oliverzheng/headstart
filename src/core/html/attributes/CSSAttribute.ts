@@ -2,7 +2,7 @@ import assert = require('assert');
 
 import Attributes = require('../Attributes');
 import c = require('../Component');
-import sinf = require('../spec/interfaces');
+import sinf = require('../../spec/interfaces');
 import Rules = require('../Rules');
 import hasBoxContent = require('../patterns/hasBoxContent');
 import Markup = require('../Markup');

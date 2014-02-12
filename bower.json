@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "requirejs": "latest",
-    "react": "0.4.1",
+    "react": "0.8.0",
     "jquery": "2.0.3",
     "qimage": "latest",
     "kurl": "git://github.com/yeikos/js.url.git",

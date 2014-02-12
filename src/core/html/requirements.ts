@@ -1,6 +1,6 @@
 import assert = require('assert');
 
-import c = require('./Component');
+import comp = require('./Component');
 import inf = require('../spec/interfaces');
 import util = require('../spec/util');
 import LengthAttribute = require('./attributes/LengthAttribute');
@@ -240,10 +240,10 @@ export var isContentText: Requirement = {
 	isText: true,
 };
 
-function satisfiesForTarget(component: c.Component, requirement: Requirement): boolean {
+function satisfiesForTarget(component: comp.Component, requirement: Requirement): boolean {
 	var ok = true;
 	util.forEachDirection((direction: inf.Direction) => {
-		var lengthReq = <inf.LengthUnit>(util.getLength(requirement, direction));
+		var lengthReq = util.getLength<inf.LengthUnit>(requirement, direction);
 		if (lengthReq == null)
 			return;
 
@@ -284,7 +284,7 @@ function satisfiesForTarget(component: c.Component, requirement: Requirement): b
 			return false;
 
 		util.forEachDirection((direction: inf.Direction) => {
-			var alignment = <inf.Alignment>(util.getPosition(requirement.alignment, direction));
+			var alignment = util.getPosition<inf.Alignment>(requirement.alignment, direction);
 			if (alignment == null)
 				return;
 
@@ -327,8 +327,8 @@ function satisfiesForTarget(component: c.Component, requirement: Requirement): b
 	return true;
 }
 
-export function satisfies(component: c.Component, requirement: Requirement, ignoreTarget: boolean = false): boolean {
-	var runAggregate: (component: c.Component, ignoreTarget: boolean) => boolean = null;
+export function satisfies(component: comp.Component, requirement: Requirement, ignoreTarget: boolean = false): boolean {
+	var runAggregate: (component: comp.Component, ignoreTarget: boolean) => boolean = null;
 	if (requirement.aggregate) {
 		assert(requirement.aggregateType != null);
 		switch (requirement.aggregateType) {

@@ -1,6 +1,6 @@
 import Attributes = require('../Attributes');
 import c = require('../Component');
-import sinf = require('../spec/interfaces');
+import sinf = require('../../spec/interfaces');
 import ParentAttribute = require('./ParentAttribute');
 
 // There is a 1-to-1 correspondance between the component and a box in the
