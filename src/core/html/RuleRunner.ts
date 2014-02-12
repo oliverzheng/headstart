@@ -205,6 +205,7 @@ export var defaultRuleGroups: RuleGroup[] = [
 		{name: 'Margin.marginRule', rule: Margin.marginRule},
 		{name: 'HorizontalCenter.marginAutoRule', rule: HorizontalCenter.marginAutoRule},
 		{name: 'alignmentRules.horizontalCenterText', rule: alignmentRules.horizontalCenterText},
+		{name: 'alignmentRules.horizontalRightText', rule: alignmentRules.horizontalRightText},
 	],
 }, {
 	independent: true,
