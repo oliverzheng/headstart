@@ -64,9 +64,6 @@ class LineHeight extends Markup {
 			return;
 		var box = boxAttr.getBox();
 
-		if (box.content !== sinf.Content.STATIC)
-			return;
-
 		if (!box.staticContent || !box.staticContent.text)
 			return;
 

@@ -3,7 +3,6 @@ import Rules = require('../Rules');
 import c = require('../Component');
 import StackedChildren = require('../attributes/StackedChildren');
 import LengthAttribute = require('../attributes/LengthAttribute');
-import getDynamicBox = require('../patterns/getDynamicBox');
 import getDirection = require('../patterns/getDirection');
 import groupChildren = require('../patterns/groupChildren');
 import hasBoxContent = require('../patterns/hasBoxContent');
@@ -24,8 +23,8 @@ class NodeAttribute extends Attributes.BaseAttribute {
 		return <NodeAttribute>(component.getAttr(Attributes.Type.NODE));
 	}
 
-	static dynamicBoxRule(component: c.Component): Rules.RuleResult[] {
-		if (!getDynamicBox(component)) {
+	static createNodeRule(component: c.Component): Rules.RuleResult[] {
+		if (!component.boxAttr() || !component.boxAttr().getBox().createNode) {
 			return;
 		}
 

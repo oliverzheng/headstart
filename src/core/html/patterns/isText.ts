@@ -7,8 +7,6 @@ function isText(component: c.Component): boolean {
 		return false;
 	var box = boxAttr.getBox();
 	return (
-		box.content != null &&
-		box.content === sinf.Content.STATIC &&
 		box.staticContent != null &&
 		box.staticContent.text != null
 	);

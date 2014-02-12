@@ -2,7 +2,7 @@ import c = require('../Component');
 import sinf = require('../../spec/interfaces');
 
 function doesBoxHaveContent(box: sinf.Box): boolean {
-	return box.content != null && box.content !== sinf.Content.NONE;
+	return box.staticContent != null || box.createNode;
 }
 
 function hasBoxContent(component: c.Component): boolean {

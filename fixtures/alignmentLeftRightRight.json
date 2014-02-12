@@ -22,7 +22,7 @@
 					"value": 40
 				},
 				"direction": 2,
-				"content": 3
+				"createNode": true
 			},
 			{
 				"id": "2",
@@ -47,7 +47,7 @@
 					"value": 40
 				},
 				"direction": 2,
-				"content": 3
+				"createNode": true
 			},
 			{
 				"id": "4",
@@ -60,7 +60,7 @@
 					"value": 40
 				},
 				"direction": 2,
-				"content": 3
+				"createNode": true
 			}
 		]
 	},

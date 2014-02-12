@@ -30,9 +30,6 @@ class Background extends Markup {
 			return;
 		var box = boxAttr.getBox();
 
-		if (box.content !== sinf.Content.STATIC)
-			return;
-
 		if (!box.staticContent || !box.staticContent.fill)
 			return;
 

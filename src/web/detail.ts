@@ -99,8 +99,22 @@ export var DetailComponent = React.createClass({
 		this.props.onBoxChanged(this.props.box);
 	},
 
-	changeContent(content: inf.Content) {
-		this.props.box.content = content;
+	toggleCreateNode() {
+		this.props.box.createNode = !this.props.box.createNode;
+		this.props.onBoxChanged(this.props.box);
+	},
+
+	changeUseStatic(useStatic: boolean) {
+		if (useStatic) {
+			if (!this.props.box.staticContent) {
+				this.props.box.staticContent = {};
+			}
+			this.props.box.children = [];
+		} else {
+			if (this.props.box.staticContent) {
+				this.props.box.staticContent = null;
+			}
+		}
 		this.props.onBoxChanged(this.props.box);
 	},
 
@@ -244,29 +258,12 @@ export var DetailComponent = React.createClass({
 			}, 'parent'));
 		}
 
-		var contents = inf.contents.map((content) => {
-			if (content === (box.content || inf.defaultContent)) {
-				return React.DOM.strong(
-					{className: 'content', key: content},
-					inf.Content[content]
-				);
-			} else {
-				var classNames = 'content';
-				var disabled = children.length > 0 && content === inf.Content.STATIC;
-				if (disabled) {
-					classNames += ' disabled';
-				}
-				var disabled = false;
-				return React.DOM.a(
-					{className: classNames, key: content, href: '#', onClick: (event: any) => {
-						if (!disabled) {
-							this.changeContent(content);
-						}
-					}},
-					inf.Content[content]
-				);
-			}
-		});
+		var createNode =
+			React.DOM.input({
+				type: 'checkbox',
+				checked: box.createNode,
+				onChange: this.toggleCreateNode,
+			});
 
 		var directions = inf.directions.map((direction) => {
 			if (direction === (box.direction || inf.noDirection)) {
@@ -284,14 +281,26 @@ export var DetailComponent = React.createClass({
 			}
 		});
 
-		var disableChildren = (
-			box.content === inf.Content.STATIC &&
-			box.staticContent &&
-			(box.staticContent.text || (box.staticContent.image && box.staticContent.image.accessible))
-		);
+		var hasChildren = box.children && box.children.length > 0;
+
+		var useChildren = box.children && box.children.length > 0;
+		var useStatic = (!box.children || box.children.length === 0) && box.staticContent;
+		if (!useChildren && !useStatic) {
+			useChildren = true;
+		}
+
+		var useStaticComponent =
+			React.DOM.input({
+				type: 'checkbox',
+				checked: useStatic,
+				disabled: hasChildren,
+				onChange: () => {
+					this.changeUseStatic(!useStatic);
+				},
+			});
 
 		var childrenMarkup = [
-			React.DOM.button({onClick: disableChildren ? null : this.addChild, disabled: disableChildren}, 'Add Child'),
+			React.DOM.button({onClick: useChildren ? this.addChild : null, disabled: !useChildren}, 'Add Child'),
 			React.DOM.div({},
 				React.DOM.strong(null, 'Direction:'),
 				React.DOM.span(null, directions)
@@ -299,12 +308,10 @@ export var DetailComponent = React.createClass({
 			React.DOM.div({}, children),
 		];
 
-		var hasChildren = this.props.box.children && this.props.box.children.length > 0;
-
 		var staticText: any;
 		var staticImage: any;
 		var staticFill: any;
-		if (box.content === inf.Content.STATIC) {
+		if (useStatic) {
 			var staticTextFontSize: number;
 			var staticTextLineHeight: number;
 			var staticTextValue: string;
@@ -525,8 +532,12 @@ export var DetailComponent = React.createClass({
 				this.transferPropsTo(LengthComponent({len: box.h, isRoot: isRoot}))
 			),
 			React.DOM.div({},
-				React.DOM.strong(null, 'Content:'),
-				React.DOM.span(null, contents)
+				React.DOM.strong(null, 'Create Node:'),
+				React.DOM.span(null, createNode)
+			),
+			React.DOM.div({},
+				React.DOM.strong(null, 'Use Static Content:'),
+				React.DOM.span(null, useStaticComponent)
 			),
 			React.DOM.hr(null),
 			parent,

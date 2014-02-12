@@ -212,29 +212,6 @@ export interface Rect extends Position {
 	h: number;
 }
 
-export enum Content {
-	/* Not user managed. */
-	NONE,
-
-	/* Static content like text / images will be here */
-	STATIC,
-
-	/* User can update DOM elements later */
-	DYNAMIC,
-
-	/* The bound of the box will be retained */
-	DYNAMIC_BOX,
-}
-
-export var contents = [
-	Content.NONE,
-	Content.STATIC,
-	Content.DYNAMIC,
-	Content.DYNAMIC_BOX,
-];
-
-export var defaultContent = Content.NONE;
-
 
 export interface StaticText {
 	fontSize: number;
@@ -315,13 +292,12 @@ export interface Box {
 	crossAlignment?: Alignment;
 
 	/**
-	 * External content to be used here. Children should not be used if there is
-	 * content.
+	 * Create an HTML DOM node for this box.
 	 */
-	content?: Content;
+	createNode?: boolean;
 
 	/**
-	 * Used only if content is static.
+	 * Used only if there is no children.
 	 */
 	staticContent?: StaticContent;
 

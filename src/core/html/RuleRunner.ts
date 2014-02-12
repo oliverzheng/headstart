@@ -146,7 +146,7 @@ export interface RuleGroup {
 var userSpecifiedRules: RuleGroup = {
 	independent: true,
 	rules: [
-		{name: 'dynamicBox', rule: NodeAttribute.dynamicBoxRule},
+		{name: 'createNodeRule', rule: NodeAttribute.createNodeRule},
 		{name: 'percentChildRule', rule: percentChildRule},
 		{name: 'TextContent.staticTextRule', rule: TextContent.staticTextRule},
 		{name: 'LineHeight.staticTextRule', rule: LineHeight.staticTextRule},
