@@ -14,7 +14,7 @@
 			{
 				"id": "1",
 				"w": {
-					"unit": 0,
+					"unit": 3,
 					"value": 40
 				},
 				"h": {
@@ -114,6 +114,9 @@
 							{
 								"title": "BoxAttribute",
 								"id": "1"
+							},
+							{
+								"title": "Width (600px implicit, 1% implicit)"
 							},
 							{
 								"title": "Height (40px explicit)"
