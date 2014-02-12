@@ -94,7 +94,7 @@
 								"id": "1"
 							},
 							{
-								"title": "Width (40px explicit)"
+								"title": "Width (600px implicit, 1% implicit)"
 							},
 							{
 								"title": "Height (50px explicit)"
@@ -117,27 +117,10 @@
 												"title": "LineHeight (box line height: 10, used line height: 50)"
 											},
 											{
-												"title": "Width (40px explicit)"
+												"title": "Width (600px implicit, 1% implicit)"
 											},
 											{
 												"title": "Height (10px implicit, 1 lines explicit)"
-											},
-											{
-												"title": "NodeAttribute"
-											},
-											{
-												"title": "BlockFormat"
-											},
-											{
-												"title": "CSSAttribute",
-												"children": [
-													{
-														"title": "width: 40px"
-													},
-													{
-														"title": "display: block"
-													}
-												]
 											}
 										]
 									}
@@ -153,9 +136,6 @@
 							{
 								"title": "CSSAttribute",
 								"children": [
-									{
-										"title": "width: 40px"
-									},
 									{
 										"title": "height: 50px"
 									},
