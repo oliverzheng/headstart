@@ -23,6 +23,8 @@ export enum Type {
 	WIDTH,
 	HEIGHT,
 
+	BOX_MODEL,
+
 	// CSS margin
 	MARGIN,
 

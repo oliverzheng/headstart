@@ -7,6 +7,7 @@ import Rules = require('../Rules');
 import hasBoxContent = require('../patterns/hasBoxContent');
 import Markup = require('../Markup');
 import NodeAttribute = require('./NodeAttribute');
+import BlockFormat = require('./BlockFormat');
 
 // Prop names mapped to default values
 var INHERITED_DEFAULTS: { [styleName: string]: string; } = {
@@ -20,6 +21,22 @@ var INHERITED_DEFAULTS: { [styleName: string]: string; } = {
 };
 
 var INHERITED_PROPERTIES = Object.keys(INHERITED_DEFAULTS);
+
+var dependentStyles = [{
+	first: {
+		'text-align': null,
+	},
+	requires: [{
+		styles: {
+			'display': 'block',
+		},
+		attributes: () => {
+			return [
+				new BlockFormat(),
+			];
+		},
+	}],
+}];
 
 class CSSAttribute extends Attributes.BaseAttribute {
 	styles: { [styleName: string]: string; } = {};
@@ -272,6 +289,45 @@ class CSSAttribute extends Attributes.BaseAttribute {
 			});
 		});
 		return results;
+	}
+
+	static dependentStylesRule(component: c.Component): Rules.RuleResult[] {
+		var cssAttr = CSSAttribute.getFrom(component);
+		if (!cssAttr)
+			return;
+
+		var changed = false;
+		var styles: { [styleName: string]: string; } = {};
+		var attributes: Attributes.BaseAttribute[] = [];
+		dependentStyles.forEach((s) => {
+			var requires = false;
+			for (var propName in s.first) {
+				var value = s.first[propName];
+				if (cssAttr.styles[propName] && (!value || cssAttr.styles[propName] === value)) {
+					requires = true;
+				} else {
+					requires = false;
+					break;
+				}
+			}
+			if (requires) {
+				changed = true;
+				s.requires.forEach((r) => {
+					for (var propName in r.styles) {
+						assert(!styles[propName]);
+						styles[propName] = r.styles[propName];
+					}
+					attributes.push.apply(attributes, r.attributes());
+				});
+			}
+		});
+		if (changed) {
+			attributes.push(new CSSAttribute(styles));
+			return [{
+				component: component,
+				attributes: attributes,
+			}];
+		}
 	}
 }
 

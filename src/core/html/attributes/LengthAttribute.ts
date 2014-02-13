@@ -4,6 +4,7 @@ import Markup = require('../Markup');
 import sinf = require('../../spec/interfaces');
 import assert = require('assert');
 import Measurement = require('./Measurement');
+import BoxModel = require('./BoxModel');
 
 class LengthAttribute extends Markup {
 	direction: sinf.Direction;
@@ -274,11 +275,49 @@ class LengthAttribute extends Markup {
 		if (!this.px.isSet() || !this.px.isExplicit) {
 			return [];
 		}
-		var css: { [name: string]: string;};
+
+		var boxModel = BoxModel.getFrom(this.component);
+		var css: { [name: string]: string;} = {};
 		if (this.direction === sinf.horiz) {
-			css = { width: this.px.value.toString() + 'px' };
+			var paddingLeft = (boxModel && boxModel.padding.l) || 0;
+			var paddingRight = (boxModel && boxModel.padding.r) || 0;
+
+			var width: number;
+			if (boxModel && boxModel.content.x != null) {
+				width = boxModel.content.x;
+			} else {
+				width = this.px.value;
+				width -= paddingLeft;
+				width -= paddingRight;
+				assert(width >= 0);
+			}
+			css['width'] = width.toString() + 'px';
+			if (paddingLeft) {
+				css['padding-left'] = paddingLeft.toString() + 'px';
+			}
+			if (paddingRight) {
+				css['padding-right'] = paddingRight.toString() + 'px';
+			}
 		} else {
-			css = { height: this.px.value.toString() + 'px' };
+			var paddingTop = (boxModel && boxModel.padding.t) || 0;
+			var paddingBottom = (boxModel && boxModel.padding.b) || 0;
+
+			var height: number;
+			if (boxModel && boxModel.content.y != null) {
+				height = boxModel.content.y;
+			} else {
+				height = this.px.value;
+				height -= paddingTop;
+				height -= paddingBottom;
+				assert(height >= 0);
+			}
+			css['height'] = height.toString() + 'px';
+			if (paddingTop) {
+				css['padding-top'] = paddingTop.toString() + 'px';
+			}
+			if (paddingBottom) {
+				css['padding-bottom'] = paddingBottom.toString() + 'px';
+			}
 		}
 		return [{
 			component: this.component,

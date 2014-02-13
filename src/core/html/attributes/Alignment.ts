@@ -280,12 +280,6 @@ class Alignment extends Attributes.BaseAttribute {
 			deleteAttributes: [Attributes.Type.STACKED_CHILDREN],
 		});
 
-		if (alignment.center || alignment.far) {
-			results.push({
-				component: component,
-				attributes: [new NodeAttribute],
-			});
-		}
 		return results;
 	}
 

@@ -18,7 +18,12 @@ export class DOMNode {
 	reprCss(): string {
 		var styles: string[] = [];
 		for (var name in this.styles) {
-			styles.push(name + ': ' + this.styles[name]);
+			var value = this.styles[name];
+			if (name === 'display' &&
+				(value === 'block' || value === 'inline')) {
+				continue;
+			}
+			styles.push(name + ': ' + value);
 		}
 		return styles.join('; ');
 	}

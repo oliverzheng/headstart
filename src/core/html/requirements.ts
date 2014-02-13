@@ -35,6 +35,7 @@ export interface Requirement {
 		y?: inf.Alignment;
 	};
 	lazyEval?: () => Requirement;
+	custom?: (component: comp.Component) => any;
 
 	target?: Target;
 
@@ -92,6 +93,28 @@ export function anyChildrenOptional(requirement: Requirement, optional: Requirem
 export function parent(requirement: Requirement): Requirement {
 	requirement.target = Target.PARENT;
 	return requirement;
+}
+
+export function custom(func: (component: comp.Component) => any): Requirement {
+	return {
+		custom: func,
+	};
+}
+
+export var isNode: Requirement = custom((component: comp.Component) => !!component.nodeAttr());
+
+export function firstAncestor(match: Requirement, requirement: Requirement): Requirement {
+	return {
+		custom: (component: comp.Component) => {
+			var parent = component;
+			while (parent = parent.getParent()) {
+				if (satisfies(parent, match)) {
+					return satisfies(parent, requirement);
+				}
+			}
+			return false;
+		}
+	};
 }
 
 export function lazy(func: () => Requirement): Requirement {
@@ -319,6 +342,9 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 		});
 	}
 	if (!ok)
+		return false;
+
+	if (requirement.custom && !requirement.custom(component))
 		return false;
 
 	if (requirement.lazyEval && !satisfies(component, requirement.lazyEval()))

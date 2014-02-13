@@ -206,6 +206,7 @@ export var defaultRuleGroups: RuleGroup[] = [
 		{name: 'HorizontalCenter.marginAutoRule', rule: HorizontalCenter.marginAutoRule},
 		{name: 'alignmentRules.horizontalCenterText', rule: alignmentRules.horizontalCenterText},
 		{name: 'alignmentRules.horizontalRightText', rule: alignmentRules.horizontalRightText},
+		{name: 'alignmentRules.verticalCenterKnownSizes', rule: alignmentRules.verticalCenterKnownSizes},
 	],
 }, {
 	independent: true,
@@ -214,10 +215,11 @@ export var defaultRuleGroups: RuleGroup[] = [
 		{name: 'CSSAttribute.applyCssRule', rule: CSSAttribute.applyCssRule},
 	],
 }, {
-	independent: true,
+	independent: false,
 	rules: [
 		// Bubble up inherited rules to parent nodes
 		{name: 'CSSAttribute.bubbleUpInheritedStylesRule', rule: CSSAttribute.bubbleUpInheritedStylesRule},
+		{name: 'CSSAttribute.dependentStylesRule', rule: CSSAttribute.dependentStylesRule},
 	],
 }, {
 	independent: true,

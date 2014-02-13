@@ -41,7 +41,9 @@ class LineHeight extends Markup {
 		var container = Alignment.getAlignmentContainer(this.component, sinf.vert);
 		var containerHeight: LengthAttribute = container ? LengthAttribute.getFrom(container, sinf.vert) : null;
 
-		if (boxLines === 1 && isVerticalCenter && containerHeight && containerHeight.px.isSet()) {
+		var isNode = !!this.component.nodeAttr();
+
+		if (boxLines === 1 && isVerticalCenter && containerHeight && containerHeight.px.isSet() && !isNode) {
 			return containerHeight.px.value;
 		} else {
 			return this.getText().lineHeight;
