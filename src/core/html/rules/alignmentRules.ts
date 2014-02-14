@@ -30,7 +30,7 @@ export function isJustTextHorizontalAligned(component: c.Component): boolean {
 				// Optional spaces
 				reqs.not(reqs.hasContent)
 			),
-			reqs.fixedW,
+			reqs.knownW,
 		])
 	);
 }

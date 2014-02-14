@@ -7,6 +7,8 @@ import Measurement = require('../attributes/Measurement');
 import PositionAttribute = require('../attributes/PositionAttribute');
 import LengthAttribute = require('../attributes/LengthAttribute');
 import TextContent = require('../attributes/TextContent');
+import CSSAttribute = require('../attributes/CSSAttribute');
+import BlockFormat = require('../attributes/BlockFormat');
 import matchChildren = require('../patterns/matchChildren');
 import hasBoxContent = require('../patterns/hasBoxContent');
 import getDirection = require('../patterns/getDirection');
@@ -44,15 +46,41 @@ export var sizeUserExplicit: Rules.Rule = function(component: c.Component): Rule
 	if (boxAttr) {
 		var box = boxAttr.getBox();
 		// The user specified these should be exactly this length
-		if (!width && box.w && sinf.fixedLengthUnits.indexOf(box.w.unit) !== -1) {
+		if (!width && box.w && sinf.fixedLengthUnits.indexOf(box.w.unit) !== -1 && !box.w.runtime) {
 			width = LengthAttribute.fromUser(box.w, sinf.horiz);
 		}
-		if (!height && box.h && sinf.fixedLengthUnits.indexOf(box.h.unit) !== -1) {
+		if (!height && box.h && sinf.fixedLengthUnits.indexOf(box.h.unit) !== -1 && !box.h.runtime) {
 			height = LengthAttribute.fromUser(box.h, sinf.vert);
 		}
 	}
 
 	return makeResults(component, width, height);
+}
+
+export var sizeRuntimeInitial: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+	var styles: {[name: string]: string;} = {};
+
+	var boxAttr = component.boxAttr();
+	if (!boxAttr)
+		return;
+	var box = boxAttr.getBox();
+
+	if (box.w && box.w.runtime && box.w.unit === sinf.pxUnit) {
+		styles['width'] = box.w.value + 'px';
+	}
+	if (box.h && box.h.runtime && box.h.unit === sinf.pxUnit) {
+		styles['height'] = box.h.value + 'px';
+	}
+
+	if (Object.keys(styles).length > 0) {
+		return [{
+			component: component,
+			attributes: [
+				new CSSAttribute(styles),
+				new BlockFormat(),
+			],
+		}];
+	}
 }
 
 // All components without boxes wrap around their children by default. This does

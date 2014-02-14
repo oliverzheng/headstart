@@ -36,13 +36,13 @@ class HorizontalCenter extends Markup {
 					reqs.all([
 						reqs.hasContent,
 						reqs.c,
-						reqs.fixedW,
+						reqs.knownW,
 						reqs.not(reqs.isContentText),
 					]),
 					// Optional spaces
 					reqs.not(reqs.hasContent)
 				),
-				reqs.fixedW,
+				reqs.knownW,
 			])
 		);
 		if (!satisfies)

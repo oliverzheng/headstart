@@ -158,6 +158,7 @@ var sizeCalculationRules: RuleGroup = {
 	independent: true,
 	rules: [
 		{name: 'sizeRule.sizeUserExplicit', rule: sizeRule.sizeUserExplicit},
+		{name: 'sizeRule.sizeRuntimeInitial', rule: sizeRule.sizeRuntimeInitial},
 		{name: 'sizeRule.sizePercentChildren', rule: sizeRule.sizePercentChildren},
 		{name: 'sizeRule.sizeExpandedChildren', rule: sizeRule.sizeExpandedChildren},
 		{name: 'sizeRule.sizeShrink', rule: sizeRule.sizeShrink},

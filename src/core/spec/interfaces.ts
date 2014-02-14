@@ -57,15 +57,12 @@ export enum LengthUnit {
 	 * The 50% is calculated on 100px.
 	 */
 	SHRINK,
-
-	UNKNOWN,
 }
 
 export var pxUnit = LengthUnit.PIXELS;
 export var pctUnit = LengthUnit.PERCENT;
 export var expandUnit = LengthUnit.EXPAND;
 export var shrinkUnit = LengthUnit.SHRINK;
-export var unknownUnit = LengthUnit.UNKNOWN;
 
 export var lengthUnits = [
 	LengthUnit.PIXELS,
@@ -73,7 +70,6 @@ export var lengthUnits = [
 	LengthUnit.PARTS,
 	LengthUnit.EXPAND,
 	LengthUnit.SHRINK,
-	LengthUnit.UNKNOWN,
 ];
 
 export var lengthUnitsWithValue = [
@@ -93,6 +89,9 @@ export interface Length {
 
 	/** Value only if unit is one of PIXELS, PERCENT, or PARTS. */
 	value?: number;
+
+	// Modifiable at runtime.
+	runtime?: boolean;
 }
 
 export var shrink: Length = {

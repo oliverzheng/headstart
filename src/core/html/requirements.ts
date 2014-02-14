@@ -26,6 +26,8 @@ export interface Requirement {
 
 	w?: inf.LengthUnit;
 	h?: inf.LengthUnit;
+	wRuntime?: boolean;
+	hRuntime?: boolean;
 	hasContent?: boolean;
 	isText?: boolean;
 	isImage?: boolean;
@@ -231,6 +233,14 @@ export var knownH: Requirement = {
 	h: inf.pxUnit,
 };
 
+export var runtimeW: Requirement = {
+	wRuntime: true,
+};
+
+export var runtimeH: Requirement = {
+	hRuntime: true,
+};
+
 export var shrinkW: Requirement = {
 	w: inf.shrinkUnit,
 }
@@ -238,22 +248,6 @@ export var shrinkW: Requirement = {
 export var shrinkH: Requirement = {
 	h: inf.shrinkUnit,
 }
-
-export var fixedW: Requirement = eitherOr(
-	knownW,
-	all([
-		{ w: inf.pctUnit },
-		parent(lazy(() => fixedW))
-	])
-);
-
-export var fixedH: Requirement = eitherOr(
-	knownH,
-	all([
-		{ h: inf.pctUnit },
-		parent(lazy(() => fixedH))
-	])
-);
 
 export var hasContent: Requirement = {
 	hasContent: true,
@@ -285,7 +279,6 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 			case inf.shrinkUnit:
 				assert(false); // TODO
 				break;
-			case inf.unknownUnit:
 			default:
 				// It's okay if we actually have a length
 				break;

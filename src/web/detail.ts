@@ -11,19 +11,28 @@ var LengthComponent = React.createClass({
 			value = 0;
 		}
 		this.props.len.value = value;
-		this.props.onBoxChanged(null);
+		this.props.onLengthUpdated(null);
 	},
 
 	changeUnit(event: any, unit: inf.LengthUnit) {
 		this.props.len.unit = unit;
-		this.props.onBoxChanged(null);
+		this.props.onLengthUpdated(null);
 		
 		event.preventDefault();
+	},
+
+	toggleRuntime() {
+		this.props.len.unit = inf.LengthUnit.PIXELS;
+		this.props.len.runtime = !this.props.len.runtime;
+		this.props.onLengthUpdated(null);
 	},
 
 	render() {
 		var len = this.props.len;
 		var units = inf.lengthUnits.map((lengthUnit) => {
+			if (len.runtime && lengthUnit !== inf.LengthUnit.PIXELS)
+				return;
+
 			if (lengthUnit === len.unit) {
 				return React.DOM.strong(
 					{className: 'lengthUnit', key: lengthUnit},
@@ -50,7 +59,19 @@ var LengthComponent = React.createClass({
 			});
 		}
 
-		return React.DOM.span({}, units.concat([value]));
+		var runtime = React.DOM.span(null,
+			React.DOM.input({
+				type: 'checkbox',
+				onChange: this.toggleRuntime,
+				checked: len.runtime,
+			}),
+			'Change at runtime'
+		);
+
+		return React.DOM.span({},
+			React.DOM.span(null, units.concat([value])),
+			runtime
+		);
 	}
 });
 
@@ -101,6 +122,10 @@ export var DetailComponent = React.createClass({
 
 	toggleCreateNode() {
 		this.props.box.createNode = !this.props.box.createNode;
+		if (!this.props.box.createNode) {
+			this.props.box.w.runtime = false;
+			this.props.box.h.runtime = false;
+		}
 		this.props.onBoxChanged(this.props.box);
 	},
 
@@ -189,6 +214,14 @@ export var DetailComponent = React.createClass({
 		}, (err: any) => {
 			console.log('Could not retrieve ' + path + ':', err);
 		});
+	},
+
+	onLengthUpdated() {
+		if ((this.props.box.w.runtime || this.props.box.h.runtime) &&
+			!this.props.box.createNode) {
+			this.props.box.createNode = true;
+		}
+		this.props.onBoxChanged(this.props.box);
 	},
 
 	render() {
@@ -521,11 +554,11 @@ export var DetailComponent = React.createClass({
 			),
 			React.DOM.div(null,
 				React.DOM.strong(null, 'Width: '),
-				this.transferPropsTo(LengthComponent({len: box.w, isRoot: isRoot}))
+				LengthComponent({len: box.w, isRoot: isRoot, onLengthUpdated: this.onLengthUpdated})
 			),
 			React.DOM.div(null,
 				React.DOM.strong(null, 'Height: '),
-				this.transferPropsTo(LengthComponent({len: box.h, isRoot: isRoot}))
+				LengthComponent({len: box.h, isRoot: isRoot, onLengthUpdated: this.onLengthUpdated})
 			),
 			React.DOM.div({},
 				React.DOM.strong(null, 'Create Node:'),
