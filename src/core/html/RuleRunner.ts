@@ -9,21 +9,25 @@ import c = require('./Component');
 
 import NodeAttribute = require('./attributes/NodeAttribute');
 import percentChildRule = require('./rules/percentChildRule');
-import coalesceSpacesRule = require('./rules/coalesceSpacesRule');
-import sizeRule = require('./rules/sizeRule');
-import cssVerticalBottomRule = require('./rules/cssVerticalBottomRule');
-import alignmentRules = require('./rules/alignmentRules');
 
 import BlockFormat = require('./attributes/BlockFormat');
 import InlineFormat = require('./attributes/InlineFormat');
 import Alignment = require('./attributes/Alignment');
 import FloatFormat = require('./attributes/FloatFormat');
-import Margin = require('./attributes/Margin');
-import HorizontalCenter = require('./attributes/HorizontalCenter');
 import TextContent = require('./attributes/TextContent');
 import Background = require('./attributes/Background');
 import LineHeight = require('./attributes/LineHeight');
 import CSSAttribute = require('./attributes/CSSAttribute');
+
+import userSpecifiedBucket = require('./rules/userSpecifiedBucket');
+import sizingBucket = require('./rules/sizingBucket');
+import reduceBucket = require('./rules/reduceBucket');
+import alignmentBucket = require('./rules/alignmentBucket');
+import renderingBucket = require('./rules/renderingBucket');
+import bubbleBucket = require('./rules/bubbleBucket');
+import cssBucket = require('./rules/cssBucket');
+import nodeBucket = require('./rules/nodeBucket');
+import tagBucket = require('./rules/tagBucket');
 
 export interface RuleWithName {
 	name: string;
@@ -31,52 +35,57 @@ export interface RuleWithName {
 }
 
 export class RuleRunner {
+	rulesPrefix: string;
 	rules: RuleWithName[];
 	context: Context.Context;
-	logs: string[];
 
-	constructor(rules: RuleWithName[], context: Context.Context, logs: string[]) {
+	constructor(rulesPrefix: string, rules: RuleWithName[], context: Context.Context) {
+		this.rulesPrefix = rulesPrefix;
 		this.rules = rules;
 		this.context = context;
-		this.logs = logs;
 	}
 
-	start(component: c.Component) { throw new Error('Subclass RuleRunner first'); }
+	start(component: c.Component) {
+		var overallUpdated = false;
+		var updated: boolean;
+		do {
+			updated = false;
+			component.iterateChildrenBreadthFirst((child) => {
+				updated = this.runAllRulesOn(child);
+				if (updated) {
+					overallUpdated = true;
+					return c.STOP_RECURSION;
+				}
+			});
+		} while (updated);
+		return overallUpdated;
+	}
 
 	runSingleRuleOn(component: c.Component, rule: RuleWithName): boolean {
 		var updated = false;
 		var attrsForComponents = rule.rule(component, this.context);
 		if (attrsForComponents) {
-			this.logs.push('Rule ' + rule.name + ' applied on Component #' + component.id + ':');
-			var parent = component.getParent();
 			attrsForComponents.forEach((attrsForComponent) => {
-				var component = attrsForComponent.component;
-				// TODO make sure component is under the tree of the original
-				// component
-				assert(component != parent);
+				var changedComponent = attrsForComponent.component;
 
 				var deleteAttrs = attrsForComponent.deleteAttributes;
 				if (deleteAttrs && deleteAttrs.length > 0) {
 					deleteAttrs.forEach(
-						(attrType) => component.deleteAttr(attrType)
+						(attrType) => changedComponent.deleteAttr(attrType)
 					);
 					updated = true;
-
-					this.logs.push('- Component #' + component.id + ' had attributes deleted (' + deleteAttrs.join(',') + ')');
 				}
 
 				var attrs = attrsForComponent.attributes;
 				if (attrs) {
-					updated = component.addAttributes(attrs) || updated;
-					if (updated)
-						this.logs.push('- Component #' + component.id + ' had attributes added (' + attrs.map((attr) => attr.getType()).join(',') + ')');
+					updated = changedComponent.addAttributes(attrs) || updated;
+					attrs.forEach((attr) => attr.addRule(this.rulesPrefix + '.' + rule.name, component.id));
 				}
 
 				var replaceAttrs = attrsForComponent.replaceAttributes;
 				if (replaceAttrs) {
-					updated = component.replaceAttributes(replaceAttrs) || updated;
-					if (updated)
-						this.logs.push('- Component #' + component.id + ' had attributes replaced (' + replaceAttrs.map((attr) => attr.getType()).join(',') + ')');
+					updated = changedComponent.replaceAttributes(replaceAttrs) || updated;
+					replaceAttrs.forEach((attr) => attr.addRule(this.rulesPrefix + '.' + rule.name, component.id));
 				}
 			});
 		}
@@ -92,158 +101,68 @@ export class RuleRunner {
 	}
 }
 
-// For each component, run all rules on a component at once. If it changes,
-// don't iterate its children. This implies the rules do not depend on each
-// other, and this is no preference for which rule is favored.
-export class IndependentRuleRunner extends RuleRunner {
-	start(component: c.Component) {
-		var updated: boolean;
-		do {
-			updated = false;
-			component.iterateChildrenBreadthFirst((child) => {
-				updated = this.runAllRulesOn(child);
-				if (updated) {
-					return c.STOP_RECURSION;
-				}
-			});
-		} while (updated);
-	}
-}
-
-// Walk the tree (breadth first) applying the first rule of a list of rules. When
-// it's applied, continue walking the tree. When this rule applies to nothing
-// else, walk with the second rule. When the second rule updates, restart
-// walking with the first rule, etc.
-export class PreferenceRuleRunner extends RuleRunner {
-	start(component: c.Component) {
-		var updated: boolean;
-		do {
-			updated = false;
-			for (var i = 0; i < this.rules.length; ++i) {
-				var rule = this.rules[i];
-				var isFirstRule = i === 0;
-				component.iterateChildrenBreadthFirst((child) => {
-					updated = this.runSingleRuleOn(child, rule);
-					if (updated && !isFirstRule) {
-						return c.STOP_ITERATION;
-					}
-				});
-				if (updated && !isFirstRule) {
-					break;
-				}
-			};
-		} while (updated);
-	}
-}
-
-export interface RuleGroup {
-	independent: boolean;
-
-	// Only one of the following can exist.
-	rules: RuleWithName[];
-}
-
-var userSpecifiedRules: RuleGroup = {
-	independent: true,
-	rules: [
-		{name: 'createNodeRule', rule: NodeAttribute.createNodeRule},
-		{name: 'percentChildRule', rule: percentChildRule},
-		{name: 'TextContent.staticTextRule', rule: TextContent.staticTextRule},
-		{name: 'LineHeight.staticTextRule', rule: LineHeight.staticTextRule},
-		{name: 'InlineFormat.shrinkWidthToTextRule', rule: InlineFormat.shrinkWidthToTextRule},
-	],
-};
-
-var sizeCalculationRules: RuleGroup = {
-	independent: true,
-	rules: [
-		{name: 'sizeRule.sizeUserExplicit', rule: sizeRule.sizeUserExplicit},
-		{name: 'sizeRule.sizeRuntimeInitial', rule: sizeRule.sizeRuntimeInitial},
-		{name: 'sizeRule.sizePercentChildren', rule: sizeRule.sizePercentChildren},
-		{name: 'sizeRule.sizeExpandedChildren', rule: sizeRule.sizeExpandedChildren},
-		{name: 'sizeRule.sizeShrink', rule: sizeRule.sizeShrink},
-		{name: 'sizeRule.sizeShrinkHeightToText', rule: sizeRule.sizeShrinkHeightToText},
-	],
-};
-
-export var defaultRuleGroups: RuleGroup[] = [
-	userSpecifiedRules,
-	sizeCalculationRules,
-{
-	// Hierarchy changing rules
-	independent: false,
-	rules: [
-		// Size calculation
-		{name: 'sizeRule.sizeByChildrenSum', rule: sizeRule.sizeByChildrenSum},
-
-		{name: 'Alignment.expandRule', rule: Alignment.expandRule},
-		{name: 'Alignment.leftAlignRule', rule: Alignment.leftAlignRule},
-		{name: 'NodeAttribute.unfoldSameDirectionRule', rule: NodeAttribute.unfoldSameDirectionRule},
-		{name: 'coalesceSpacesRule', rule: coalesceSpacesRule},
-
-		/*
-		// Hmm these don't look right:
-		cssVerticalBottomRule,
-		*/
-	],
-
-	// Rules after this should not change hierarchy
-}, {
-	// Determine which are nodes
-	independent: true,
-	rules: [
-		{name: 'NodeAttribute.explicitLengthContentRule', rule: NodeAttribute.explicitLengthContentRule},
-		{name: 'Background.backgroundFillRule', rule: Background.backgroundFillRule},
-	]
-}, {
-	// Attributes that require nodes
-	independent: true,
-	rules: [
-		{name: 'BlockFormat.verticalRule', rule: BlockFormat.verticalRule},
-		{name: 'BlockFormat.explicitFixedWidthBlockRule', rule: BlockFormat.explicitFixedWidthBlockRule},
-		{name: 'BlockFormat.implicitExpandWidthBlockRule', rule: BlockFormat.implicitExpandWidthBlockRule},
-		{name: 'FloatFormat.alignRule', rule: FloatFormat.alignRule},
-		{name: 'Margin.marginRule', rule: Margin.marginRule},
-		{name: 'HorizontalCenter.marginAutoRule', rule: HorizontalCenter.marginAutoRule},
-		{name: 'alignmentRules.horizontalCenterText', rule: alignmentRules.horizontalCenterText},
-		{name: 'alignmentRules.horizontalRightText', rule: alignmentRules.horizontalRightText},
-		{name: 'alignmentRules.verticalCenterKnownSizes', rule: alignmentRules.verticalCenterKnownSizes},
-	],
-}, {
-	independent: true,
-	rules: [
-		// Apply all CSS
-		{name: 'CSSAttribute.applyCssRule', rule: CSSAttribute.applyCssRule},
-	],
-}, {
-	independent: false,
-	rules: [
-		// Bubble up inherited rules to parent nodes
-		{name: 'CSSAttribute.bubbleUpInheritedStylesRule', rule: CSSAttribute.bubbleUpInheritedStylesRule},
-		{name: 'CSSAttribute.dependentStylesRule', rule: CSSAttribute.dependentStylesRule},
-	],
-}, {
-	independent: true,
-	rules: [
-		// Create necessary nodes
-		{name: 'CSSAttribute.inheritedStylesNodeRule', rule: CSSAttribute.inheritedStylesNodeRule},
-		{name: 'TextContent.needsNodeRule', rule: TextContent.needsNodeRule},
-	],
-}];
-
-export var renderingRuleGroups: RuleGroup[] = [
-	userSpecifiedRules,
-	sizeCalculationRules,
+export var renderingBuckets: Rules.Bucket[] = [
+	userSpecifiedBucket,
+	sizingBucket,
 ];
 
-export function runOn(component: c.Component, context: Context.Context, logs: string[], ruleGroups: RuleGroup[] = defaultRuleGroups) {
-	ruleGroups.forEach((group) => {
-		var runner: RuleRunner;
-		if (group.independent) {
-			runner = new IndependentRuleRunner(group.rules, context, logs);
-		} else {
-			runner = new PreferenceRuleRunner(group.rules, context, logs);
-		}
-		runner.start(component);
-	});
+export var allBuckets: Rules.Bucket[] = [
+	// All box attributes there.
+	userSpecifiedBucket,
+
+	// All sizes that can be calculated are calculated.
+	sizingBucket,
+
+	// Unnecessary components are removed
+	reduceBucket,
+
+	// Alignment is figured out
+	alignmentBucket,
+
+	// Necessary components are created and the rendered CSS values of each
+	// component are attached.
+	renderingBucket,
+
+	// Bubble up rendering values up into assigned CSS values
+	bubbleBucket,
+
+	// Assign the rest of CSS properties
+	cssBucket,
+
+	nodeBucket,
+
+	// Assign tag names
+	tagBucket,
+];
+
+export class BucketRunner {
+	buckets: Rules.Bucket[];
+	context: Context.Context;
+
+	constructor(buckets: Rules.Bucket[], context: Context.Context) {
+		this.buckets = buckets;
+		this.context = context;
+	}
+	
+	start(component: c.Component): boolean {
+		var overallUpdated = false;
+		do {
+			var updated = false;
+			for (var i = 0; i < this.buckets.length; ++i) {
+				var bucket = this.buckets[i];
+				var runner = new RuleRunner(bucket.name, bucket.rules, this.context);
+				var updated = runner.start(component);
+				if (updated) {
+					overallUpdated = true;
+					break;
+				}
+			}
+		} while (updated);
+		return overallUpdated;
+	}
+}
+
+export function runOn(component: c.Component, context: Context.Context, logs: string[], buckets: Rules.Bucket[] = allBuckets) {
+	var bucketRunner = new BucketRunner(buckets, context);
+	bucketRunner.start(component);
 }

@@ -24,23 +24,32 @@
 				"direction": 2,
 				"staticContent": {
 					"text": {
-						"fontSize": 3,
-						"lineHeight": 3,
+						"fontSize": 30,
+						"lineHeight": 30,
 						"value": "asdf",
+						"fontFamily": "",
 						"inputMinLines": null,
 						"inputMaxLines": null,
 						"outputMaxLines": null
-					}
-				}
+					},
+					"image": null,
+					"fill": null
+				},
+				"children": []
 			}
 		]
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "3",
+		"id": "1949",
 		"children": [
 			{
 				"title": "BoxAttribute",
+				"children": [
+					{
+						"title": "Rules: "
+					}
+				],
 				"id": "0"
 			},
 			{
@@ -48,44 +57,90 @@
 				"children": [
 					{
 						"title": "Component",
-						"id": "4",
+						"id": "1950",
 						"children": [
 							{
 								"title": "BoxAttribute",
+								"children": [
+									{
+										"title": "Rules: "
+									}
+								],
 								"id": "1"
 							},
 							{
-								"title": "TextContent (value: asdf)"
-							},
-							{
-								"title": "LineHeight (box line height: 3, used line height: 3)"
-							},
-							{
-								"title": "Width (600px implicit, 1% implicit)"
-							},
-							{
-								"title": "Height (40px explicit)"
-							},
-							{
-								"title": "NodeAttribute"
-							},
-							{
-								"title": "BlockFormat"
-							},
-							{
-								"title": "CSSAttribute",
+								"title": "TextContent (value: asdf)",
 								"children": [
 									{
-										"title": "font-size: 3px"
+										"title": "Rules: userSpecified.staticText#1950"
+									}
+								]
+							},
+							{
+								"title": "LineHeight (box line height: 30, used line height: 30)",
+								"children": [
+									{
+										"title": "Rules: userSpecified.staticText#1950"
+									}
+								]
+							},
+							{
+								"title": "Width (600px implicit, 1% implicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.expandedChildren#1949"
+									}
+								]
+							},
+							{
+								"title": "Height (40px explicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.userExplicit#1950"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = true)",
+								"children": [
+									{
+										"title": "font-size: 30px"
 									},
 									{
-										"title": "line-height: 3px"
+										"title": "line-height: 30px"
 									},
 									{
 										"title": "height: 40px"
+									}
+								]
+							},
+							{
+								"title": "NodeAttribute",
+								"children": [
+									{
+										"title": "Rules: bubble.bubbleUpInheritedStylesRule#1950"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = false)",
+								"children": [
+									{
+										"title": "font-size: 30px"
 									},
 									{
-										"title": "display: block"
+										"title": "line-height: 30px"
+									},
+									{
+										"title": "height: 40px"
+									}
+								]
+							},
+							{
+								"title": "TagName (div)",
+								"children": [
+									{
+										"title": "Rules: tag.explicitSizeDiv#1950"
 									}
 								]
 							}
@@ -95,16 +150,20 @@
 				"ordered": true
 			},
 			{
-				"title": "Width (600px explicit)"
+				"title": "Width (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#1949"
+					}
+				]
 			},
 			{
-				"title": "Height (600px explicit)"
-			},
-			{
-				"title": "NodeAttribute"
-			},
-			{
-				"title": "BlockFormat"
+				"title": "Height (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#1949"
+					}
+				]
 			}
 		]
 	}

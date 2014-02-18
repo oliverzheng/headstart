@@ -38,7 +38,7 @@ function makeResults(
 	}];
 }
 
-export var sizeUserExplicit: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+var sizeUserExplicit: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
 	var width: LengthAttribute = null;
 	var height: LengthAttribute = null;
 
@@ -57,35 +57,9 @@ export var sizeUserExplicit: Rules.Rule = function(component: c.Component): Rule
 	return makeResults(component, width, height);
 }
 
-export var sizeRuntimeInitial: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
-	var styles: {[name: string]: string;} = {};
-
-	var boxAttr = component.boxAttr();
-	if (!boxAttr)
-		return;
-	var box = boxAttr.getBox();
-
-	if (box.w && box.w.runtime && box.w.unit === sinf.pxUnit) {
-		styles['width'] = box.w.value + 'px';
-	}
-	if (box.h && box.h.runtime && box.h.unit === sinf.pxUnit) {
-		styles['height'] = box.h.value + 'px';
-	}
-
-	if (Object.keys(styles).length > 0) {
-		return [{
-			component: component,
-			attributes: [
-				new CSSAttribute(styles),
-				new BlockFormat(),
-			],
-		}];
-	}
-}
-
 // All components without boxes wrap around their children by default. This does
 // not size components that have boxes.
-export var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
 	var width: LengthAttribute = null;
 	var height: LengthAttribute = null;
 
@@ -151,7 +125,7 @@ export var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rul
 
 // Set the px length of children that have % lengths and if the parent has
 // a known px length.
-export var sizePercentChildren: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+var sizePercentChildren: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
 	var parentWidth = LengthAttribute.getFrom(component, sinf.horiz);
 	var parentHeight = LengthAttribute.getFrom(component, sinf.vert);
 
@@ -160,9 +134,6 @@ export var sizePercentChildren: Rules.Rule = function(component: c.Component): R
 		return;
 	}
 	var childrenComponents = children.get();
-
-	// This can only be used for when the entire tree is a box tree.
-	assert(childrenComponents.every((child) => !!child.boxAttr()));
 
 	var results: Rules.RuleResult[] = [];
 
@@ -188,7 +159,7 @@ export var sizePercentChildren: Rules.Rule = function(component: c.Component): R
 }
 
 // Set the % and px lengths of children that expand.
-export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[] {
+function sizeExpandedChildren(component: c.Component): Rules.RuleResult[] {
 	var parentWidth = LengthAttribute.getFrom(component, sinf.horiz);
 	var parentHeight = LengthAttribute.getFrom(component, sinf.vert);
 	var direction = getDirection(component);
@@ -320,7 +291,7 @@ export function sizeExpandedChildren(component: c.Component): Rules.RuleResult[]
 	return results;
 }
 
-export function sizeShrink(component: c.Component): Rules.RuleResult[] {
+function sizeShrink(component: c.Component): Rules.RuleResult[] {
 	var boxAttr = component.boxAttr();
 	if (!boxAttr)
 		return;
@@ -403,7 +374,7 @@ export function sizeShrink(component: c.Component): Rules.RuleResult[] {
 	return results;
 }
 
-export function sizeShrinkHeightToText(component: c.Component): Rules.RuleResult[] {
+function sizeShrinkHeightToText(component: c.Component): Rules.RuleResult[] {
 	var textAttr = TextContent.getFrom(component);
 	if (!textAttr) {
 		return;
@@ -434,3 +405,17 @@ export function sizeShrinkHeightToText(component: c.Component): Rules.RuleResult
 		],
 	}];
 }
+
+var bucket: Rules.Bucket = {
+	name: 'sizing',
+	rules: [
+		{name: 'userExplicit', rule: sizeUserExplicit},
+		{name: 'percentChildren', rule: sizePercentChildren},
+		{name: 'expandedChildren', rule: sizeExpandedChildren},
+		{name: 'shrink', rule: sizeShrink},
+		{name: 'shrinkHeightToText', rule: sizeShrinkHeightToText},
+		{name: 'childrenSum', rule: sizeByChildrenSum},
+	],
+};
+
+export = bucket;

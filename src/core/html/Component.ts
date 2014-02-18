@@ -156,6 +156,10 @@ export class Component {
 		return <BoxAttribute>this.getAttr(Attributes.Type.BOX);
 	}
 
+	getBox(): sinf.Box {
+		return this.boxAttr() ? this.boxAttr().getBox() : null;
+	}
+
 	nodeAttr(): NodeAttribute {
 		return <NodeAttribute>this.getAttr(Attributes.Type.NODE);
 	}

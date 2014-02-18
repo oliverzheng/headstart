@@ -22,7 +22,15 @@
 					"value": 40
 				},
 				"direction": 2,
-				"createNode": true
+				"createNode": true,
+				"staticContent": {
+					"text": null,
+					"image": null,
+					"fill": {
+						"color": "#FF3021"
+					}
+				},
+				"children": []
 			},
 			{
 				"id": "2",
@@ -48,16 +56,29 @@
 					"value": 40
 				},
 				"direction": 2,
-				"createNode": true
+				"createNode": true,
+				"staticContent": {
+					"text": null,
+					"image": null,
+					"fill": {
+						"color": "#FF7ADC"
+					}
+				},
+				"children": []
 			}
 		]
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "27",
+		"id": "1788",
 		"children": [
 			{
 				"title": "BoxAttribute",
+				"children": [
+					{
+						"title": "Rules: "
+					}
+				],
 				"id": "0"
 			},
 			{
@@ -65,38 +86,82 @@
 				"children": [
 					{
 						"title": "Component",
-						"id": "28",
+						"id": "1789",
 						"children": [
 							{
 								"title": "BoxAttribute",
+								"children": [
+									{
+										"title": "Rules: "
+									}
+								],
 								"id": "1"
 							},
 							{
-								"title": "NodeAttribute"
-							},
-							{
-								"title": "Width (600px implicit, 1% implicit)"
-							},
-							{
-								"title": "Height (40px explicit)"
-							},
-							{
-								"title": "BlockFormat"
-							},
-							{
-								"title": "Margin"
-							},
-							{
-								"title": "CSSAttribute",
+								"title": "NodeAttribute",
 								"children": [
+									{
+										"title": "Rules: userSpecified.createNode#1789"
+									}
+								]
+							},
+							{
+								"title": "Width (600px implicit, 1% implicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.expandedChildren#1788"
+									}
+								]
+							},
+							{
+								"title": "Height (40px explicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.userExplicit#1789"
+									}
+								]
+							},
+							{
+								"title": "Background",
+								"children": [
+									{
+										"title": "Rules: rendering.backgroundFillRule#1789"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = true)",
+								"children": [
+									{
+										"title": "margin-bottom: 40px"
+									},
 									{
 										"title": "height: 40px"
 									},
 									{
-										"title": "display: block"
-									},
+										"title": "background: #FF3021"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = false)",
+								"children": [
 									{
 										"title": "margin-bottom: 40px"
+									},
+									{
+										"title": "height: 40px"
+									},
+									{
+										"title": "background: #FF3021"
+									}
+								]
+							},
+							{
+								"title": "TagName (div)",
+								"children": [
+									{
+										"title": "Rules: tag.explicitSizeDiv#1789"
 									}
 								]
 							}
@@ -104,23 +169,62 @@
 					},
 					{
 						"title": "Component",
-						"id": "29",
+						"id": "1790",
 						"children": [
 							{
 								"title": "BoxAttribute",
+								"children": [
+									{
+										"title": "Rules: "
+									}
+								],
 								"id": "2"
 							},
 							{
-								"title": "Width (600px implicit, 1% implicit)"
+								"title": "Width (600px implicit, 1% implicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.expandedChildren#1788"
+									}
+								]
 							},
 							{
-								"title": "Height (40px explicit)"
+								"title": "Height (40px explicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.userExplicit#1790"
+									}
+								]
 							},
 							{
-								"title": "CSSAttribute",
+								"title": "Spacing",
+								"children": [
+									{
+										"title": "Rules: reduce.markSpaces#1790"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = true)",
 								"children": [
 									{
 										"title": "height: 40px"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = false)",
+								"children": [
+									{
+										"title": "height: 40px"
+									}
+								]
+							},
+							{
+								"title": "TagName (div)",
+								"children": [
+									{
+										"title": "Rules: tag.explicitSizeDiv#1790"
 									}
 								]
 							}
@@ -128,38 +232,82 @@
 					},
 					{
 						"title": "Component",
-						"id": "30",
+						"id": "1791",
 						"children": [
 							{
 								"title": "BoxAttribute",
+								"children": [
+									{
+										"title": "Rules: "
+									}
+								],
 								"id": "3"
 							},
 							{
-								"title": "NodeAttribute"
-							},
-							{
-								"title": "Width (600px implicit, 1% implicit)"
-							},
-							{
-								"title": "Height (40px explicit)"
-							},
-							{
-								"title": "BlockFormat"
-							},
-							{
-								"title": "Margin"
-							},
-							{
-								"title": "CSSAttribute",
+								"title": "NodeAttribute",
 								"children": [
+									{
+										"title": "Rules: userSpecified.createNode#1791"
+									}
+								]
+							},
+							{
+								"title": "Width (600px implicit, 1% implicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.expandedChildren#1788"
+									}
+								]
+							},
+							{
+								"title": "Height (40px explicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.userExplicit#1791"
+									}
+								]
+							},
+							{
+								"title": "Background",
+								"children": [
+									{
+										"title": "Rules: rendering.backgroundFillRule#1791"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = true)",
+								"children": [
+									{
+										"title": "margin-top: 40px"
+									},
 									{
 										"title": "height: 40px"
 									},
 									{
-										"title": "display: block"
-									},
+										"title": "background: #FF7ADC"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = false)",
+								"children": [
 									{
 										"title": "margin-top: 40px"
+									},
+									{
+										"title": "height: 40px"
+									},
+									{
+										"title": "background: #FF7ADC"
+									}
+								]
+							},
+							{
+								"title": "TagName (div)",
+								"children": [
+									{
+										"title": "Rules: tag.explicitSizeDiv#1791"
 									}
 								]
 							}
@@ -169,16 +317,20 @@
 				"ordered": true
 			},
 			{
-				"title": "Width (600px explicit)"
+				"title": "Width (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#1788"
+					}
+				]
 			},
 			{
-				"title": "Height (600px explicit)"
-			},
-			{
-				"title": "NodeAttribute"
-			},
-			{
-				"title": "BlockFormat"
+				"title": "Height (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#1788"
+					}
+				]
 			}
 		]
 	}

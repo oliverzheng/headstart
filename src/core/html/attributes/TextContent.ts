@@ -68,31 +68,6 @@ class TextContent extends Markup {
 			}];
 		}
 	}
-
-	static staticTextRule(component: c.Component): Rules.RuleResult[] {
-		var boxAttr = component.boxAttr();
-		if (!boxAttr)
-			return;
-		var box = boxAttr.getBox();
-
-		if (!box.staticContent || !box.staticContent.text)
-			return;
-
-		var text = box.staticContent.text;
-		if (!text.fontSize)
-			return;
-
-		assert(component.getChildren().length === 0);
-
-		if (text.value) {
-			return [{
-				component: component,
-				attributes: [
-					new TextContent(),
-				],
-			}];
-		}
-	}
 }
 
 export = TextContent;

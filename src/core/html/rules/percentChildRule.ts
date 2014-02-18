@@ -6,7 +6,7 @@ import StackedChildren = require('../attributes/StackedChildren');
 import size = require('../patterns/size');
 import sinf = require('../../spec/interfaces');
 
-var percentChildRule: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
+var percentChild: Rules.Rule = function(component: c.Component): Rules.RuleResult[] {
 	if (!component.boxAttr()) {
 		return;
 	}
@@ -33,4 +33,4 @@ var percentChildRule: Rules.Rule = function(component: c.Component): Rules.RuleR
 	}];
 }
 
-export = percentChildRule;
+export = percentChild;

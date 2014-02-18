@@ -59,28 +59,6 @@ class LineHeight extends Markup {
 	getText() {
 		return this.component.boxAttr().getBox().staticContent.text;
 	}
-
-	static staticTextRule(component: c.Component): Rules.RuleResult[] {
-		var boxAttr = component.boxAttr();
-		if (!boxAttr)
-			return;
-		var box = boxAttr.getBox();
-
-		if (!box.staticContent || !box.staticContent.text)
-			return;
-
-		var text = box.staticContent.text;
-		if (!text.fontSize)
-			return;
-
-		assert(component.getChildren().length === 0);
-		assert(text.lineHeight);
-
-		return [{
-			component: component,
-			attributes: [new LineHeight()],
-		}];
-	}
 }
 
 export = LineHeight;

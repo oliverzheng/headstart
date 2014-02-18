@@ -294,7 +294,7 @@ export var DetailComponent = React.createClass({
 		var createNode =
 			React.DOM.input({
 				type: 'checkbox',
-				checked: box.createNode,
+				checked: !!box.createNode,
 				onChange: this.toggleCreateNode,
 			});
 

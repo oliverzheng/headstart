@@ -1,0 +1,534 @@
+{
+	"spec": {
+		"id": "0",
+		"w": {
+			"unit": 0,
+			"value": 600
+		},
+		"h": {
+			"unit": 0,
+			"value": 600
+		},
+		"direction": 2,
+		"children": [
+			{
+				"id": "5",
+				"w": {
+					"unit": 3,
+					"value": 40
+				},
+				"h": {
+					"unit": 4,
+					"value": 40
+				},
+				"direction": 2,
+				"children": [
+					{
+						"id": "7",
+						"w": {
+							"unit": 0,
+							"value": 40
+						},
+						"h": {
+							"unit": 0,
+							"value": 40
+						},
+						"direction": 2,
+						"staticContent": {
+							"text": null,
+							"image": null,
+							"fill": {
+								"color": "#40FF59"
+							}
+						},
+						"children": []
+					},
+					{
+						"id": "1",
+						"w": {
+							"unit": 3,
+							"value": 40
+						},
+						"h": {
+							"unit": 0,
+							"value": 50
+						},
+						"direction": 2,
+						"children": [
+							{
+								"id": "2",
+								"w": {
+									"unit": 3,
+									"value": 40
+								},
+								"h": {
+									"unit": 3,
+									"value": 40
+								},
+								"direction": 2
+							},
+							{
+								"id": "3",
+								"w": {
+									"unit": 0,
+									"value": 10
+								},
+								"h": {
+									"unit": 0,
+									"value": 10
+								},
+								"direction": 2,
+								"staticContent": {
+									"text": null,
+									"image": null,
+									"fill": {
+										"color": "#FFA245"
+									}
+								},
+								"createNode": true,
+								"children": []
+							},
+							{
+								"id": "4",
+								"w": {
+									"unit": 3,
+									"value": 40
+								},
+								"h": {
+									"unit": 3,
+									"value": 40
+								},
+								"direction": 2
+							}
+						]
+					},
+					{
+						"id": "6",
+						"w": {
+							"unit": 0,
+							"value": 40
+						},
+						"h": {
+							"unit": 0,
+							"value": 40
+						},
+						"direction": 2,
+						"staticContent": {
+							"text": null,
+							"image": null,
+							"fill": {
+								"color": "#795EFF"
+							}
+						},
+						"children": [],
+						"createNode": true
+					}
+				]
+			}
+		]
+	},
+	"componentRepr": {
+		"title": "Component",
+		"id": "1809",
+		"children": [
+			{
+				"title": "BoxAttribute",
+				"children": [
+					{
+						"title": "Rules: "
+					}
+				],
+				"id": "0"
+			},
+			{
+				"title": "Stacked Children",
+				"children": [
+					{
+						"title": "Component",
+						"id": "1810",
+						"children": [
+							{
+								"title": "BoxAttribute",
+								"children": [
+									{
+										"title": "Rules: "
+									}
+								],
+								"id": "5"
+							},
+							{
+								"title": "Stacked Children",
+								"children": [
+									{
+										"title": "Component",
+										"id": "1811",
+										"children": [
+											{
+												"title": "BoxAttribute",
+												"children": [
+													{
+														"title": "Rules: "
+													}
+												],
+												"id": "7"
+											},
+											{
+												"title": "Width (40px explicit)",
+												"children": [
+													{
+														"title": "Rules: sizing.userExplicit#1811"
+													}
+												]
+											},
+											{
+												"title": "Height (40px explicit)",
+												"children": [
+													{
+														"title": "Rules: sizing.userExplicit#1811"
+													}
+												]
+											},
+											{
+												"title": "Background",
+												"children": [
+													{
+														"title": "Rules: rendering.backgroundFillRule#1811"
+													}
+												]
+											},
+											{
+												"title": "NodeAttribute",
+												"children": [
+													{
+														"title": "Rules: rendering.backgroundFillRule#1811"
+													}
+												]
+											},
+											{
+												"title": "CSSAttribute (isRendering = true)",
+												"children": [
+													{
+														"title": "width: 40px"
+													},
+													{
+														"title": "height: 40px"
+													},
+													{
+														"title": "background: #40FF59"
+													}
+												]
+											},
+											{
+												"title": "CSSAttribute (isRendering = false)",
+												"children": [
+													{
+														"title": "width: 40px"
+													},
+													{
+														"title": "height: 40px"
+													},
+													{
+														"title": "background: #40FF59"
+													}
+												]
+											},
+											{
+												"title": "TagName (div)",
+												"children": [
+													{
+														"title": "Rules: tag.explicitSizeDiv#1811"
+													}
+												]
+											}
+										]
+									},
+									{
+										"title": "Component",
+										"id": "1812",
+										"children": [
+											{
+												"title": "BoxAttribute",
+												"children": [
+													{
+														"title": "Rules: "
+													}
+												],
+												"id": "1"
+											},
+											{
+												"title": "Width (600px implicit, 1% implicit)",
+												"children": [
+													{
+														"title": "Rules: sizing.expandedChildren#1810"
+													}
+												]
+											},
+											{
+												"title": "Height (50px explicit)",
+												"children": [
+													{
+														"title": "Rules: sizing.userExplicit#1812"
+													}
+												]
+											},
+											{
+												"title": "Vertical Alignment (Rules: alignment.expand#1812)",
+												"children": [
+													{
+														"title": "Center Component",
+														"id": "1814",
+														"children": [
+															{
+																"title": "BoxAttribute",
+																"children": [
+																	{
+																		"title": "Rules: "
+																	}
+																],
+																"id": "3"
+															},
+															{
+																"title": "NodeAttribute",
+																"children": [
+																	{
+																		"title": "Rules: userSpecified.createNode#1814"
+																	}
+																]
+															},
+															{
+																"title": "Width (10px explicit)",
+																"children": [
+																	{
+																		"title": "Rules: sizing.userExplicit#1814"
+																	}
+																]
+															},
+															{
+																"title": "Height (10px explicit)",
+																"children": [
+																	{
+																		"title": "Rules: sizing.userExplicit#1814"
+																	}
+																]
+															},
+															{
+																"title": "Background",
+																"children": [
+																	{
+																		"title": "Rules: rendering.backgroundFillRule#1814"
+																	}
+																]
+															},
+															{
+																"title": "CSSAttribute (isRendering = true)",
+																"children": [
+																	{
+																		"title": "margin-top: 20px"
+																	},
+																	{
+																		"title": "margin-bottom: 20px"
+																	},
+																	{
+																		"title": "width: 10px"
+																	},
+																	{
+																		"title": "height: 10px"
+																	},
+																	{
+																		"title": "background: #FFA245"
+																	}
+																]
+															},
+															{
+																"title": "CSSAttribute (isRendering = false)",
+																"children": [
+																	{
+																		"title": "margin-top: 20px"
+																	},
+																	{
+																		"title": "margin-bottom: 20px"
+																	},
+																	{
+																		"title": "width: 10px"
+																	},
+																	{
+																		"title": "height: 10px"
+																	},
+																	{
+																		"title": "background: #FFA245"
+																	}
+																]
+															},
+															{
+																"title": "TagName (div)",
+																"children": [
+																	{
+																		"title": "Rules: tag.explicitSizeDiv#1814"
+																	}
+																]
+															}
+														]
+													}
+												],
+												"ordered": true
+											},
+											{
+												"title": "CSSAttribute (isRendering = true)",
+												"children": [
+													{
+														"title": "height: 50px"
+													}
+												]
+											},
+											{
+												"title": "NodeAttribute",
+												"children": [
+													{
+														"title": "Rules: css.copyRenderingValuesToCSS#1812"
+													}
+												]
+											},
+											{
+												"title": "CSSAttribute (isRendering = false)",
+												"children": [
+													{
+														"title": "height: 50px"
+													}
+												]
+											},
+											{
+												"title": "TagName (div)",
+												"children": [
+													{
+														"title": "Rules: tag.explicitSizeDiv#1812"
+													}
+												]
+											}
+										]
+									},
+									{
+										"title": "Component",
+										"id": "1816",
+										"children": [
+											{
+												"title": "BoxAttribute",
+												"children": [
+													{
+														"title": "Rules: "
+													}
+												],
+												"id": "6"
+											},
+											{
+												"title": "NodeAttribute",
+												"children": [
+													{
+														"title": "Rules: userSpecified.createNode#1816"
+													}
+												]
+											},
+											{
+												"title": "Width (40px explicit)",
+												"children": [
+													{
+														"title": "Rules: sizing.userExplicit#1816"
+													}
+												]
+											},
+											{
+												"title": "Height (40px explicit)",
+												"children": [
+													{
+														"title": "Rules: sizing.userExplicit#1816"
+													}
+												]
+											},
+											{
+												"title": "Background",
+												"children": [
+													{
+														"title": "Rules: rendering.backgroundFillRule#1816"
+													}
+												]
+											},
+											{
+												"title": "CSSAttribute (isRendering = true)",
+												"children": [
+													{
+														"title": "width: 40px"
+													},
+													{
+														"title": "height: 40px"
+													},
+													{
+														"title": "background: #795EFF"
+													}
+												]
+											},
+											{
+												"title": "CSSAttribute (isRendering = false)",
+												"children": [
+													{
+														"title": "width: 40px"
+													},
+													{
+														"title": "height: 40px"
+													},
+													{
+														"title": "background: #795EFF"
+													}
+												]
+											},
+											{
+												"title": "TagName (div)",
+												"children": [
+													{
+														"title": "Rules: tag.explicitSizeDiv#1816"
+													}
+												]
+											}
+										]
+									}
+								],
+								"ordered": true
+							},
+							{
+								"title": "Width (600px implicit, 1% implicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.expandedChildren#1809"
+									}
+								]
+							},
+							{
+								"title": "Height (130px implicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.shrink#1810"
+									}
+								]
+							}
+						]
+					}
+				],
+				"ordered": true
+			},
+			{
+				"title": "Width (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#1809"
+					}
+				]
+			},
+			{
+				"title": "Height (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#1809"
+					}
+				]
+			}
+		]
+	}
+}

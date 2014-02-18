@@ -3,6 +3,7 @@ import assert = require('assert');
 import c = require('./Component');
 import CSSAttribute = require('./attributes/CSSAttribute');
 import TextContent = require('./attributes/TextContent');
+import TagName = require('./attributes/TagName');
 import NodeAttribute = require('./attributes/NodeAttribute');
 
 export class DOMNode {
@@ -74,8 +75,14 @@ export class DOMNode {
 
 		var nodeAttr = NodeAttribute.getFrom(component);
 		if (nodeAttr && !component.isRoot()) {
-			var css = CSSAttribute.getFrom(component);
-			var tagName = (css && css.styles['display'] === 'block') ? 'div' : 'span';
+			var css = CSSAttribute.getFrom(component, false/*isRendering*/);
+			var tagNameAttr = TagName.getFrom(component);
+			var tagName: string;
+			if (tagNameAttr) {
+				tagName = tagNameAttr.tagName;
+			} else {
+				tagName = (css && css.styles['display'] === 'block') ? 'div' : 'span';
+			}
 			var node = new DOMNode(tagName);
 			if (css) {
 				node.styles = css.styles;

@@ -9,7 +9,7 @@ import getDirection = require('../patterns/getDirection');
 import getCrossAlignment = require('../patterns/getCrossAlignment');
 import LengthAttribute = require('../attributes/LengthAttribute');
 import sinf = require('../../spec/interfaces');
-import alignmentRules = require('../rules/alignmentRules');
+//import alignmentRules = require('../rules/alignmentRules');
 
 class FloatFormat extends Markup {
 	getType() {
@@ -63,8 +63,8 @@ class FloatFormat extends Markup {
 		if (alignment.afterNear || alignment.afterCenter || alignment.center)
 			return;
 
-		if (alignmentRules.isJustTextHorizontalAligned(component))
-			return;
+		//if (alignmentRules.isJustTextHorizontalAligned(component))
+			//return;
 
 		return [{
 			component: component,

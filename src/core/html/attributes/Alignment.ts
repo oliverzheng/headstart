@@ -143,8 +143,11 @@ class Alignment extends Attributes.BaseAttribute {
 			children.push(repr);
 		}
 
+		var title = this.isHoriz ? 'Horizontal Alignment' : 'Vertical Alignment';
+		title += ' (' + this.rulesToString() + ')';
+
 		return {
-			title: this.isHoriz ? 'Horizontal Alignment' : 'Vertical Alignment',
+			title: title,
 			children: children,
 			ordered: true,
 		};

@@ -12,3 +12,13 @@ export interface RuleResult {
 export interface Rule {
 	(component: c.Component, context: Context.Context): RuleResult[];
 }
+
+export interface RuleWithName {
+	name: string;
+	rule: Rule;
+}
+
+export interface Bucket {
+	name: string;
+	rules: RuleWithName[];
+}

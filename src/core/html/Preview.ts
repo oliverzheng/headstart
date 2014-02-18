@@ -21,7 +21,7 @@ class Preview {
 
 	update() {
 		this.rootComponent = c.Component.fromBox(this.rootBox);
-		RuleRunner.runOn(this.rootComponent, Context.defaultContext, [], RuleRunner.renderingRuleGroups);
+		RuleRunner.runOn(this.rootComponent, Context.defaultContext, [], RuleRunner.renderingBuckets);
 	}
 
 	private getComponentForBox(box: sinf.Box): c.Component {

@@ -10,6 +10,9 @@ export enum Type {
 	// Generates a DOM node in HTML/CSS
 	NODE,
 
+	// Does not generate a DOM node
+	SPACING,
+
 	// Visually stacked children
 	STACKED_CHILDREN,
 
@@ -24,9 +27,6 @@ export enum Type {
 	HEIGHT,
 
 	BOX_MODEL,
-
-	// CSS margin
-	MARGIN,
 
 	// Align children to left, middle, or right
 	HORIZONTAL_ALIGNMENT,
@@ -58,6 +58,10 @@ export enum Type {
 	LINE_HEIGHT,
 
 	BACKGROUND,
+
+	TAG_NAME,
+
+	RENDERING_VALUES,
 }
 
 export interface Repr {
@@ -113,11 +117,24 @@ export interface ChildPosition {
 }
 
 export class BaseAttribute {
+	rules: { ruleName: string; ruleComponentID: number; }[] = [];
 	component: c.Component;
 
 	setComponent(component: c.Component) {
 		assert(this.component == null);
+		assert(this.canSetComponent(component));
 		this.component = component;
+	}
+
+	canSetComponent(component: c.Component) {
+		return true;
+	}
+
+	addRule(ruleName: string, ruleComponentID: number) {
+		this.rules.push({
+			ruleName: ruleName,
+			ruleComponentID: ruleComponentID,
+		});
 	}
 
 	getType(): Type {
@@ -146,10 +163,17 @@ export class BaseAttribute {
 		return null;
 	}
 
+	rulesToString(): string {
+		return 'Rules: ' + this.rules.map((rule) => (rule.ruleName + '#' + rule.ruleComponentID)).join(', ');
+	}
+
 	repr(): Repr {
 		// I miss python.
 		return {
 			title: this.getName(),
+			children: [{
+				title: this.rulesToString(),
+			}],
 		};
 	}
 
