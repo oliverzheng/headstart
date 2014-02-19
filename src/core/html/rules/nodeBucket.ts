@@ -2,9 +2,13 @@ import Rules = require('../Rules');
 import c = require('../Component');
 import BlockFormat = require('../attributes/BlockFormat');
 import NodeAttribute = require('../attributes/NodeAttribute');
+import Spacing = require('../attributes/Spacing');
 
 function blockNode(component: c.Component): Rules.RuleResult[] {
 	if (!BlockFormat.from(component))
+		return;
+
+	if (Spacing.getFrom(component))
 		return;
 
 	return [{

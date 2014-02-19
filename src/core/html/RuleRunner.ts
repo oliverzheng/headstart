@@ -24,6 +24,7 @@ import sizingBucket = require('./rules/sizingBucket');
 import reduceBucket = require('./rules/reduceBucket');
 import alignmentBucket = require('./rules/alignmentBucket');
 import renderingBucket = require('./rules/renderingBucket');
+import applyCssBucket = require('./rules/applyCssBucket');
 import bubbleBucket = require('./rules/bubbleBucket');
 import cssBucket = require('./rules/cssBucket');
 import nodeBucket = require('./rules/nodeBucket');
@@ -122,6 +123,8 @@ export var allBuckets: Rules.Bucket[] = [
 	// Necessary components are created and the rendered CSS values of each
 	// component are attached.
 	renderingBucket,
+
+	applyCssBucket,
 
 	// Bubble up rendering values up into assigned CSS values
 	bubbleBucket,

@@ -100,71 +100,6 @@ function horizontalRightText(component: c.Component): Rules.RuleResult[] {
 	}];
 }
 
-function verticalCenterKnownSizes(component: c.Component): Rules.RuleResult[] {
-	var satisfies = reqs.satisfies(component,
-		reqs.all([
-			reqs.anyChildrenOptional(
-				reqs.all([
-					reqs.m,
-					reqs.hasContent,
-					reqs.knownH,
-					reqs.isNode,
-				]),
-				// Optional spaces
-				reqs.not(reqs.hasContent)
-			),
-			reqs.knownH,
-			reqs.parent(reqs.knownH),
-		])
-	);
-	if (!satisfies)
-		return;
-
-	var parent = component.getParent();
-	var isFirst = true;
-	var isLast = true;
-	if (parent) {
-		var children = parent.getChildren();
-		isFirst = children[0] === component;
-		isLast = children[children.length - 1] === component;
-	}
-
-	var alignment = Alignment.getFrom(component, sinf.vert);
-	assert(alignment && alignment.center);
-
-	var outerHeight = LengthAttribute.getFrom(component, sinf.vert);
-	assert(outerHeight && outerHeight.px.isSet());
-	var innerHeight = LengthAttribute.getFrom(alignment.center, sinf.vert);
-	assert(innerHeight && innerHeight.px.isSet());
-
-	var length = (outerHeight.px.value - innerHeight.px.value) / 2;
-	var px = length.toString() + 'px';
-
-	var componentStyles: {[name: string]: string;} = {};
-	var parentAttributes: Attributes.BaseAttribute[] = [];
-	if (isFirst) {
-		parentAttributes.push(new BoxModel(null, { t: length }));
-	} else {
-		componentStyles['margin-top'] = px;
-	}
-
-	if (isLast) {
-		parentAttributes.push(new BoxModel(null, { b: length }));
-	} else {
-		componentStyles['margin-bottom'] = px;
-	}
-
-	return [{
-		component: alignment.center,
-		attributes: [
-			new CSSAttribute(componentStyles),
-		],
-	}, {
-		component: component,
-		attributes: parentAttributes,
-	}];
-}
-
 function marginAutoRule(component: c.Component): Rules.RuleResult[] {
 	var satisfies = reqs.satisfies(component,
 		reqs.all([
@@ -234,7 +169,6 @@ function floatRule(component: c.Component): Rules.RuleResult[] {
 var rules: Rules.RuleWithName[] = [
 	{name: 'horizontalCenterText', rule: horizontalCenterText},
 	{name: 'horizontalRightText', rule: horizontalRightText},
-	{name: 'verticalCenterKnownSizes', rule: verticalCenterKnownSizes},
 	{name: 'marginAutoRule', rule: marginAutoRule},
 ];
 

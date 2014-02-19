@@ -29,12 +29,15 @@ function staticText(component: c.Component): Rules.RuleResult[] {
 
 	assert(component.getChildren().length === 0);
 
+	if (TextContent.getFrom(component) || LineHeight.getFrom(component))
+		return;
+
 	if (text.value) {
 		return [{
 			component: component,
 			attributes: [
 				new TextContent(),
-				new LineHeight(),
+				new LineHeight(text.lineHeight),
 			],
 		}];
 	}

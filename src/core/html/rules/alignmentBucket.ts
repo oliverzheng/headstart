@@ -7,6 +7,7 @@ import getDirection = require('../patterns/getDirection');
 import groupChildren = require('../patterns/groupChildren');
 import hasBoxContent = require('../patterns/hasBoxContent');
 import StackedChildren = require('../attributes/StackedChildren');
+import LengthAttribute = require('../attributes/LengthAttribute');
 import Alignment = require('../attributes/Alignment');
 import sinf = require('../../spec/interfaces');
 import sutil = require('../../spec/util');
@@ -22,7 +23,11 @@ function expand(component: c.Component): Rules.RuleResult[] {
 		}
 		var box = boxAttr.getBox();
 
-		return sutil.lengthEquals(direction === sinf.horiz ? box.w : box.h, sinf.expand);
+		var length = LengthAttribute.getFrom(child, direction);
+		return (
+			sutil.lengthEquals(direction === sinf.horiz ? box.w : box.h, sinf.expand) &&
+			(!length || !length.px.isSet())
+		);
 	});
 
 	if (!groups || groups.length > 5 || groups.length <= 1) {

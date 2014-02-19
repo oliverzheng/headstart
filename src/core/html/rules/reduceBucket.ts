@@ -11,9 +11,6 @@ import hasBoxContent = require('../patterns/hasBoxContent');
 import getDirection = require('../patterns/getDirection');
 
 function unfoldSameDirection(component: c.Component): Rules.RuleResult[] {
-	if (component.isRoot())
-		return;
-
 	var stackedChildren = StackedChildren.getFrom(component);
 	if (!stackedChildren || stackedChildren.isEmpty())
 		return;
@@ -38,17 +35,6 @@ function unfoldSameDirection(component: c.Component): Rules.RuleResult[] {
 
 		var grandChildren = StackedChildren.getFrom(child);
 		if (!grandChildren || grandChildren.isEmpty())
-			return false;
-
-		var grandChildrenHaveExpand = grandChildren.get().some((grandChild) => {
-			var box = grandChild.getBox();
-			if (!box)
-				return false;
-
-			// This is used for positioning, don't unfold.
-			return sutil.getLength<sinf.Length>(box, direction).unit === sinf.expandUnit;
-		});
-		if (grandChildrenHaveExpand)
 			return false;
 
 		var grandChildrenLengths = grandChildren.get().map(

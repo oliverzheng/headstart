@@ -11,6 +11,14 @@ import BoxAttribute = require('./BoxAttribute');
 import LengthAttribute = require('./LengthAttribute');
 
 class LineHeight extends Markup {
+	lineHeight: number;
+
+	constructor(lineHeight: number) {
+		super();
+
+		this.lineHeight = lineHeight;
+	}
+
 	getType() {
 		return Attributes.Type.LINE_HEIGHT;
 	}
@@ -19,7 +27,7 @@ class LineHeight extends Markup {
 		return [{
 			component: this.component,
 			css: {
-				'line-height': this.getLineHeight().toString() + 'px',
+				'line-height': this.lineHeight.toString() + 'px',
 			},
 		}];
 	}
@@ -29,35 +37,15 @@ class LineHeight extends Markup {
 	}
 
 	equals(attribute: Attributes.BaseAttribute) {
-		return this.isSameAttrType(attribute);
-	}
-
-	getLineHeight(): number {
-		var boxLines = sutil.textExactLines(this.getText());
-
-		var alignment = Alignment.getForChild(this.component, sinf.vert);
-		var isVerticalCenter = alignment && alignment.getSimpleAlignment() === sinf.center;
-
-		var container = Alignment.getAlignmentContainer(this.component, sinf.vert);
-		var containerHeight: LengthAttribute = container ? LengthAttribute.getFrom(container, sinf.vert) : null;
-
-		var isNode = !!this.component.nodeAttr();
-
-		if (boxLines === 1 && isVerticalCenter && containerHeight && containerHeight.px.isSet() && !isNode) {
-			return containerHeight.px.value;
-		} else {
-			return this.getText().lineHeight;
-		}
+		if (!this.isSameAttrType(attribute)) { return false; }
+		var attr = <LineHeight>attribute;
+		return attr.lineHeight === this.lineHeight;
 	}
 
 	repr(): Attributes.Repr {
 		var repr = super.repr();
-		repr.title += ' (box line height: ' + this.getText().lineHeight + ', used line height: ' + this.getLineHeight() + ')';
+		repr.title += ' (line height: ' + this.lineHeight + ')';
 		return repr;
-	}
-
-	getText() {
-		return this.component.boxAttr().getBox().staticContent.text;
 	}
 }
 

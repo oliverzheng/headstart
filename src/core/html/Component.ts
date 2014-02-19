@@ -19,13 +19,16 @@ export class Component {
 		this.id = componentID++;
 	}
 
-	static fromBox(root: sinf.Box): Component {
+	static fromBox(root: sinf.Box, isRoot: boolean = true): Component {
 		var component = new Component;
 		component.addAttributes([new BoxAttribute(root)]);
+		if (isRoot) {
+			component.addAttributes([new NodeAttribute()]);
+		}
 
 		if (root.children) {
 			var children = root.children.map((childBox) => {
-				return Component.fromBox(childBox);
+				return Component.fromBox(childBox, false);
 			});
 			if (children.length > 0) {
 				component.addAttributes([new StackedChildren(children)]);

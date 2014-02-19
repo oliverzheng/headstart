@@ -318,6 +318,9 @@ function sizeShrink(component: c.Component): Rules.RuleResult[] {
 		if (!shrinks)
 			return;
 
+		if (LengthAttribute.getFrom(component, direction))
+			return;
+
 		var sizedChildren = children.filter((child) => {
 			var length = LengthAttribute.getFrom(child, direction);
 			return length && length.px.isSet();
