@@ -1,6 +1,7 @@
 import inf = require('../core/spec/interfaces');
 import sutil = require('../core/spec/util');
 import c = require('../core/html/Component');
+import html = require('../core/html/HTML');
 import Attributes = require('../core/html/Attributes');
 
 export interface ReadFunc {
@@ -14,12 +15,12 @@ export interface WriteFunc {
 export function load(
 		name: string,
 		readFunc: ReadFunc,
-		successCb: (root: inf.Box, componentRepr: Attributes.Repr) => any,
+		successCb: (root: inf.Box, componentRepr: Attributes.Repr, domRepr: Attributes.Repr) => any,
 		errorCb: (error: any) => any
 	) {
 	readFunc(name, (body) => {
 		sutil.refreshParents(body.spec);
-		successCb(body.spec, body.componentRepr);
+		successCb(body.spec, body.componentRepr, body.domRepr);
 
 		var maxComponentID = 0;
 		(function getMaxID(repr: Attributes.Repr) {
@@ -48,6 +49,7 @@ export function save(
 	writeFunc(name, {
 		spec: sutil.cloneTree(root),
 		componentRepr: component.repr(),
+		domRepr: html.DOMNode.fromComponentToRepr(component),
 	}, successCb, errorCb);
 }
 
@@ -58,7 +60,11 @@ export function compare(
 		successCb: (result: boolean, oldRepr: Attributes.Repr) => any,
 		errorCb: (error: any) => any
 	) {
-	load(name, readFunc, (root, componentRepr) => {
-		successCb(Attributes.reprEqual(newComponent.repr(), componentRepr), componentRepr);
+	load(name, readFunc, (root, componentRepr, domRepr) => {
+		if (domRepr) {
+			successCb(Attributes.reprEqual(html.DOMNode.fromComponentToRepr(newComponent), domRepr), domRepr);
+		} else {
+			successCb(true, domRepr);
+		}
 	}, errorCb);
 }

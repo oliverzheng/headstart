@@ -258,18 +258,26 @@ var PageComponent = React.createClass({
 					var component = c.Component.fromBox(root);
 					RuleRunner.runOn(component, Context.ie6AndAbove, []);
 
-					if (Attributes.reprEqual(component.repr(), oldRepr)) {
-						loadNext.bind(this)(index + 1);
-					} else {
-						this.setState({
-							comparingAll: false,
-							justComparedAll: true,
-							allComparisonResult: false,
-						});
-						setTimeout(() => {
-							this.setState({justComparedAll: false});
-						}, 1000);
-					}
+					fixtures.compare(
+						fixtureName,
+						component,
+						browserFixtures.readFixture,
+						(equal) => {
+							if (equal) {
+								loadNext.bind(this)(index + 1);
+							} else {
+								this.setState({
+									comparingAll: false,
+									justComparedAll: true,
+									allComparisonResult: false,
+								});
+								setTimeout(() => {
+									this.setState({justComparedAll: false});
+								}, 1000);
+							}
+						},
+						() => { return; }
+					);
 				},
 				() => {}
 			);

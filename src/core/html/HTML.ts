@@ -1,6 +1,7 @@
 import assert = require('assert');
 
 import c = require('./Component');
+import Attributes = require('./Attributes');
 import CSSAttribute = require('./attributes/CSSAttribute');
 import TextContent = require('./attributes/TextContent');
 import TagName = require('./attributes/TagName');
@@ -16,17 +17,52 @@ export class DOMNode {
 		this.tagName = tagName;
 	}
 
-	reprCss(): string {
-		var styles: string[] = [];
+	repr(): Attributes.Repr {
+		var contentRepr: Attributes.Repr = {
+			title: 'Content: ' + (this.content ? this.content : ''),
+		};
+		var stylesRepr: Attributes.Repr = {
+			title: 'Styles',
+			ordered: false,
+			children: this.stylesList().map((style) => {
+				return <Attributes.Repr>{
+					title: style.name + ': ' + style.value,
+				};
+			}),
+		};
+		var childrenRepr: Attributes.Repr = {
+			title: 'Children',
+			ordered: true,
+			children: this.children.map((child) => child.repr()),
+		};
+		return {
+			title: 'Tag: ' + this.tagName,
+			ordered: false,
+			children: [
+				contentRepr,
+				stylesRepr, 
+				childrenRepr,
+			],
+		}
+	}
+
+	private stylesList(): {name: string; value: string;}[] {
+		var styles: {name: string; value: string}[] = [];
 		for (var name in this.styles) {
 			var value = this.styles[name];
 			if (name === 'display' &&
 				(value === 'block' || value === 'inline')) {
 				continue;
 			}
-			styles.push(name + ': ' + value);
+			styles.push({name: name, value: value});
 		}
-		return styles.join('; ');
+		return styles;
+	}
+
+	reprCss(): string {
+		return this.stylesList().map(
+			(style) => (style.name + ': ' + style.value)
+		).join('; ');
 	}
 
 	toString(depth: number = 0): string {
@@ -93,5 +129,13 @@ export class DOMNode {
 		} else {
 			return childrenNodes;
 		}
+	}
+
+	static fromComponentToRepr(component: c.Component): Attributes.Repr {
+		var domNodes = DOMNode.fromComponent(component);
+		return {
+			title: 'DOM',
+			children: domNodes.map((node) => node.repr()),
+		};
 	}
 }
