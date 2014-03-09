@@ -326,6 +326,7 @@ var PageComponent = React.createClass({
 			React.DOM.div(null,
 				React.DOM.div({className: 'rightSide'},
 					React.DOM.input({
+						style: { width: '250px' },
 						placeholder: 'Fixture Name',
 						ref: 'fixtureName',
 						onChange: this.onFixtureNameChange,
