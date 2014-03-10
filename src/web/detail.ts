@@ -536,7 +536,7 @@ export var DetailComponent = React.createClass({
 						React.DOM.strong(null, 'Static Fill: '),
 						React.DOM.input({
 							type: 'text',
-							value: staticFillColor,
+							defaultValue: staticFillColor,
 							className: 'staticContent',
 							ref: 'staticFillColor',
 							onBlur: this.onStaticContentChanged,

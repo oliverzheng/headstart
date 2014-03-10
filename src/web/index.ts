@@ -305,7 +305,7 @@ var PageComponent = React.createClass({
 				},
 			},
 			names.map((name: string) => {
-				return React.DOM.option(null, name);
+				return React.DOM.option({key: name}, name);
 			})
 		);
 		var oldRepr: any;

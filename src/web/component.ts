@@ -71,7 +71,7 @@ export function serializeRepr(repr: Attributes.Repr) {
 		React.DOM.div(null, title),
 		list(null,
 			children.map(
-				(child) => React.DOM.li(null, serializeRepr(child))
+				(child) => React.DOM.li({key: child.id}, serializeRepr(child))
 			)
 		)
 	);
