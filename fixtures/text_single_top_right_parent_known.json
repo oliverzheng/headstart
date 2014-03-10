@@ -1,0 +1,307 @@
+{
+	"spec": {
+		"id": "0",
+		"w": {
+			"unit": 0,
+			"value": 600
+		},
+		"h": {
+			"unit": 0,
+			"value": 600
+		},
+		"direction": 2,
+		"children": [
+			{
+				"id": "3",
+				"w": {
+					"unit": 0,
+					"value": 600
+				},
+				"h": {
+					"unit": 0,
+					"value": 200
+				},
+				"direction": 1,
+				"children": [
+					{
+						"id": "4",
+						"w": {
+							"unit": 3,
+							"value": 40
+						},
+						"h": {
+							"unit": 0,
+							"value": 40
+						},
+						"direction": 2
+					},
+					{
+						"id": "1",
+						"w": {
+							"unit": 4,
+							"value": 40,
+							"runtime": false
+						},
+						"h": {
+							"unit": 4,
+							"value": 40,
+							"runtime": false
+						},
+						"direction": 2,
+						"createNode": false,
+						"staticContent": {
+							"text": {
+								"fontSize": 10,
+								"lineHeight": 10,
+								"value": "Derp",
+								"fontFamily": "",
+								"inputMinLines": 1,
+								"inputMaxLines": 1,
+								"outputMaxLines": 1
+							},
+							"image": null,
+							"fill": null
+						},
+						"children": []
+					}
+				]
+			}
+		]
+	},
+	"componentRepr": {
+		"title": "Component",
+		"id": "3969",
+		"children": [
+			{
+				"title": "BoxAttribute",
+				"children": [
+					{
+						"title": "Rules: "
+					}
+				],
+				"id": "0"
+			},
+			{
+				"title": "NodeAttribute",
+				"children": [
+					{
+						"title": "Rules: "
+					}
+				]
+			},
+			{
+				"title": "Width (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#3969"
+					}
+				]
+			},
+			{
+				"title": "Height (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#3969"
+					}
+				]
+			},
+			{
+				"title": "Vertical Alignment (Rules: alignment.equalSizes#3969)",
+				"children": [
+					{
+						"title": "Top Component",
+						"id": "3970",
+						"children": [
+							{
+								"title": "BoxAttribute",
+								"children": [
+									{
+										"title": "Rules: "
+									}
+								],
+								"id": "3"
+							},
+							{
+								"title": "Width (600px explicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.userExplicit#3970"
+									}
+								]
+							},
+							{
+								"title": "Height (200px explicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.userExplicit#3970"
+									}
+								]
+							},
+							{
+								"title": "Horizontal Alignment (Rules: alignment.expand#3970)",
+								"children": [
+									{
+										"title": "Right Component",
+										"id": "3972",
+										"children": [
+											{
+												"title": "BoxAttribute",
+												"children": [
+													{
+														"title": "Rules: "
+													}
+												],
+												"id": "1"
+											},
+											{
+												"title": "TextContent (value: Derp)",
+												"children": [
+													{
+														"title": "Rules: userSpecified.staticText#3972"
+													}
+												]
+											},
+											{
+												"title": "LineHeight (line height: 10)",
+												"children": [
+													{
+														"title": "Rules: userSpecified.staticText#3972"
+													}
+												]
+											},
+											{
+												"title": "Height (10px implicit, 1 lines explicit)",
+												"children": [
+													{
+														"title": "Rules: sizing.shrinkHeightToText#3972"
+													}
+												]
+											},
+											{
+												"title": "CSSAttribute (isRendering = true)",
+												"children": [
+													{
+														"title": "font-size: 10px"
+													},
+													{
+														"title": "line-height: 10px"
+													}
+												]
+											}
+										]
+									}
+								],
+								"ordered": true
+							},
+							{
+								"title": "BlockFormat",
+								"children": [
+									{
+										"title": "Rules: rendering.horizontalRightText#3970"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = true)",
+								"children": [
+									{
+										"title": "text-align: right"
+									},
+									{
+										"title": "width: 600px"
+									},
+									{
+										"title": "height: 200px"
+									},
+									{
+										"title": "display: block"
+									}
+								]
+							},
+							{
+								"title": "NodeAttribute",
+								"children": [
+									{
+										"title": "Rules: bubble.bubbleUpInheritedStylesRule#3970"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = false)",
+								"children": [
+									{
+										"title": "text-align: right"
+									},
+									{
+										"title": "font-size: 10px"
+									},
+									{
+										"title": "line-height: 10px"
+									},
+									{
+										"title": "width: 600px"
+									},
+									{
+										"title": "height: 200px"
+									},
+									{
+										"title": "display: block"
+									}
+								]
+							},
+							{
+								"title": "TagName (div)",
+								"children": [
+									{
+										"title": "Rules: tag.blockDiv#3970"
+									}
+								]
+							}
+						]
+					}
+				],
+				"ordered": true
+			}
+		]
+	},
+	"domRepr": {
+		"title": "DOM",
+		"children": [
+			{
+				"title": "Tag: div",
+				"ordered": false,
+				"children": [
+					{
+						"title": "Content: Derp"
+					},
+					{
+						"title": "Styles",
+						"ordered": false,
+						"children": [
+							{
+								"title": "text-align: right"
+							},
+							{
+								"title": "font-size: 10px"
+							},
+							{
+								"title": "line-height: 10px"
+							},
+							{
+								"title": "width: 600px"
+							},
+							{
+								"title": "height: 200px"
+							}
+						]
+					},
+					{
+						"title": "Children",
+						"ordered": true,
+						"children": []
+					}
+				]
+			}
+		]
+	}
+}

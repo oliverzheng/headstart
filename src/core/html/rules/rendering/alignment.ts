@@ -107,29 +107,36 @@ function marginAutoRule(component: c.Component): Rules.RuleResult[] {
 				// At least 1 center aligned element
 				reqs.all([
 					reqs.hasContent,
-					reqs.c,
-					reqs.knownW,
+					reqs.eitherOr(
+						reqs.c,
+						reqs.r
+					),
 					reqs.not(reqs.isContentText),
 				]),
 				// Optional spaces
 				reqs.not(reqs.hasContent)
 			),
-			reqs.knownW,
+			reqs.horiz,
 		])
 	);
 	if (!satisfies)
 		return;
 
 	var alignment = Alignment.getFrom(component, sinf.horiz);
-	assert(alignment && alignment.center);
+	assert(alignment && (alignment.center || alignment.far));
+
+	var child = alignment.center || alignment.far;
+	var styles = {
+		'margin-left': 'auto',
+	};
+	if (child === alignment.center) {
+		styles['margin-right'] = 'auto';
+	}
 
 	return [{
-		component: alignment.center,
+		component: child,
 		attributes: [
-			new CSSAttribute({
-				'margin-left': 'auto',
-				'margin-right': 'auto',
-			}),
+			new CSSAttribute(styles),
 			new BlockFormat(),
 		],
 	}, {

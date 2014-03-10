@@ -190,6 +190,9 @@ class Alignment extends Attributes.BaseAttribute {
 	}
 
 	static isAggregateInAlignment(component: c.Component): boolean {
+		if (component.getBox())
+			return false;
+
 		var parent = component.getParent();
 		if (!parent)
 			return false;

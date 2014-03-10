@@ -84,11 +84,16 @@ function verticalCenterKnownSizes(component: c.Component): Rules.RuleResult[] {
 }
 
 function marginSpacing(component: c.Component): Rules.RuleResult[] {
-	if (!component.getParent())
+	var parent = component.getParent();
+	if (!parent)
+		return;
+
+	// Alignment'ed components should not take this path.
+	if (!StackedChildren.getFrom(parent))
 		return;
 
 	var margin = getCenteredMargin(component);
-	var direction = getDirection(component.getParent());
+	var direction = getDirection(parent);
 	if (isSingleLine(component) && margin != null && direction === sinf.vert)
 		return;
 
@@ -103,7 +108,7 @@ function marginSpacing(component: c.Component): Rules.RuleResult[] {
 	if (!prev && !next)
 		return;
 
-	var direction = getDirection(component.getParent());
+	var direction = getDirection(parent);
 	var styles: { [styleName: string]: string; } = {};
 	if (prev)
 		styles[direction === sinf.horiz ? 'margin-left' : 'margin-top'] = LengthAttribute.getFrom(prev, direction).px.value + 'px';

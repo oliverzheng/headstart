@@ -6,6 +6,7 @@ import util = require('../spec/util');
 import LengthAttribute = require('./attributes/LengthAttribute');
 import Alignment = require('./attributes/Alignment');
 import hasBoxContent = require('./patterns/hasBoxContent');
+import getDirection = require('./patterns/getDirection');
 import isText = require('./patterns/isText');
 
 export enum Target {
@@ -24,6 +25,7 @@ export enum AggregateType {
 export interface Requirement {
 	name?: string;
 
+	direction?: inf.Direction;
 	w?: inf.LengthUnit;
 	h?: inf.LengthUnit;
 	wRuntime?: boolean;
@@ -125,6 +127,13 @@ export function lazy(func: () => Requirement): Requirement {
 	};
 }
 
+export var horiz: Requirement = {
+	direction: inf.horiz,
+};
+
+export var vert: Requirement = {
+	direction: inf.vert,
+};
 
 export var t: Requirement = {
 	alignment: {
@@ -259,7 +268,16 @@ export var isContentText: Requirement = {
 
 function satisfiesForTarget(component: comp.Component, requirement: Requirement): boolean {
 	var ok = true;
+
+	if (requirement.direction != null && getDirection(component) !== requirement.direction)
+		ok = false;
+
+	var box = component.getBox();
 	util.forEachDirection((direction: inf.Direction) => {
+		var runtime = (direction === inf.horiz) ? requirement.wRuntime : requirement.hRuntime;
+		if (runtime && (!box || !util.getLength(box, direction).runtime))
+			ok = false;
+
 		var lengthReq = util.getLength<inf.LengthUnit>(requirement, direction);
 		if (lengthReq == null)
 			return;
@@ -276,8 +294,12 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 				ok = ok && length.pct.isSet();
 				break;
 			case inf.expandUnit:
+				if (!box || util.getLength(box, direction).unit !== inf.expandUnit)
+					ok = false;
+				break;
 			case inf.shrinkUnit:
-				assert(false); // TODO
+				if (!box || util.getLength(box, direction).unit !== inf.shrinkUnit)
+					ok = false;
 				break;
 			default:
 				// It's okay if we actually have a length
