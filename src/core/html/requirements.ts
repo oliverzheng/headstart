@@ -32,6 +32,7 @@ export interface Requirement {
 	hRuntime?: boolean;
 	hasContent?: boolean;
 	isText?: boolean;
+	textLines?: number;
 	isImage?: boolean;
 	// Alignment in parent
 	alignment?: {
@@ -266,6 +267,13 @@ export var isContentText: Requirement = {
 	isText: true,
 };
 
+export function textLines(lines: number): Requirement {
+	return {
+		isText: true,
+		textLines: lines,
+	};
+};
+
 function satisfiesForTarget(component: comp.Component, requirement: Requirement): boolean {
 	var ok = true;
 
@@ -315,6 +323,14 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 
 	if (requirement.isText != null && requirement.isText !== isText(component))
 		return false;
+
+	if (requirement.textLines != null) {
+		var box = component.getBox();
+		if (!box || !box.staticContent || !box.staticContent.text)
+			return false;
+		if (util.textExactLines(box.staticContent.text) !== requirement.textLines)
+			return false;
+	}
 
 	if (requirement.alignment) {
 		var parent = component.getParent();

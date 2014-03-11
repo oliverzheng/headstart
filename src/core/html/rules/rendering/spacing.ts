@@ -17,8 +17,12 @@ import getDirection = require('../../patterns/getDirection');
 import sinf = require('../../../spec/interfaces');
 import sutil = require('../../../spec/util');
 import reqs = require('../../requirements');
+import patterns = require('./patterns');
 
 function verticalCenterKnownSizes(component: c.Component): Rules.RuleResult[] {
+	if (patterns.containsSingleLineVerticallyCenteredText(component))
+		return;
+
 	var satisfies = reqs.satisfies(component,
 		reqs.all([
 			reqs.anyChildrenOptional(

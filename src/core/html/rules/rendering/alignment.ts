@@ -10,11 +10,13 @@ import CSSAttribute = require('../../attributes/CSSAttribute');
 import LengthAttribute = require('../../attributes/LengthAttribute');
 import TextContent = require('../../attributes/TextContent');
 import BoxModel = require('../../attributes/BoxModel');
+import LineHeight = require('../../attributes/LineHeight');
 import getDirection = require('../../patterns/getDirection');
 import getCrossAlignment = require('../../patterns/getCrossAlignment');
 import sinf = require('../../../spec/interfaces');
 import util = require('../../../spec/util');
 import reqs = require('../../requirements');
+import patterns = require('./patterns');
 
 function isJustTextHorizontalAligned(component: c.Component): boolean {
 	return reqs.satisfies(component,
@@ -147,6 +149,24 @@ function marginAutoRule(component: c.Component): Rules.RuleResult[] {
 	}];
 }
 
+function singleLineHeight(component: c.Component): Rules.RuleResult[] {
+	if (!patterns.containsSingleLineVerticallyCenteredText(component))
+		return;
+
+	var alignment = Alignment.getFrom(component, sinf.vert);
+	assert(alignment && alignment.center);
+
+	var parentHeight = LengthAttribute.getFrom(component, sinf.vert);
+	assert(parentHeight && parentHeight.px.isSet());
+
+	return [{
+		component: alignment.center,
+		replaceAttributes: [
+			new LineHeight(parentHeight.px.value),
+		],
+	}];
+}
+
 /*
 function floatRule(component: c.Component): Rules.RuleResult[] {
 	if (!getDirection(component) === sinf.horiz ||
@@ -177,6 +197,7 @@ var rules: Rules.RuleWithName[] = [
 	{name: 'horizontalCenterText', rule: horizontalCenterText},
 	{name: 'horizontalRightText', rule: horizontalRightText},
 	{name: 'marginAutoRule', rule: marginAutoRule},
+	{name: 'singleLineHeight', rule: singleLineHeight},
 ];
 
 export = rules;
