@@ -390,10 +390,9 @@ export var DetailComponent = React.createClass({
 					),
 					React.DOM.div({ className: staticTextFontSize ? '' : 'disabled'},
 						React.DOM.strong(null, 'Static Text Value: '),
-						React.DOM.input({
-							type: 'text',
+						React.DOM.textarea({
+							defaultValue: staticTextValue,
 							disabled: !staticTextFontSize,
-							value: staticTextValue,
 							className: 'staticContent',
 							ref: 'staticTextValue',
 							onChange: this.onStaticContentChanged,

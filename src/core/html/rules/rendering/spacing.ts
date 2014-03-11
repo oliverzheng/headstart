@@ -25,17 +25,19 @@ function verticalCenterKnownSizes(component: c.Component): Rules.RuleResult[] {
 
 	var satisfies = reqs.satisfies(component,
 		reqs.all([
+			reqs.vert,
 			reqs.anyChildrenOptional(
 				reqs.all([
 					reqs.m,
 					reqs.hasContent,
 					reqs.knownH,
-					reqs.isNode,
+					reqs.not(reqs.runtimeH),
 				]),
 				// Optional spaces
 				reqs.not(reqs.hasContent)
 			),
 			reqs.knownH,
+			reqs.not(reqs.runtimeH),
 			reqs.parent(reqs.knownH),
 		])
 	);
@@ -76,15 +78,22 @@ function verticalCenterKnownSizes(component: c.Component): Rules.RuleResult[] {
 		componentStyles['margin-bottom'] = px;
 	}
 
-	return [{
-		component: alignment.center,
-		attributes: [
-			new CSSAttribute(componentStyles),
-		],
-	}, {
+	var results: Rules.RuleResult[] = [{
 		component: component,
 		attributes: parentAttributes,
 	}];
+	if (Object.keys(componentStyles).length > 0) {
+		results.push({
+			component: alignment.center,
+			attributes: [
+				new CSSAttribute(componentStyles),
+				new NodeAttribute(),
+				new BlockFormat(),
+			],
+		});
+	}
+
+	return results;
 }
 
 function marginSpacing(component: c.Component): Rules.RuleResult[] {

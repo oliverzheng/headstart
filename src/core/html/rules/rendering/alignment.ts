@@ -167,6 +167,53 @@ function singleLineHeight(component: c.Component): Rules.RuleResult[] {
 	}];
 }
 
+function negativeMargin(component: c.Component): Rules.RuleResult[] {
+	var satisfies = reqs.satisfies(component,
+		reqs.all([
+			reqs.vert,
+			reqs.eitherOr(
+				reqs.not(reqs.knownH),
+				reqs.runtimeH
+			),
+			reqs.anyChildrenOptional(
+				reqs.all([
+					reqs.hasContent,
+					reqs.m,
+					reqs.knownH,
+				]),
+				reqs.not(reqs.hasContent)
+			),
+		])
+	);
+	if (!satisfies)
+		return;
+
+	var alignment = Alignment.getFrom(component, sinf.vert);
+	assert(alignment && alignment.center);
+
+	var height = LengthAttribute.getFrom(alignment.center, sinf.vert);
+	assert(height && height.px.isSet());
+
+	return [{
+		component: alignment.center,
+		attributes: [
+			new CSSAttribute({
+				'position': 'absolute',
+				'top': '50%',
+				'margin-top': (-height.px.value / 2).toString() + 'px',
+			}),
+			new BlockFormat(),
+		],
+	}, {
+		component: component,
+		attributes: [
+			new CSSAttribute({
+				'position': 'relative',
+			}),
+		],
+	}];
+}
+
 /*
 function floatRule(component: c.Component): Rules.RuleResult[] {
 	if (!getDirection(component) === sinf.horiz ||
@@ -198,6 +245,7 @@ var rules: Rules.RuleWithName[] = [
 	{name: 'horizontalRightText', rule: horizontalRightText},
 	{name: 'marginAutoRule', rule: marginAutoRule},
 	{name: 'singleLineHeight', rule: singleLineHeight},
+	{name: 'negativeMargin', rule: negativeMargin},
 ];
 
 export = rules;
