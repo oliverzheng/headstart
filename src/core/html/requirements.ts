@@ -1,4 +1,7 @@
+/// <reference path="../../../d.ts/typings.d.ts" />
+
 import assert = require('assert');
+import _ = require('underscore');
 
 import comp = require('./Component');
 import inf = require('../spec/interfaces');
@@ -79,13 +82,17 @@ export function not(requirement: Requirement): Requirement {
 
 
 export function allChildren(requirement: Requirement): Requirement {
-	requirement.target = Target.ALL_CHILDREN;
-	return requirement;
+	var req: Requirement = {};
+	_.extend(req, requirement);
+	req.target = Target.ALL_CHILDREN;
+	return req;
 }
 
 export function anyChildren(requirement: Requirement): Requirement {
-	requirement.target = Target.ANY_CHILDREN;
-	return requirement;
+	var req: Requirement = {};
+	_.extend(req, requirement);
+	req.target = Target.ANY_CHILDREN;
+	return req;
 }
 
 export function anyChildrenOptional(requirement: Requirement, optional: Requirement): Requirement {
@@ -96,8 +103,10 @@ export function anyChildrenOptional(requirement: Requirement, optional: Requirem
 }
 
 export function parent(requirement: Requirement): Requirement {
-	requirement.target = Target.PARENT;
-	return requirement;
+	var req: Requirement = {};
+	_.extend(req, requirement);
+	req.target = Target.PARENT;
+	return req;
 }
 
 export function custom(func: (component: comp.Component) => any): Requirement {
@@ -291,15 +300,13 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 			return;
 
 		var length = LengthAttribute.getFrom(component, direction);
-		if (!length)
-			return;
 
 		switch (lengthReq) {
 			case inf.pxUnit:
-				ok = ok && length.px.isSet();
+				ok = ok && length && length.px.isSet();
 				break;
 			case inf.pctUnit:
-				ok = ok && length.pct.isSet();
+				ok = ok && length && length.pct.isSet();
 				break;
 			case inf.expandUnit:
 				if (!box || util.getLength(box, direction).unit !== inf.expandUnit)

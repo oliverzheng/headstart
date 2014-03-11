@@ -12,6 +12,13 @@
 		<script src="/bower_components/jscolor/jscolor.js"></script>
 		<script>
 			jscolor.getDir(); // Does require.js remove existing <script> tags or something?!
+
+			require.config({
+				paths: {
+					'underscore': '/bower_components/underscore-amd/underscore',
+				},
+			});
+
 			require(['browserFixtures', '../lib/src/web/index.js'], function(_, index) {
 				index.render(document.body);
 			});

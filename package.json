@@ -13,6 +13,7 @@
   "author": "Oliver Zheng <npm@oliverzheng.com>",
   "license": "MIT",
   "devDependencies": {
+	"underscore": "latest",
     "express": "~3.4.x",
     "jake": "~0.6.11",
     "typescript": "0.9.1-1",

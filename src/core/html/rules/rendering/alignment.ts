@@ -35,7 +35,6 @@ function isJustTextHorizontalAligned(component: c.Component): boolean {
 				// Optional spaces
 				reqs.not(reqs.hasContent)
 			),
-			reqs.knownW,
 		])
 	);
 }
