@@ -11,7 +11,11 @@ function applyCssRule(component: c.Component): Rules.RuleResult[] {
 	var root = component.getRoot();
 	var results: Rules.RuleResult[] = [];
 	markups.forEach((markup) => {
-		markup.getCSS().forEach((css) => {
+		var markupCss = markup.getCSS();
+		if (!markupCss)
+			return;
+
+		markupCss.forEach((css) => {
 			if (css.component === root)
 				return;
 

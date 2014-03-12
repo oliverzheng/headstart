@@ -7,6 +7,7 @@ import NodeAttribute = require('../attributes/NodeAttribute');
 import getDirection = require('../patterns/getDirection');
 import LengthAttribute = require('../attributes/LengthAttribute');
 import sinf = require('../../spec/interfaces');
+import CSSAttribute = require('./CSSAttribute');
 
 class BlockFormat extends Markup {
 	getType() {
@@ -14,12 +15,15 @@ class BlockFormat extends Markup {
 	}
 
 	getCSS() {
-		return [{
-			component: this.component,
-			css: {
-				display: 'block',
-			}
-		}];
+		var css = CSSAttribute.getFrom(this.component);
+		if (!css || !css.styles['display']) {
+			return [{
+				component: this.component,
+				css: {
+					display: 'block',
+				}
+			}];
+		}
 	}
 
 	static from(component: c.Component): boolean {

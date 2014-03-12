@@ -7,6 +7,12 @@ import TextContent = require('./attributes/TextContent');
 import TagName = require('./attributes/TagName');
 import NodeAttribute = require('./attributes/NodeAttribute');
 
+var DISPLAYS_FOR_DIV = [
+	'block',
+	'table',
+	'table-cell',
+];
+
 export class DOMNode {
 	tagName: string;
 	children: DOMNode[] = [];
@@ -117,7 +123,7 @@ export class DOMNode {
 			if (tagNameAttr) {
 				tagName = tagNameAttr.tagName;
 			} else {
-				tagName = (css && css.styles['display'] === 'block') ? 'div' : 'span';
+				tagName = (css && DISPLAYS_FOR_DIV.indexOf(css.styles['display']) !== -1) ? 'div' : 'span';
 			}
 			var node = new DOMNode(tagName);
 			if (css) {

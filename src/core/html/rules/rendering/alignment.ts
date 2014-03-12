@@ -18,6 +18,9 @@ import util = require('../../../spec/util');
 import reqs = require('../../requirements');
 import patterns = require('./patterns');
 
+// This file brought to you by
+// http://coding.smashingmagazine.com/2013/08/09/absolute-horizontal-vertical-centering-css/
+
 function isJustTextHorizontalAligned(component: c.Component): boolean {
 	return reqs.satisfies(component,
 		reqs.all([
@@ -213,6 +216,49 @@ function negativeMargin(component: c.Component): Rules.RuleResult[] {
 	}];
 }
 
+function tableCell(component: c.Component): Rules.RuleResult[] {
+	var satisfies = reqs.satisfies(component,
+		reqs.all([
+			// Parent can be of known or unknown height
+			reqs.vert,
+			reqs.anyChildrenOptional(
+				reqs.all([
+					reqs.hasContent,
+					reqs.m,
+					// Child is of unknown height
+					reqs.eitherOr(
+						reqs.not(reqs.knownH),
+						reqs.runtimeH
+					),
+				]),
+				reqs.not(reqs.hasContent)
+			),
+		])
+	);
+	if (!satisfies)
+		return;
+
+	var alignment = Alignment.getFrom(component, sinf.vert);
+	assert(alignment && alignment.center);
+
+	return [{
+		component: alignment.center,
+		attributes: [
+			new CSSAttribute({
+				'display': 'table-cell',
+				'vertical-align': 'middle',
+			}),
+		],
+	}, {
+		component: component,
+		attributes: [
+			new CSSAttribute({
+				'display': 'table',
+			}),
+		],
+	}];
+}
+
 /*
 function floatRule(component: c.Component): Rules.RuleResult[] {
 	if (!getDirection(component) === sinf.horiz ||
@@ -245,6 +291,7 @@ var rules: Rules.RuleWithName[] = [
 	{name: 'marginAutoRule', rule: marginAutoRule},
 	{name: 'singleLineHeight', rule: singleLineHeight},
 	{name: 'negativeMargin', rule: negativeMargin},
+	{name: 'tableCell', rule: tableCell},
 ];
 
 export = rules;
