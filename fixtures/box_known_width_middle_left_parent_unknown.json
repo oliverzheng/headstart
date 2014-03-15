@@ -12,10 +12,11 @@
 		"direction": 2,
 		"children": [
 			{
-				"id": "2",
+				"id": "1",
 				"w": {
 					"unit": 0,
-					"value": 40
+					"value": 100,
+					"runtime": true
 				},
 				"h": {
 					"unit": 0,
@@ -23,9 +24,10 @@
 					"runtime": true
 				},
 				"direction": 2,
+				"createNode": true,
 				"children": [
 					{
-						"id": "3",
+						"id": "6",
 						"w": {
 							"unit": 3,
 							"value": 40
@@ -37,36 +39,30 @@
 						"direction": 2
 					},
 					{
-						"id": "1",
+						"id": "2",
 						"w": {
-							"unit": 4,
+							"unit": 0,
 							"value": 40,
 							"runtime": false
 						},
 						"h": {
-							"unit": 4,
+							"unit": 0,
 							"value": 40,
-							"runtime": false
+							"runtime": true
 						},
 						"direction": 2,
-						"createNode": false,
+						"createNode": true,
 						"staticContent": {
-							"text": {
-								"fontSize": 10,
-								"lineHeight": 10,
-								"value": "Herp\nDerp\nDerpido",
-								"fontFamily": "",
-								"inputMinLines": null,
-								"inputMaxLines": null,
-								"outputMaxLines": null
-							},
+							"text": null,
 							"image": null,
-							"fill": null
+							"fill": {
+								"color": "#1FFF8F"
+							}
 						},
 						"children": []
 					},
 					{
-						"id": "4",
+						"id": "7",
 						"w": {
 							"unit": 3,
 							"value": 40
@@ -77,14 +73,13 @@
 						},
 						"direction": 2
 					}
-				],
-				"createNode": true
+				]
 			}
 		]
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "6414",
+		"id": "7190",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -107,7 +102,7 @@
 				"title": "Width (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#6414"
+						"title": "Rules: sizing.userExplicit#7190"
 					}
 				]
 			},
@@ -115,7 +110,7 @@
 				"title": "Height (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#6414"
+						"title": "Rules: sizing.userExplicit#7190"
 					}
 				]
 			},
@@ -124,14 +119,14 @@
 				"children": [
 					{
 						"title": "Component",
-						"id": "6419",
+						"id": "7195",
 						"children": [
 							{
 								"title": "Stacked Children",
 								"children": [
 									{
 										"title": "Component",
-										"id": "6415",
+										"id": "7191",
 										"children": [
 											{
 												"title": "BoxAttribute",
@@ -140,30 +135,22 @@
 														"title": "Rules: "
 													}
 												],
-												"id": "2"
+												"id": "1"
 											},
 											{
 												"title": "NodeAttribute",
 												"children": [
 													{
-														"title": "Rules: userSpecified.createNode#6415"
+														"title": "Rules: userSpecified.createNode#7191"
 													}
 												]
 											},
 											{
-												"title": "Width (40px explicit)",
-												"children": [
-													{
-														"title": "Rules: sizing.userExplicit#6415"
-													}
-												]
-											},
-											{
-												"title": "Vertical Alignment (Rules: alignment.expand#6415)",
+												"title": "Vertical Alignment (Rules: alignment.expand#7191)",
 												"children": [
 													{
 														"title": "Center Component",
-														"id": "6417",
+														"id": "7193",
 														"children": [
 															{
 																"title": "BoxAttribute",
@@ -172,21 +159,37 @@
 																		"title": "Rules: "
 																	}
 																],
-																"id": "1"
+																"id": "2"
 															},
 															{
-																"title": "TextContent (value: Herp\nDerp\nDerpido)",
+																"title": "NodeAttribute",
 																"children": [
 																	{
-																		"title": "Rules: userSpecified.staticText#6417"
+																		"title": "Rules: userSpecified.createNode#7193"
 																	}
 																]
 															},
 															{
-																"title": "LineHeight (line height: 10)",
+																"title": "Width (40px explicit)",
 																"children": [
 																	{
-																		"title": "Rules: userSpecified.staticText#6417"
+																		"title": "Rules: sizing.userExplicit#7193"
+																	}
+																]
+															},
+															{
+																"title": "Background",
+																"children": [
+																	{
+																		"title": "Rules: rendering.backgroundFillRule#7193"
+																	}
+																]
+															},
+															{
+																"title": "BlockFormat",
+																"children": [
+																	{
+																		"title": "Rules: rendering.sizeRuntimeInitial#7193"
 																	}
 																]
 															},
@@ -194,10 +197,41 @@
 																"title": "CSSAttribute (isRendering = true)",
 																"children": [
 																	{
-																		"title": "font-size: 10px"
+																		"title": "height: 40px"
 																	},
 																	{
-																		"title": "line-height: 10px"
+																		"title": "width: 40px"
+																	},
+																	{
+																		"title": "background: #1FFF8F"
+																	},
+																	{
+																		"title": "display: block"
+																	}
+																]
+															},
+															{
+																"title": "CSSAttribute (isRendering = false)",
+																"children": [
+																	{
+																		"title": "height: 40px"
+																	},
+																	{
+																		"title": "width: 40px"
+																	},
+																	{
+																		"title": "background: #1FFF8F"
+																	},
+																	{
+																		"title": "display: block"
+																	}
+																]
+															},
+															{
+																"title": "TagName (div)",
+																"children": [
+																	{
+																		"title": "Rules: tag.blockDiv#7193"
 																	}
 																]
 															}
@@ -205,14 +239,6 @@
 													}
 												],
 												"ordered": true
-											},
-											{
-												"title": "BlockFormat",
-												"children": [
-													{
-														"title": "Rules: rendering.sizeRuntimeInitial#6415"
-													}
-												]
 											},
 											{
 												"title": "CSSAttribute (isRendering = true)",
@@ -224,10 +250,18 @@
 														"title": "vertical-align: middle"
 													},
 													{
-														"title": "height: 100px"
+														"title": "width: 100px"
 													},
 													{
-														"title": "width: 40px"
+														"title": "height: 100px"
+													}
+												]
+											},
+											{
+												"title": "BlockFormat",
+												"children": [
+													{
+														"title": "Rules: rendering.sizeRuntimeInitial#7191"
 													}
 												]
 											},
@@ -241,10 +275,10 @@
 														"title": "vertical-align: middle"
 													},
 													{
-														"title": "height: 100px"
+														"title": "width: 100px"
 													},
 													{
-														"title": "width: 40px"
+														"title": "height: 100px"
 													}
 												]
 											},
@@ -252,7 +286,7 @@
 												"title": "TagName (div)",
 												"children": [
 													{
-														"title": "Rules: tag.blockDiv#6415"
+														"title": "Rules: tag.blockDiv#7191"
 													}
 												]
 											}
@@ -270,10 +304,10 @@
 								]
 							},
 							{
-								"title": "Width (40px implicit)",
+								"title": "CSSAttribute (isRendering = false)",
 								"children": [
 									{
-										"title": "Rules: sizing.childrenSum#6419"
+										"title": "display: table"
 									}
 								]
 							},
@@ -281,21 +315,7 @@
 								"title": "NodeAttribute",
 								"children": [
 									{
-										"title": "Rules: bubble.bubbleUpInheritedStylesRule#6419"
-									}
-								]
-							},
-							{
-								"title": "CSSAttribute (isRendering = false)",
-								"children": [
-									{
-										"title": "font-size: 10px"
-									},
-									{
-										"title": "line-height: 10px"
-									},
-									{
-										"title": "display: table"
+										"title": "Rules: css.copyRenderingValuesToCSS#7195"
 									}
 								]
 							}
@@ -321,12 +341,6 @@
 						"ordered": false,
 						"children": [
 							{
-								"title": "font-size: 10px"
-							},
-							{
-								"title": "line-height: 10px"
-							},
-							{
 								"title": "display: table"
 							}
 						]
@@ -340,7 +354,7 @@
 								"ordered": false,
 								"children": [
 									{
-										"title": "Content: Herp\nDerp\nDerpido"
+										"title": "Content: "
 									},
 									{
 										"title": "Styles",
@@ -353,17 +367,47 @@
 												"title": "vertical-align: middle"
 											},
 											{
-												"title": "height: 100px"
+												"title": "width: 100px"
 											},
 											{
-												"title": "width: 40px"
+												"title": "height: 100px"
 											}
 										]
 									},
 									{
 										"title": "Children",
 										"ordered": true,
-										"children": []
+										"children": [
+											{
+												"title": "Tag: div",
+												"ordered": false,
+												"children": [
+													{
+														"title": "Content: "
+													},
+													{
+														"title": "Styles",
+														"ordered": false,
+														"children": [
+															{
+																"title": "height: 40px"
+															},
+															{
+																"title": "width: 40px"
+															},
+															{
+																"title": "background: #1FFF8F"
+															}
+														]
+													},
+													{
+														"title": "Children",
+														"ordered": true,
+														"children": []
+													}
+												]
+											}
+										]
 									}
 								]
 							}

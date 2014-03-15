@@ -50,7 +50,15 @@
 							"value": 40
 						},
 						"direction": 2,
-						"createNode": true
+						"createNode": true,
+						"staticContent": {
+							"text": null,
+							"image": null,
+							"fill": {
+								"color": "#FFEF63"
+							}
+						},
+						"children": []
 					},
 					{
 						"id": "7",
@@ -70,7 +78,7 @@
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "3649",
+		"id": "5475",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -93,7 +101,7 @@
 				"title": "Width (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#3649"
+						"title": "Rules: sizing.userExplicit#5475"
 					}
 				]
 			},
@@ -101,16 +109,16 @@
 				"title": "Height (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#3649"
+						"title": "Rules: sizing.userExplicit#5475"
 					}
 				]
 			},
 			{
-				"title": "Vertical Alignment (Rules: alignment.equalSizes#3649)",
+				"title": "Vertical Alignment (Rules: alignment.equalSizes#5475)",
 				"children": [
 					{
 						"title": "Top Component",
-						"id": "3650",
+						"id": "5476",
 						"children": [
 							{
 								"title": "BoxAttribute",
@@ -125,7 +133,7 @@
 								"title": "NodeAttribute",
 								"children": [
 									{
-										"title": "Rules: userSpecified.createNode#3650"
+										"title": "Rules: userSpecified.createNode#5476"
 									}
 								]
 							},
@@ -133,16 +141,16 @@
 								"title": "Height (100px explicit)",
 								"children": [
 									{
-										"title": "Rules: sizing.userExplicit#3650"
+										"title": "Rules: sizing.userExplicit#5476"
 									}
 								]
 							},
 							{
-								"title": "Horizontal Alignment (Rules: alignment.expand#3650)",
+								"title": "Horizontal Alignment (Rules: alignment.expand#5476)",
 								"children": [
 									{
 										"title": "Center Component",
-										"id": "3652",
+										"id": "5478",
 										"children": [
 											{
 												"title": "BoxAttribute",
@@ -157,7 +165,7 @@
 												"title": "NodeAttribute",
 												"children": [
 													{
-														"title": "Rules: userSpecified.createNode#3652"
+														"title": "Rules: userSpecified.createNode#5478"
 													}
 												]
 											},
@@ -165,7 +173,7 @@
 												"title": "Height (40px explicit)",
 												"children": [
 													{
-														"title": "Rules: sizing.userExplicit#3652"
+														"title": "Rules: sizing.userExplicit#5478"
 													}
 												]
 											},
@@ -173,7 +181,15 @@
 												"title": "BlockFormat",
 												"children": [
 													{
-														"title": "Rules: rendering.marginAutoRule#3650"
+														"title": "Rules: rendering.marginAutoRule#5476"
+													}
+												]
+											},
+											{
+												"title": "Background",
+												"children": [
+													{
+														"title": "Rules: rendering.backgroundFillRule#5478"
 													}
 												]
 											},
@@ -194,6 +210,9 @@
 													},
 													{
 														"title": "display: block"
+													},
+													{
+														"title": "background: #FFEF63"
 													}
 												]
 											},
@@ -214,6 +233,9 @@
 													},
 													{
 														"title": "display: block"
+													},
+													{
+														"title": "background: #FFEF63"
 													}
 												]
 											},
@@ -221,7 +243,7 @@
 												"title": "TagName (div)",
 												"children": [
 													{
-														"title": "Rules: tag.blockDiv#3652"
+														"title": "Rules: tag.blockDiv#5478"
 													}
 												]
 											}
@@ -234,7 +256,7 @@
 								"title": "BlockFormat",
 								"children": [
 									{
-										"title": "Rules: rendering.marginAutoRule#3650"
+										"title": "Rules: rendering.marginAutoRule#5476"
 									}
 								]
 							},
@@ -270,7 +292,7 @@
 								"title": "TagName (div)",
 								"children": [
 									{
-										"title": "Rules: tag.blockDiv#3650"
+										"title": "Rules: tag.blockDiv#5476"
 									}
 								]
 							}
@@ -329,6 +351,9 @@
 											},
 											{
 												"title": "height: 40px"
+											},
+											{
+												"title": "background: #FFEF63"
 											}
 										]
 									},

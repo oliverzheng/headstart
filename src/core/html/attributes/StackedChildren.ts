@@ -94,6 +94,30 @@ class StackedChildren extends Attributes.BaseAttribute {
 		};
 	}
 
+	wrapChild(child: c.Component): Rules.RuleResult[] {
+		assert(this.getComponentChildren().indexOf(child) !== -1);
+
+		var newComponent = new c.Component;
+		var newAttr = new StackedChildren(this.children.map((oldChild) => {
+			if (oldChild === child) {
+				return newComponent;
+			} else {
+				return oldChild;
+			}
+		}));
+		return [{
+			component: this.component,
+			replaceAttributes: [
+				newAttr,
+			],
+		}, {
+			component: newComponent,
+			attributes: [
+				new StackedChildren([child])
+			],
+		}];
+	}
+
 	static getNextSibling(component: c.Component): c.Component {
 		var parent = component.getParent();
 		if (!parent)
@@ -129,10 +153,14 @@ class StackedChildren extends Attributes.BaseAttribute {
 	}
 
 	static aggregate(components: c.Component[]): Rules.RuleResult {
+		return StackedChildren.forceAggregate(components, false);
+	}
+
+	static forceAggregate(components: c.Component[], forceAggregate: boolean): Rules.RuleResult {
 		if (!components || components.length === 0)
 			return null;
 
-		if (components.length === 1)
+		if (components.length === 1 && !forceAggregate)
 			return {component: components[0], attributes: []};
 
 		return {

@@ -4,6 +4,7 @@ import Attributes = require('../Attributes');
 import c = require('../../Component');
 import Rules = require('../../Rules');
 import NodeAttribute = require('../../attributes/NodeAttribute');
+import StackedChildren = require('../../attributes/StackedChildren');
 import BlockFormat = require('../../attributes/BlockFormat');
 import Alignment = require('../../attributes/Alignment');
 import CSSAttribute = require('../../attributes/CSSAttribute');
@@ -14,9 +15,9 @@ import LineHeight = require('../../attributes/LineHeight');
 import getDirection = require('../../patterns/getDirection');
 import getCrossAlignment = require('../../patterns/getCrossAlignment');
 import sinf = require('../../../spec/interfaces');
-import util = require('../../../spec/util');
 import reqs = require('../../requirements');
 import patterns = require('./patterns');
+import util = require('../../util');
 
 // This file brought to you by
 // http://coding.smashingmagazine.com/2013/08/09/absolute-horizontal-vertical-centering-css/
@@ -221,6 +222,13 @@ function tableCell(component: c.Component): Rules.RuleResult[] {
 		reqs.all([
 			// Parent can be of known or unknown height
 			reqs.vert,
+
+			// This component is going to be the table-cell guy
+			reqs.not(
+				reqs.hasCSS({
+					'display': 'table-cell',
+				})
+			),
 			reqs.anyChildrenOptional(
 				reqs.all([
 					reqs.hasContent,
@@ -241,22 +249,30 @@ function tableCell(component: c.Component): Rules.RuleResult[] {
 	var alignment = Alignment.getFrom(component, sinf.vert);
 	assert(alignment && alignment.center);
 
-	return [{
-		component: alignment.center,
+	var results = component.getParent().getChildrenManager().wrapChild(component);
+
+	var outer = results[1].component;
+	var inner = component;
+
+	results.push({
+		component: inner,
 		attributes: [
 			new CSSAttribute({
 				'display': 'table-cell',
 				'vertical-align': 'middle',
 			}),
 		],
-	}, {
-		component: component,
+	});
+	results.push({
+		component: outer,
 		attributes: [
 			new CSSAttribute({
 				'display': 'table',
 			}),
 		],
-	}];
+	});
+
+	return results;
 }
 
 /*

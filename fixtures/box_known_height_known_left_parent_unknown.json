@@ -57,7 +57,13 @@
 						},
 						"direction": 2,
 						"createNode": true,
-						"staticContent": null,
+						"staticContent": {
+							"text": null,
+							"image": null,
+							"fill": {
+								"color": "#21FF37"
+							}
+						},
 						"children": []
 					},
 					{
@@ -78,7 +84,7 @@
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "5366",
+		"id": "5395",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -102,7 +108,7 @@
 				"children": [
 					{
 						"title": "Component",
-						"id": "5367",
+						"id": "5396",
 						"children": [
 							{
 								"title": "BoxAttribute",
@@ -117,16 +123,16 @@
 								"title": "NodeAttribute",
 								"children": [
 									{
-										"title": "Rules: userSpecified.createNode#5367"
+										"title": "Rules: userSpecified.createNode#5396"
 									}
 								]
 							},
 							{
-								"title": "Vertical Alignment (Rules: alignment.expand#5367)",
+								"title": "Vertical Alignment (Rules: alignment.expand#5396)",
 								"children": [
 									{
 										"title": "Center Component",
-										"id": "5369",
+										"id": "5398",
 										"children": [
 											{
 												"title": "BoxAttribute",
@@ -141,7 +147,7 @@
 												"title": "NodeAttribute",
 												"children": [
 													{
-														"title": "Rules: userSpecified.createNode#5369"
+														"title": "Rules: userSpecified.createNode#5398"
 													}
 												]
 											},
@@ -149,7 +155,7 @@
 												"title": "Width (40px explicit)",
 												"children": [
 													{
-														"title": "Rules: sizing.userExplicit#5369"
+														"title": "Rules: sizing.userExplicit#5398"
 													}
 												]
 											},
@@ -157,7 +163,7 @@
 												"title": "Height (40px explicit)",
 												"children": [
 													{
-														"title": "Rules: sizing.userExplicit#5369"
+														"title": "Rules: sizing.userExplicit#5398"
 													}
 												]
 											},
@@ -165,7 +171,15 @@
 												"title": "BlockFormat",
 												"children": [
 													{
-														"title": "Rules: rendering.negativeMargin#5367"
+														"title": "Rules: rendering.negativeMargin#5396"
+													}
+												]
+											},
+											{
+												"title": "Background",
+												"children": [
+													{
+														"title": "Rules: rendering.backgroundFillRule#5398"
 													}
 												]
 											},
@@ -189,6 +203,9 @@
 													},
 													{
 														"title": "display: block"
+													},
+													{
+														"title": "background: #21FF37"
 													}
 												]
 											},
@@ -212,6 +229,9 @@
 													},
 													{
 														"title": "display: block"
+													},
+													{
+														"title": "background: #21FF37"
 													}
 												]
 											},
@@ -219,7 +239,7 @@
 												"title": "TagName (div)",
 												"children": [
 													{
-														"title": "Rules: tag.blockDiv#5369"
+														"title": "Rules: tag.blockDiv#5398"
 													}
 												]
 											}
@@ -232,7 +252,7 @@
 								"title": "BlockFormat",
 								"children": [
 									{
-										"title": "Rules: rendering.sizeRuntimeInitial#5367"
+										"title": "Rules: rendering.sizeRuntimeInitial#5396"
 									}
 								]
 							},
@@ -274,7 +294,7 @@
 								"title": "TagName (div)",
 								"children": [
 									{
-										"title": "Rules: tag.blockDiv#5367"
+										"title": "Rules: tag.blockDiv#5396"
 									}
 								]
 							}
@@ -287,7 +307,7 @@
 				"title": "Width (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#5366"
+						"title": "Rules: sizing.userExplicit#5395"
 					}
 				]
 			},
@@ -295,7 +315,7 @@
 				"title": "Height (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#5366"
+						"title": "Rules: sizing.userExplicit#5395"
 					}
 				]
 			}
@@ -355,6 +375,9 @@
 											},
 											{
 												"title": "height: 40px"
+											},
+											{
+												"title": "background: #21FF37"
 											}
 										]
 									},

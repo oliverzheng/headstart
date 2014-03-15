@@ -50,7 +50,15 @@
 							"value": 40
 						},
 						"direction": 2,
-						"createNode": true
+						"createNode": true,
+						"staticContent": {
+							"text": null,
+							"image": null,
+							"fill": {
+								"color": "#8BFF47"
+							}
+						},
+						"children": []
 					},
 					{
 						"id": "7",
@@ -70,7 +78,7 @@
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "3669",
+		"id": "5515",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -94,7 +102,7 @@
 				"children": [
 					{
 						"title": "Component",
-						"id": "3670",
+						"id": "5516",
 						"children": [
 							{
 								"title": "BoxAttribute",
@@ -109,7 +117,7 @@
 								"title": "NodeAttribute",
 								"children": [
 									{
-										"title": "Rules: userSpecified.createNode#3670"
+										"title": "Rules: userSpecified.createNode#5516"
 									}
 								]
 							},
@@ -117,16 +125,16 @@
 								"title": "Width (100px explicit)",
 								"children": [
 									{
-										"title": "Rules: sizing.userExplicit#3670"
+										"title": "Rules: sizing.userExplicit#5516"
 									}
 								]
 							},
 							{
-								"title": "Horizontal Alignment (Rules: alignment.expand#3670)",
+								"title": "Horizontal Alignment (Rules: alignment.expand#5516)",
 								"children": [
 									{
 										"title": "Center Component",
-										"id": "3672",
+										"id": "5518",
 										"children": [
 											{
 												"title": "BoxAttribute",
@@ -141,7 +149,7 @@
 												"title": "NodeAttribute",
 												"children": [
 													{
-														"title": "Rules: userSpecified.createNode#3672"
+														"title": "Rules: userSpecified.createNode#5518"
 													}
 												]
 											},
@@ -149,7 +157,7 @@
 												"title": "Height (40px explicit)",
 												"children": [
 													{
-														"title": "Rules: sizing.userExplicit#3672"
+														"title": "Rules: sizing.userExplicit#5518"
 													}
 												]
 											},
@@ -157,7 +165,15 @@
 												"title": "BlockFormat",
 												"children": [
 													{
-														"title": "Rules: rendering.marginAutoRule#3670"
+														"title": "Rules: rendering.marginAutoRule#5516"
+													}
+												]
+											},
+											{
+												"title": "Background",
+												"children": [
+													{
+														"title": "Rules: rendering.backgroundFillRule#5518"
 													}
 												]
 											},
@@ -178,6 +194,9 @@
 													},
 													{
 														"title": "display: block"
+													},
+													{
+														"title": "background: #8BFF47"
 													}
 												]
 											},
@@ -198,6 +217,9 @@
 													},
 													{
 														"title": "display: block"
+													},
+													{
+														"title": "background: #8BFF47"
 													}
 												]
 											},
@@ -205,7 +227,7 @@
 												"title": "TagName (div)",
 												"children": [
 													{
-														"title": "Rules: tag.blockDiv#3672"
+														"title": "Rules: tag.blockDiv#5518"
 													}
 												]
 											}
@@ -218,7 +240,7 @@
 								"title": "BlockFormat",
 								"children": [
 									{
-										"title": "Rules: rendering.marginAutoRule#3670"
+										"title": "Rules: rendering.marginAutoRule#5516"
 									}
 								]
 							},
@@ -254,7 +276,7 @@
 								"title": "TagName (div)",
 								"children": [
 									{
-										"title": "Rules: tag.blockDiv#3670"
+										"title": "Rules: tag.blockDiv#5516"
 									}
 								]
 							}
@@ -267,7 +289,7 @@
 				"title": "Width (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#3669"
+						"title": "Rules: sizing.userExplicit#5515"
 					}
 				]
 			},
@@ -275,7 +297,7 @@
 				"title": "Height (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#3669"
+						"title": "Rules: sizing.userExplicit#5515"
 					}
 				]
 			}
@@ -329,6 +351,9 @@
 											},
 											{
 												"title": "height: 40px"
+											},
+											{
+												"title": "background: #8BFF47"
 											}
 										]
 									},

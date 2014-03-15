@@ -2,6 +2,7 @@ import assert = require('assert');
 import c = require('./Component');
 
 import LengthAttribute = require('./attributes/LengthAttribute');
+import Rules = require('./Rules');
 
 export enum Type {
 	// Corresponds to a box in the visual spec
@@ -187,5 +188,9 @@ export class BaseAttribute {
 
 	getChildPosition(child: c.Component, unknownDefaultPx: number): ChildPosition {
 		throw new Error(this.getName() + ' does not implement this');
+	}
+
+	wrapChild(child: c.Component): Rules.RuleResult[] {
+		throw new Error(this.getName() + ' did not implement this');
 	}
 }

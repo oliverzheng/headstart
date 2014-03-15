@@ -7,6 +7,7 @@ import comp = require('./Component');
 import inf = require('../spec/interfaces');
 import util = require('../spec/util');
 import LengthAttribute = require('./attributes/LengthAttribute');
+import CSSAttribute = require('./attributes/CSSAttribute');
 import Alignment = require('./attributes/Alignment');
 import hasBoxContent = require('./patterns/hasBoxContent');
 import getDirection = require('./patterns/getDirection');
@@ -37,6 +38,7 @@ export interface Requirement {
 	isText?: boolean;
 	textLines?: number;
 	isImage?: boolean;
+	hasCSS?: { [name: string]: string;};
 	// Alignment in parent
 	alignment?: {
 		x?: inf.Alignment;
@@ -107,6 +109,16 @@ export function parent(requirement: Requirement): Requirement {
 	_.extend(req, requirement);
 	req.target = Target.PARENT;
 	return req;
+}
+
+export var hasParent: Requirement = {
+	target: Target.PARENT,
+};
+
+export function hasCSS(styles: {[name: string]: string}): Requirement {
+	return {
+		hasCSS: styles,
+	};
 }
 
 export function custom(func: (component: comp.Component) => any): Requirement {
@@ -381,6 +393,19 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 	}
 	if (!ok)
 		return false;
+
+	if (requirement.hasCSS) {
+		var cssAttr = CSSAttribute.getFrom(component);
+		if (!cssAttr)
+			return false;
+
+		for (var name in Object.keys(requirement.hasCSS)) {
+			var value = requirement.hasCSS[name];
+			if (cssAttr.styles[name] !== value) {
+				return false;
+			}
+		}
+	}
 
 	if (requirement.custom && !requirement.custom(component))
 		return false;

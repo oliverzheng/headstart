@@ -49,7 +49,15 @@
 							"value": 40
 						},
 						"direction": 2,
-						"createNode": true
+						"createNode": true,
+						"staticContent": {
+							"text": null,
+							"image": null,
+							"fill": {
+								"color": "#A27AFF"
+							}
+						},
+						"children": []
 					},
 					{
 						"id": "7",
@@ -69,7 +77,7 @@
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "3120",
+		"id": "5675",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -93,7 +101,7 @@
 				"children": [
 					{
 						"title": "Component",
-						"id": "3121",
+						"id": "5676",
 						"children": [
 							{
 								"title": "BoxAttribute",
@@ -108,7 +116,7 @@
 								"title": "NodeAttribute",
 								"children": [
 									{
-										"title": "Rules: userSpecified.createNode#3121"
+										"title": "Rules: userSpecified.createNode#5676"
 									}
 								]
 							},
@@ -116,16 +124,16 @@
 								"title": "Width (100px explicit)",
 								"children": [
 									{
-										"title": "Rules: sizing.userExplicit#3121"
+										"title": "Rules: sizing.userExplicit#5676"
 									}
 								]
 							},
 							{
-								"title": "Horizontal Alignment (Rules: alignment.expand#3121)",
+								"title": "Horizontal Alignment (Rules: alignment.expand#5676)",
 								"children": [
 									{
 										"title": "Center Component",
-										"id": "3123",
+										"id": "5678",
 										"children": [
 											{
 												"title": "BoxAttribute",
@@ -140,7 +148,7 @@
 												"title": "NodeAttribute",
 												"children": [
 													{
-														"title": "Rules: userSpecified.createNode#3123"
+														"title": "Rules: userSpecified.createNode#5678"
 													}
 												]
 											},
@@ -148,7 +156,7 @@
 												"title": "Width (40px explicit)",
 												"children": [
 													{
-														"title": "Rules: sizing.userExplicit#3123"
+														"title": "Rules: sizing.userExplicit#5678"
 													}
 												]
 											},
@@ -156,7 +164,7 @@
 												"title": "Height (40px explicit)",
 												"children": [
 													{
-														"title": "Rules: sizing.userExplicit#3123"
+														"title": "Rules: sizing.userExplicit#5678"
 													}
 												]
 											},
@@ -164,7 +172,15 @@
 												"title": "BlockFormat",
 												"children": [
 													{
-														"title": "Rules: rendering.marginAutoRule#3121"
+														"title": "Rules: rendering.marginAutoRule#5676"
+													}
+												]
+											},
+											{
+												"title": "Background",
+												"children": [
+													{
+														"title": "Rules: rendering.backgroundFillRule#5678"
 													}
 												]
 											},
@@ -185,6 +201,9 @@
 													},
 													{
 														"title": "display: block"
+													},
+													{
+														"title": "background: #A27AFF"
 													}
 												]
 											},
@@ -205,6 +224,9 @@
 													},
 													{
 														"title": "display: block"
+													},
+													{
+														"title": "background: #A27AFF"
 													}
 												]
 											},
@@ -212,7 +234,7 @@
 												"title": "TagName (div)",
 												"children": [
 													{
-														"title": "Rules: tag.blockDiv#3123"
+														"title": "Rules: tag.blockDiv#5678"
 													}
 												]
 											}
@@ -225,7 +247,7 @@
 								"title": "BlockFormat",
 								"children": [
 									{
-										"title": "Rules: rendering.marginAutoRule#3121"
+										"title": "Rules: rendering.marginAutoRule#5676"
 									}
 								]
 							},
@@ -261,7 +283,7 @@
 								"title": "TagName (div)",
 								"children": [
 									{
-										"title": "Rules: tag.blockDiv#3121"
+										"title": "Rules: tag.blockDiv#5676"
 									}
 								]
 							}
@@ -274,7 +296,7 @@
 				"title": "Width (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#3120"
+						"title": "Rules: sizing.userExplicit#5675"
 					}
 				]
 			},
@@ -282,7 +304,7 @@
 				"title": "Height (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#3120"
+						"title": "Rules: sizing.userExplicit#5675"
 					}
 				]
 			}
@@ -336,6 +358,9 @@
 											},
 											{
 												"title": "height: 40px"
+											},
+											{
+												"title": "background: #A27AFF"
 											}
 										]
 									},

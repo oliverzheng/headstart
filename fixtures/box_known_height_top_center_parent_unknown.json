@@ -50,7 +50,15 @@
 							"value": 40
 						},
 						"direction": 2,
-						"createNode": true
+						"createNode": true,
+						"staticContent": {
+							"text": null,
+							"image": null,
+							"fill": {
+								"color": "#FF33A0"
+							}
+						},
+						"children": []
 					},
 					{
 						"id": "7",
@@ -70,7 +78,7 @@
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "3689",
+		"id": "5555",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -94,7 +102,7 @@
 				"children": [
 					{
 						"title": "Component",
-						"id": "3690",
+						"id": "5556",
 						"children": [
 							{
 								"title": "BoxAttribute",
@@ -109,16 +117,16 @@
 								"title": "NodeAttribute",
 								"children": [
 									{
-										"title": "Rules: userSpecified.createNode#3690"
+										"title": "Rules: userSpecified.createNode#5556"
 									}
 								]
 							},
 							{
-								"title": "Horizontal Alignment (Rules: alignment.expand#3690)",
+								"title": "Horizontal Alignment (Rules: alignment.expand#5556)",
 								"children": [
 									{
 										"title": "Center Component",
-										"id": "3692",
+										"id": "5558",
 										"children": [
 											{
 												"title": "BoxAttribute",
@@ -133,7 +141,7 @@
 												"title": "NodeAttribute",
 												"children": [
 													{
-														"title": "Rules: userSpecified.createNode#3692"
+														"title": "Rules: userSpecified.createNode#5558"
 													}
 												]
 											},
@@ -141,7 +149,7 @@
 												"title": "Height (40px explicit)",
 												"children": [
 													{
-														"title": "Rules: sizing.userExplicit#3692"
+														"title": "Rules: sizing.userExplicit#5558"
 													}
 												]
 											},
@@ -149,7 +157,15 @@
 												"title": "BlockFormat",
 												"children": [
 													{
-														"title": "Rules: rendering.marginAutoRule#3690"
+														"title": "Rules: rendering.marginAutoRule#5556"
+													}
+												]
+											},
+											{
+												"title": "Background",
+												"children": [
+													{
+														"title": "Rules: rendering.backgroundFillRule#5558"
 													}
 												]
 											},
@@ -170,6 +186,9 @@
 													},
 													{
 														"title": "display: block"
+													},
+													{
+														"title": "background: #FF33A0"
 													}
 												]
 											},
@@ -190,6 +209,9 @@
 													},
 													{
 														"title": "display: block"
+													},
+													{
+														"title": "background: #FF33A0"
 													}
 												]
 											},
@@ -197,7 +219,7 @@
 												"title": "TagName (div)",
 												"children": [
 													{
-														"title": "Rules: tag.blockDiv#3692"
+														"title": "Rules: tag.blockDiv#5558"
 													}
 												]
 											}
@@ -210,7 +232,7 @@
 								"title": "BlockFormat",
 								"children": [
 									{
-										"title": "Rules: rendering.marginAutoRule#3690"
+										"title": "Rules: rendering.marginAutoRule#5556"
 									}
 								]
 							},
@@ -246,7 +268,7 @@
 								"title": "TagName (div)",
 								"children": [
 									{
-										"title": "Rules: tag.blockDiv#3690"
+										"title": "Rules: tag.blockDiv#5556"
 									}
 								]
 							}
@@ -259,7 +281,7 @@
 				"title": "Width (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#3689"
+						"title": "Rules: sizing.userExplicit#5555"
 					}
 				]
 			},
@@ -267,7 +289,7 @@
 				"title": "Height (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#3689"
+						"title": "Rules: sizing.userExplicit#5555"
 					}
 				]
 			}
@@ -321,6 +343,9 @@
 											},
 											{
 												"title": "height: 40px"
+											},
+											{
+												"title": "background: #FF33A0"
 											}
 										]
 									},

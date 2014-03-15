@@ -52,6 +52,36 @@ class Alignment extends Attributes.BaseAttribute {
 		this.isFarAggregated = isFarAggregated;
 	}
 
+	wrapChild(child: c.Component): Rules.RuleResult[] {
+		assert(this.getComponentChildren().indexOf(child) !== -1);
+
+		var newComponent = new c.Component;
+		var newAttr = new Alignment(
+			this.isHoriz,
+			this.near === child ? newComponent: this.near,
+			this.afterNear === child ? newComponent : this.afterNear,
+			this.center === child ? newComponent : this.center,
+			this.afterCenter === child ? newComponent : this.afterCenter,
+			this.far === child ? newComponent : this.far,
+			this.isNearAggregated || this.near === child,
+			this.isAfterNearAggregated || this.afterNear === child,
+			this.isCenterAggregated || this.center === child,
+			this.isAfterCenterAggregated || this.afterCenter === child,
+			this.isFarAggregated || this.far === child
+		);
+		return [{
+			component: this.component,
+			replaceAttributes: [
+				newAttr,
+			],
+		}, {
+			component: newComponent,
+			attributes: [
+				new StackedChildren([child])
+			],
+		}];
+	}
+
 	static getFrom(component: c.Component, direction: sinf.Direction): Alignment {
 		var attr: Attributes.BaseAttribute;
 		if (direction === sinf.horiz) {
