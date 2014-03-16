@@ -20,7 +20,7 @@ import reqs = require('../../requirements');
 import patterns = require('./patterns');
 
 function verticalCenterKnownSizes(component: c.Component): Rules.RuleResult[] {
-	if (patterns.containsSingleLineVerticallyCenteredText(component))
+	if (patterns.containsSingleLineVerticallyCenteredTextWithKnownHeight(component))
 		return;
 
 	var satisfies = reqs.satisfies(component,
@@ -185,29 +185,9 @@ function isSingleLine(component: c.Component): boolean {
 	return true;
 }
 
-function verticallyCenteredSingleLine(component: c.Component): Rules.RuleResult[] {
-	if (!component.getParent())
-		return;
-
-	var margin = getCenteredMargin(component);
-	var direction = getDirection(component.getParent());
-	if (isSingleLine(component) && margin != null && direction === sinf.vert) {
-		var textAttr = TextContent.getFrom(component);
-
-		return [{
-			component: component,
-			replaceAttributes: [
-				new LineHeight(textAttr.getText().lineHeight + margin * 2),
-			],
-		}];
-	}
-}
-
-
 var rules: Rules.RuleWithName[] = [
 	{name: 'marginSpacing', rule: marginSpacing},
 	{name: 'verticalCenterKnownSizes', rule: verticalCenterKnownSizes},
-	{name: 'verticallyCenteredSingleLine', rule: verticallyCenteredSingleLine},
 ];
 
 export = rules;

@@ -12,12 +12,15 @@ import Alignment = require('./attributes/Alignment');
 import hasBoxContent = require('./patterns/hasBoxContent');
 import getDirection = require('./patterns/getDirection');
 import isText = require('./patterns/isText');
+import getTextLines = require('./patterns/getTextLines');
 
 export enum Target {
 	SELF,
 	PARENT,
 	ALL_CHILDREN,
 	ANY_CHILDREN,
+	ALL_DESCENDENTS,
+	ANY_DESCENDENTS,
 }
 
 export enum AggregateType {
@@ -36,6 +39,8 @@ export interface Requirement {
 	hRuntime?: boolean;
 	hasContent?: boolean;
 	isText?: boolean;
+	isOnlyText?: boolean;
+	hasNodes?: boolean;
 	textLines?: number;
 	isImage?: boolean;
 	hasCSS?: { [name: string]: string;};
@@ -51,6 +56,8 @@ export interface Requirement {
 
 	aggregate?: Requirement[];
 	aggregateType?: AggregateType;
+
+	capturedComponents?: comp.Component[];
 }
 
 export function all(requirements: Requirement[]): Requirement {
@@ -97,10 +104,65 @@ export function anyChildren(requirement: Requirement): Requirement {
 	return req;
 }
 
+// At least one child has to be A, and any children that's not A must be B.
 export function anyChildrenOptional(requirement: Requirement, optional: Requirement): Requirement {
 	return all([
 		anyChildren(requirement),
 		allChildren(eitherOr(requirement, optional)),
+	]);
+}
+
+export function anyDescendents(requirement: Requirement): Requirement {
+	var req: Requirement = {};
+	_.extend(req, requirement);
+	req.target = Target.ANY_DESCENDENTS;
+	return req;
+}
+
+export function allDescendents(requirement: Requirement): Requirement {
+	var req: Requirement = {};
+	_.extend(req, requirement);
+	req.target = Target.ALL_DESCENDENTS;
+	return req;
+}
+
+// At least one descendent has to satisfy A, and all of its ancestors (excluding
+// the current one) must satisfy B.
+export function anyDescendentsWithAncestors(requirement: Requirement, ancestor: Requirement): Requirement {
+	var A = all([ancestor]);
+
+	// The component could either
+	var req = eitherOr(
+		// Satisfy the requirement itself
+		requirement,
+		// or satisfy A,
+		A
+	);
+	// where A is both satisfying 'ancestor' and 'req'.
+	A.aggregate.push(anyDescendents(req));
+
+	// Don't apply to the component iself
+	return anyChildren(req);
+}
+
+// At least one descendent has to satisfy A, and all other descendents must
+// (have a descendent that satisfies A) or (satisfy B itself).
+export function anyDescendentsOptional(requirement: Requirement, optional: Requirement): Requirement {
+	// This is some tricky code.
+	var must = {
+		aggregate: [requirement],
+		aggregateType: AggregateType.ANY,
+	};
+	var allReq = allDescendents(
+		eitherOr(
+			optional,
+			must
+		)
+	);
+	must.aggregate.push(allReq);
+	return all([
+		anyDescendents(requirement),
+		allReq,
 	]);
 }
 
@@ -256,6 +318,29 @@ export var br: Requirement = {
 	},
 };
 
+export function fromDirectionAlignment(direction: inf.Direction, alignment: inf.Alignment): Requirement {
+	if (direction === inf.horiz) {
+		switch (alignment) {
+			case inf.near:
+				return l;
+			case inf.center:
+				return c;
+			case inf.far:
+				return r;
+		}
+	} else {
+		switch (alignment) {
+			case inf.near:
+				return t;
+			case inf.center:
+				return m;
+			case inf.far:
+				return b;
+		}
+	}
+	assert(false);
+}
+
 export var knownW: Requirement = {
 	w: inf.pxUnit,
 };
@@ -288,12 +373,27 @@ export var isContentText: Requirement = {
 	isText: true,
 };
 
+export var isOnlyText: Requirement = {
+	isOnlyText: true,
+};
+
+export var hasNodes: Requirement = {
+	hasNodes: true,
+};
+
 export function textLines(lines: number): Requirement {
 	return {
 		isText: true,
 		textLines: lines,
 	};
 };
+
+export function capture(requirement: Requirement, components: comp.Component[]): Requirement {
+	var req: Requirement = {};
+	_.extend(req, requirement);
+	req.capturedComponents = components;
+	return req;
+}
 
 function satisfiesForTarget(component: comp.Component, requirement: Requirement): boolean {
 	var ok = true;
@@ -343,12 +443,16 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 	if (requirement.isText != null && requirement.isText !== isText(component))
 		return false;
 
-	if (requirement.textLines != null) {
-		var box = component.getBox();
-		if (!box || !box.staticContent || !box.staticContent.text)
-			return false;
-		if (util.textExactLines(box.staticContent.text) !== requirement.textLines)
-			return false;
+	if (requirement.isOnlyText != null && requirement.isOnlyText !== isText(component, true))
+		return false;
+
+	if (requirement.hasNodes != null &&
+		requirement.hasNodes !== hasBoxContent(component, true))
+		return false;
+
+	if (requirement.textLines != null &&
+		requirement.textLines !== getTextLines(component)) {
+		return false;
 	}
 
 	if (requirement.alignment) {
@@ -413,10 +517,13 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 	if (requirement.lazyEval && !satisfies(component, requirement.lazyEval()))
 		return false;
 
+	if (requirement.capturedComponents) {
+		requirement.capturedComponents.push(component);
+	}
 	return true;
 }
 
-export function satisfies(component: comp.Component, requirement: Requirement, ignoreTarget: boolean = false): boolean {
+export function satisfies(component: comp.Component, requirement: Requirement, ignoreTarget: boolean = false, derp = 0): boolean {
 	var runAggregate: (component: comp.Component, ignoreTarget: boolean) => boolean = null;
 	if (requirement.aggregate) {
 		assert(requirement.aggregateType != null);
@@ -431,7 +538,7 @@ export function satisfies(component: comp.Component, requirement: Requirement, i
 			case AggregateType.ANY:
 				runAggregate = (component, ignoreTarget) => {
 					return requirement.aggregate.some(
-						(subRequirement) => satisfies(component, subRequirement, ignoreTarget)
+						(subRequirement) => satisfies(component, subRequirement, ignoreTarget, derp + 1)
 					);
 				};
 				break;
@@ -480,6 +587,36 @@ export function satisfies(component: comp.Component, requirement: Requirement, i
 						(!runAggregate || runAggregate(child, true/*ignoreTarget*/))
 					)
 				))
+				return false;
+			break;
+		case Target.ALL_DESCENDENTS:
+			var ok = true;
+			component.iterateChildrenBreadthFirst((descendent) => {
+				if (descendent === component)
+					return;
+
+				if (!satisfiesForTarget(descendent, requirement) ||
+					!(!runAggregate || runAggregate(descendent, true/*ignoreTarget*/))) {
+					ok = false;
+					return comp.STOP_ITERATION;
+				}
+			});
+			if (!ok)
+				return false;
+			break;
+		case Target.ANY_DESCENDENTS:
+			var ok = false;
+			component.iterateChildrenBreadthFirst((descendent) => {
+				if (descendent === component)
+					return;
+
+				if (satisfiesForTarget(descendent, requirement) &&
+					(!runAggregate || runAggregate(descendent, true/*ignoreTarget*/))) {
+					ok = true;
+					return comp.STOP_ITERATION;
+				}
+			});
+			if (!ok)
 				return false;
 			break;
 	}

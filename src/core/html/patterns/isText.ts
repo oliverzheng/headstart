@@ -1,15 +1,21 @@
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
 
-function isText(component: c.Component): boolean {
-	var boxAttr = component.boxAttr();
-	if (!boxAttr)
+function isText(component: c.Component, excludeDescendents: boolean = false): boolean {
+	if (component.nodeAttr())
 		return false;
-	var box = boxAttr.getBox();
-	return (
-		box.staticContent != null &&
-		box.staticContent.text != null
-	);
+
+	var box = component.getBox();
+	if (box && box.staticContent && box.staticContent.text) {
+		return true;
+	} else if (!excludeDescendents) {
+		var children = component.getChildren();
+		return (
+			children.some((child) => isText(child)) &&
+			children.every((child) => !component.nodeAttr())
+		);
+	}
+	return false;
 }
 
 export = isText;
