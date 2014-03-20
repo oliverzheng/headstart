@@ -144,6 +144,14 @@ export var vert = Direction.VERTICAL;
 
 export var directions = [horiz, vert];
 
+export function otherDirection(dir: Direction): Direction {
+	if (dir === horiz)
+		return vert;
+	if (dir === vert)
+		return horiz;
+	throw new Error('Invalid direction');
+}
+
 
 export enum OVERFLOW {
 	/** Overflown children go to the next line. Only for alignment != center. */
@@ -185,7 +193,6 @@ export enum Alignment {
 }
 
 export var alignments = [
-	Alignment.NONE,
 	Alignment.NEAR,
 	Alignment.CENTER,
 	Alignment.FAR,

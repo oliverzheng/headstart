@@ -194,7 +194,7 @@ class LengthAttribute extends Markup {
 			sum.px = l1.px.add(l2.px);
 		}
 		if (l1.pct.isSet() && l2.pct.isSet()) {
-			sum.pct = l1.pct.add(l2.px);
+			sum.pct = l1.pct.add(l2.pct);
 		}
 		if (l1.lines.isSet() && l2.lines.isSet()) {
 			sum.lines = l1.px.add(l2.lines);
@@ -368,6 +368,10 @@ class LengthAttribute extends Markup {
 
 	static getZeroPx(direction: sinf.Direction) {
 		return new LengthAttribute(direction, Measurement.implicit(0));
+	}
+
+	static get100Pct(direction: sinf.Direction) {
+		return new LengthAttribute(direction, null, Measurement.implicit(1));
 	}
 }
 

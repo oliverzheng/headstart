@@ -172,17 +172,17 @@ function sizeExpandedChildren(component: c.Component): Rules.RuleResult[] {
 
 	var results: Rules.RuleResult[] = [];
 
+	var unsizedExpandHorizChildren = childrenComponents.filter((child) => {
+		if (LengthAttribute.getFrom(child, sinf.horiz)) {
+			return false;
+		}
+		var boxAttr = child.boxAttr();
+		if (!boxAttr) {
+			return false;
+		}
+		return boxAttr.getBox().w.unit === sinf.LengthUnit.EXPAND;
+	});
 	if (parentWidth) {
-		var unsizedExpandHorizChildren = childrenComponents.filter((child) => {
-			if (LengthAttribute.getFrom(child, sinf.horiz)) {
-				return false;
-			}
-			var boxAttr = child.boxAttr();
-			if (!boxAttr) {
-				return false;
-			}
-			return boxAttr.getBox().w.unit === sinf.LengthUnit.EXPAND;
-		});
 		if (direction === sinf.horiz) {
 			var sizedChildrenWidths = childrenComponents.map((child) => {
 				return LengthAttribute.getFrom(child, sinf.horiz);
@@ -218,8 +218,7 @@ function sizeExpandedChildren(component: c.Component): Rules.RuleResult[] {
 				}
 			}
 		} else if (direction === sinf.vert) {
-			var oneHundredPct =
-				new LengthAttribute(sinf.horiz, null, Measurement.implicit(1));
+			var oneHundredPct = LengthAttribute.get100Pct(sinf.horiz);
 			results.push.apply(results, unsizedExpandHorizChildren.map((child) => {
 				var widthFromParent = oneHundredPct.percentOf(parentWidth);
 				return {
@@ -228,19 +227,26 @@ function sizeExpandedChildren(component: c.Component): Rules.RuleResult[] {
 				};
 			}));
 		}
+	} else if (direction === sinf.vert) {
+		results.push.apply(results, unsizedExpandHorizChildren.map((child) => {
+			return {
+				component: child,
+				attributes: [LengthAttribute.get100Pct(sinf.horiz)],
+			};
+		}));
 	}
 
+	var unsizedExpandVertChildren = childrenComponents.filter((child) => {
+		if (LengthAttribute.getFrom(child, sinf.vert)) {
+			return false;
+		}
+		var boxAttr = child.boxAttr();
+		if (!boxAttr) {
+			return false;
+		}
+		return boxAttr.getBox().h.unit === sinf.LengthUnit.EXPAND;
+	});
 	if (parentHeight) {
-		var unsizedExpandVertChildren = childrenComponents.filter((child) => {
-			if (LengthAttribute.getFrom(child, sinf.vert)) {
-				return false;
-			}
-			var boxAttr = child.boxAttr();
-			if (!boxAttr) {
-				return false;
-			}
-			return boxAttr.getBox().h.unit === sinf.LengthUnit.EXPAND;
-		});
 		if (direction === sinf.vert) {
 			var sizedChildrenHeights = childrenComponents.map((child) => {
 				return LengthAttribute.getFrom(child, sinf.vert);
@@ -286,6 +292,13 @@ function sizeExpandedChildren(component: c.Component): Rules.RuleResult[] {
 				};
 			}));
 		}
+	} else if (direction === sinf.horiz) {
+		results.push.apply(results, unsizedExpandVertChildren.map((child) => {
+			return {
+				component: child,
+				attributes: [LengthAttribute.get100Pct(sinf.vert)],
+			};
+		}));
 	}
 
 	return results;
@@ -333,6 +346,24 @@ function sizeShrink(component: c.Component): Rules.RuleResult[] {
 				unit === sinf.LengthUnit.EXPAND
 			);
 		});
+
+		// There is a case when the parent shrinks to children, and all but
+		// one children expand. That child also shrinks. The lengths cannot be
+		// determined but for sure they are equal.
+		if (sizedChildren.length === 0) {
+			var shrinkChildren = children.filter((child) => {
+				var box = child.boxAttr().getBox();
+				var unit = util.getLength<sinf.Length>(box, direction).unit;
+				return unit === sinf.shrinkUnit;
+			});
+			if (shrinkChildren.length === 1 && (pctAndExpandChildren.length + 1) === children.length) {
+				results.push({
+					component: shrinkChildren[0],
+					attributes: [LengthAttribute.get100Pct(direction)],
+				});
+			}
+		}
+
 		if ((sizedChildren.length + pctAndExpandChildren.length) !== children.length) {
 			// We need all the explicit lengths to be calculated first
 			return;
@@ -371,6 +402,17 @@ function sizeShrink(component: c.Component): Rules.RuleResult[] {
 					attributes: [LengthAttribute.getZeroPx(direction)],
 				};
 			}));
+		} else {
+			assert(max.px.isSet());
+			results.push.apply(results, sizedChildren.map((sizedChild, i) => {
+				var length = sizedLengths[i];
+				if (length.px.isSet() && !length.pct.isSet() && length.px.value === max.px.value) {
+					return {
+						component: sizedChild,
+						attributes: [LengthAttribute.get100Pct(direction)],
+					};
+				}
+			}).filter((a) => !!a));
 		}
 	});
 

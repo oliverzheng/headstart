@@ -19,10 +19,15 @@ import reqs = require('../../requirements');
 import patterns = require('./patterns');
 import util = require('../../util');
 
+var isAbsoluteReq: reqs.Requirement = reqs.custom((component: c.Component) => {
+	var cssAttr = CSSAttribute.getFrom(component);
+	return cssAttr && cssAttr.styles['position'] === 'absolute';
+});
+
 // This file brought to you by
 // http://coding.smashingmagazine.com/2013/08/09/absolute-horizontal-vertical-centering-css/
 
-function isJustTextHorizontalAligned(component: c.Component, alignment: sinf.Alignment): boolean {
+function isJustTextHorizontalAligned(component: c.Component, alignment: sinf.Alignment): c.Component {
 	var alignmentReq = reqs.eitherOr(
 		reqs.fromDirectionAlignment(sinf.horiz, alignment),
 		reqs.parent(
@@ -38,12 +43,13 @@ function isJustTextHorizontalAligned(component: c.Component, alignment: sinf.Ali
 		reqs.shrinkH,
 		alignmentReq,
 	]);
-	return reqs.satisfies(component,
+	var captures: c.Component[] = []
+	var satisfies = reqs.satisfies(component,
 		reqs.all([
 			reqs.not(reqs.shrinkW),
 			// The text has to be shrunk, and all else have to be spaces
 			reqs.anyDescendentsOptional(
-				textReq,
+				reqs.capture(textReq, captures),
 				// Optional spaces
 				reqs.not(reqs.hasContent)
 			),
@@ -54,13 +60,19 @@ function isJustTextHorizontalAligned(component: c.Component, alignment: sinf.Ali
 			),
 		])
 	);
+	if (!satisfies)
+		return null;
+	assert(captures.length > 0);
+	return captures[0];
 }
 
 function horizontalCenterText(component: c.Component): Rules.RuleResult[] {
-	if (!isJustTextHorizontalAligned(component, sinf.center))
+	var center = isJustTextHorizontalAligned(component, sinf.center);
+	if (!center)
 		return;
 
-	return [{
+
+	var results: Rules.RuleResult[] = [{
 		component: component,
 		attributes: [
 			new CSSAttribute({
@@ -68,6 +80,19 @@ function horizontalCenterText(component: c.Component): Rules.RuleResult[] {
 			}),
 		],
 	}];
+
+	if (reqs.satisfies(center, isAbsoluteReq)) {
+		results.push({
+			component: center,
+			attributes: [
+				new CSSAttribute({
+					'width': '100%',
+				}),
+			],
+		});
+	}
+
+	return results;
 }
 
 function horizontalRightText(component: c.Component): Rules.RuleResult[] {
@@ -80,41 +105,44 @@ function horizontalRightText(component: c.Component): Rules.RuleResult[] {
 			new CSSAttribute({
 				'text-align': 'right',
 			}),
-			new BlockFormat(),
 		],
 	}];
 }
 
 function marginAutoRule(component: c.Component): Rules.RuleResult[] {
-	var satisfies = reqs.satisfies(component,
-		reqs.all([
-			reqs.anyChildrenOptional(
-				// At least 1 center aligned element
-				reqs.all([
-					reqs.hasContent,
-					reqs.eitherOr(
-						reqs.c,
-						reqs.r
-					),
-					reqs.not(reqs.isContentText),
-				]),
-				// Optional spaces
-				reqs.not(reqs.hasContent)
-			),
-			reqs.horiz,
-		])
+	// First, find the center/right components that are the most descendent-y
+	var centerComponent = findAlignedContent(
+		component,
+		sinf.horiz,
+		sinf.center,
+		// Content
+		reqs.not(reqs.isContentText)
 	);
-	if (!satisfies)
+
+	var rightComponent = findAlignedContent(
+		component,
+		sinf.horiz,
+		sinf.far,
+		// Content
+		reqs.not(reqs.isContentText)
+	);
+
+	// We cannot include these reqs above, since it may just match the parent of
+	// a centered component we actually want to center.
+	if (centerComponent && reqs.satisfies(centerComponent, isAbsoluteReq))
+		centerComponent = null;
+	if (rightComponent && reqs.satisfies(rightComponent, isAbsoluteReq))
+		rightComponent = null;
+
+	if (!centerComponent && !rightComponent)
 		return;
+	assert(!!centerComponent !== !!rightComponent); // only 1 for now
 
-	var alignment = Alignment.getFrom(component, sinf.horiz);
-	assert(alignment && (alignment.center || alignment.far));
-
-	var child = alignment.center || alignment.far;
+	var child = centerComponent || rightComponent;
 	var styles = {
 		'margin-left': 'auto',
 	};
-	if (child === alignment.center) {
+	if (child === centerComponent) {
 		styles['margin-right'] = 'auto';
 	}
 
@@ -148,35 +176,100 @@ function singleLineHeight(component: c.Component): Rules.RuleResult[] {
 	}];
 }
 
-function negativeMargin(component: c.Component): Rules.RuleResult[] {
-	var satisfies = reqs.satisfies(component,
+function findAlignedContent(
+	component: c.Component,
+	direction: sinf.Direction,
+	alignment: sinf.Alignment,
+	contentReq: reqs.Requirement = reqs.none,
+	parentReq: reqs.Requirement = reqs.none
+): c.Component {
+	var alignmentReq = reqs.eitherOr(
+		reqs.fromDirectionAlignment(direction, alignment),
 		reqs.all([
-			reqs.vert,
-			reqs.eitherOr(
-				reqs.not(reqs.knownH),
-				reqs.runtimeH
-			),
-			reqs.anyChildrenOptional(
-				reqs.all([
-					reqs.hasContent,
-					reqs.m,
-					reqs.knownH,
-				]),
-				reqs.not(reqs.hasContent)
-			),
+			reqs.parent(reqs.getFromDirection(sinf.otherDirection(direction))),
+			reqs.exact(direction, sinf.pct(1)), // Exactly as tall/wide as its parent
 		])
 	);
+	var allContentReqs = reqs.all([
+		reqs.hasContent,
+		contentReq,
+		alignmentReq,
+	]);
+	var captures: c.Component[] = [];
+	var candidateReq = reqs.all([
+		parentReq,
+		reqs.anyDescendentsOptional(
+			reqs.capture(allContentReqs, captures),
+			reqs.not(reqs.hasContent)
+		),
+		reqs.anyDescendentsWithAncestors(
+			allContentReqs,
+			alignmentReq
+		),
+	]);
+	var satisfies = reqs.satisfies(component,
+		reqs.all([
+			candidateReq,
+			reqs.eitherOr(
+				// Either there is no parent
+				reqs.not(reqs.parent(reqs.none)),
+				// Or the parent cannot match this. Otherwise, only the parent
+				// should apply
+				reqs.not(reqs.parent(candidateReq))
+			)
+		])
+	);
+
 	if (!satisfies)
+		return null;
+
+	assert(captures.length >= 1);
+	captures.sort((a, b) => {
+		return a.getOrder() - b.getOrder();
+	});
+	// Get the most descending descendent.
+	var last = captures.reduce((a, b) => {
+		if (a && b.isDescendentOf(a)) {
+			return b;
+		}
+		return null;
+	});
+	if (!last)
+		return null;
+
+	// TODO this should be reqs.anyAncestorsUntil()
+	var differentLength = false;
+	for (var target = last; target !== component && target; target = target.getParent()) {
+		// The entire ancestry should at least change some width.
+		if (reqs.satisfies(target, reqs.not(reqs.exact(direction, sinf.pct(1))))) {
+			differentLength = true;
+			break;
+		}
+	}
+
+	if (differentLength)
+		return last;
+}
+
+function negativeMargin(component: c.Component): Rules.RuleResult[] {
+	var middleComponent = findAlignedContent(
+		component,
+		sinf.vert,
+		sinf.center,
+		reqs.knownH, 
+		reqs.eitherOr(
+			reqs.not(reqs.knownH),
+			reqs.runtimeH
+		)
+	);
+	if (!middleComponent)
 		return;
 
-	var alignment = Alignment.getFrom(component, sinf.vert);
-	assert(alignment && alignment.center);
-
-	var height = LengthAttribute.getFrom(alignment.center, sinf.vert);
+	var height = LengthAttribute.getFrom(middleComponent, sinf.vert);
 	assert(height && height.px.isSet());
 
 	return [{
-		component: alignment.center,
+		component: middleComponent,
 		attributes: [
 			new CSSAttribute({
 				'position': 'absolute',

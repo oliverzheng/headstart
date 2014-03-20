@@ -48,7 +48,7 @@ function unfoldSameDirection(component: c.Component): Rules.RuleResult[] {
 		// If the child specified its own length that is different from what
 		// the children add up to, then this guy needs its own node.
 		var childLength = LengthAttribute.getFrom(child, direction);
-		if (!childLength.looksEqual(grandChildrenLengthSum)) {
+		if (!childLength || !childLength.looksEqual(grandChildrenLengthSum)) {
 			return false;
 		}
 

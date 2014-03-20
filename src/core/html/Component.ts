@@ -185,6 +185,23 @@ export class Component {
 		}
 	}
 
+	isDescendentOf(component: Component) {
+		var parent = this;
+		while (parent && parent !== component) {
+			parent = parent.getParent();
+		}
+		return parent !== null;
+	}
+
+	getOrder(component: Component) {
+		var order = 0;
+		var parent = this;
+		while (parent = parent.getParent()) {
+			order++;
+		}
+		return order;
+	}
+
 	repr(): Attributes.Repr {
 		return {
 			title: 'Component',

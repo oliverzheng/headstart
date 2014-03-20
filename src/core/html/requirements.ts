@@ -35,6 +35,8 @@ export interface Requirement {
 	direction?: inf.Direction;
 	w?: inf.LengthUnit;
 	h?: inf.LengthUnit;
+	exactW?: inf.Length;
+	exactH?: inf.Length;
 	wRuntime?: boolean;
 	hRuntime?: boolean;
 	hasContent?: boolean;
@@ -59,6 +61,8 @@ export interface Requirement {
 
 	capturedComponents?: comp.Component[];
 }
+
+export var none: Requirement = {};
 
 export function all(requirements: Requirement[]): Requirement {
 	return {
@@ -89,17 +93,23 @@ export function not(requirement: Requirement): Requirement {
 	return noneOf([requirement]);
 }
 
+function ensureCleanTarget(requirement: Requirement): Requirement {
+	if (!requirement.target)
+		return requirement
+
+	return all([requirement]);
+}
 
 export function allChildren(requirement: Requirement): Requirement {
 	var req: Requirement = {};
-	_.extend(req, requirement);
+	_.extend(req, ensureCleanTarget(requirement));
 	req.target = Target.ALL_CHILDREN;
 	return req;
 }
 
 export function anyChildren(requirement: Requirement): Requirement {
 	var req: Requirement = {};
-	_.extend(req, requirement);
+	_.extend(req, ensureCleanTarget(requirement));
 	req.target = Target.ANY_CHILDREN;
 	return req;
 }
@@ -114,14 +124,14 @@ export function anyChildrenOptional(requirement: Requirement, optional: Requirem
 
 export function anyDescendents(requirement: Requirement): Requirement {
 	var req: Requirement = {};
-	_.extend(req, requirement);
+	_.extend(req, ensureCleanTarget(requirement));
 	req.target = Target.ANY_DESCENDENTS;
 	return req;
 }
 
 export function allDescendents(requirement: Requirement): Requirement {
 	var req: Requirement = {};
-	_.extend(req, requirement);
+	_.extend(req, ensureCleanTarget(requirement));
 	req.target = Target.ALL_DESCENDENTS;
 	return req;
 }
@@ -168,7 +178,7 @@ export function anyDescendentsOptional(requirement: Requirement, optional: Requi
 
 export function parent(requirement: Requirement): Requirement {
 	var req: Requirement = {};
-	_.extend(req, requirement);
+	_.extend(req, ensureCleanTarget(requirement));
 	req.target = Target.PARENT;
 	return req;
 }
@@ -218,6 +228,10 @@ export var horiz: Requirement = {
 export var vert: Requirement = {
 	direction: inf.vert,
 };
+
+export function getFromDirection(direction: inf.Direction): Requirement {
+	return direction === inf.horiz ? horiz : vert;
+}
 
 export var t: Requirement = {
 	alignment: {
@@ -365,6 +379,23 @@ export var shrinkH: Requirement = {
 	h: inf.shrinkUnit,
 }
 
+export function exactW(w: inf.Length): Requirement {
+	return {
+		exactW: w,
+	};
+}
+
+export function exactH(h: inf.Length): Requirement {
+	return {
+		exactH: h,
+	};
+}
+
+export function exact(direction: inf.Direction, length: inf.Length): Requirement {
+	return direction === inf.horiz ? exactW(length) : exactH(length);
+}
+
+
 export var hasContent: Requirement = {
 	hasContent: true,
 };
@@ -407,30 +438,46 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 		if (runtime && (!box || !util.getLength(box, direction).runtime))
 			ok = false;
 
-		var lengthReq = util.getLength<inf.LengthUnit>(requirement, direction);
-		if (lengthReq == null)
-			return;
-
 		var length = LengthAttribute.getFrom(component, direction);
 
-		switch (lengthReq) {
-			case inf.pxUnit:
-				ok = ok && length && length.px.isSet();
-				break;
-			case inf.pctUnit:
-				ok = ok && length && length.pct.isSet();
-				break;
-			case inf.expandUnit:
-				if (!box || util.getLength(box, direction).unit !== inf.expandUnit)
-					ok = false;
-				break;
-			case inf.shrinkUnit:
-				if (!box || util.getLength(box, direction).unit !== inf.shrinkUnit)
-					ok = false;
-				break;
-			default:
-				// It's okay if we actually have a length
-				break;
+		var lengthReq = util.getLength<inf.LengthUnit>(requirement, direction);
+		if (lengthReq != null) {
+			switch (lengthReq) {
+				case inf.pxUnit:
+					ok = ok && length && length.px.isSet();
+					break;
+				case inf.pctUnit:
+					ok = ok && length && length.pct.isSet();
+					break;
+				case inf.expandUnit:
+					if (!box || util.getLength(box, direction).unit !== inf.expandUnit)
+						ok = false;
+					break;
+				case inf.shrinkUnit:
+					if (!box || util.getLength(box, direction).unit !== inf.shrinkUnit)
+						ok = false;
+					break;
+				default:
+					// It's okay if we actually have a length
+					break;
+			}
+		}
+
+		var exactLengthReq = (direction === inf.horiz) ? requirement.exactW : requirement.exactH;
+		if (exactLengthReq != null) {
+			switch (exactLengthReq.unit) {
+				case inf.pxUnit:
+					if (!length || !length.px.isSet() || exactLengthReq.value !== length.px.value)
+						ok = false;
+					break;
+				case inf.pctUnit:
+					if (!length || !length.pct.isSet() || exactLengthReq.value !== length.pct.value)
+						ok = false;
+					break;
+				default:
+					assert(false);
+					break;
+			}
 		}
 	});
 	if (!ok)
@@ -517,77 +564,76 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 	if (requirement.lazyEval && !satisfies(component, requirement.lazyEval()))
 		return false;
 
-	if (requirement.capturedComponents) {
-		requirement.capturedComponents.push(component);
-	}
 	return true;
 }
 
-export function satisfies(component: comp.Component, requirement: Requirement, ignoreTarget: boolean = false, derp = 0): boolean {
-	var runAggregate: (component: comp.Component, ignoreTarget: boolean) => boolean = null;
+export function satisfies(component: comp.Component, requirement: Requirement): boolean {
+	var runAggregate: (component: comp.Component) => boolean = null;
 	if (requirement.aggregate) {
 		assert(requirement.aggregateType != null);
 		switch (requirement.aggregateType) {
 			case AggregateType.ALL:
-				runAggregate = (component, ignoreTarget) => {
+				runAggregate = (component) => {
 					return requirement.aggregate.every(
-						(subRequirement) => satisfies(component, subRequirement, ignoreTarget)
+						(subRequirement) => satisfies(component, subRequirement)
 					);
 				};
 				break;
 			case AggregateType.ANY:
-				runAggregate = (component, ignoreTarget) => {
+				runAggregate = (component) => {
 					return requirement.aggregate.some(
-						(subRequirement) => satisfies(component, subRequirement, ignoreTarget, derp + 1)
+						(subRequirement) => satisfies(component, subRequirement)
 					);
 				};
 				break;
 			case AggregateType.NONE:
-				runAggregate = (component, ignoreTarget) => {
+				runAggregate = (component) => {
 					return !requirement.aggregate.some(
-						(subRequirement) => satisfies(component, subRequirement, ignoreTarget)
+						(subRequirement) => satisfies(component, subRequirement)
 					);
 				};
 				break;
 		}
 	}
 
-	var target: Target;
-	if (!ignoreTarget)
-		target = requirement.target;
-	switch (target) {
+	var targetComponents: comp.Component[] = [];
+	switch (requirement.target) {
 		default:
 			// fallthrough
 		case Target.SELF:
 			if (!satisfiesForTarget(component, requirement) ||
-				(runAggregate && !runAggregate(component, false/*ignoreTarget*/)))
+				(runAggregate && !runAggregate(component)))
 				return false;
+			targetComponents.push(component);
 			break;
 		case Target.PARENT:
 			var parent = component.getParent();
 			if (!parent)
 				return false;
 			if (!satisfiesForTarget(parent, requirement) ||
-				(runAggregate && !runAggregate(parent, true/*ignoreTarget*/)))
+				(runAggregate && !runAggregate(parent)))
 				return false;
+			targetComponents.push(parent);
 			break;
 		case Target.ANY_CHILDREN:
-			if (!component.getChildren().some(
-					(child) => (
-						satisfiesForTarget(child, requirement) &&
-						(!runAggregate || runAggregate(child, true/*ignoreTarget*/))
-					)
-				))
+			var targetComponents = component.getChildren().filter(
+				(child) => (
+					satisfiesForTarget(child, requirement) &&
+					(!runAggregate || runAggregate(child))
+				)
+			);
+			if (targetComponents.length === 0)
 				return false;
 			break;
 		case Target.ALL_CHILDREN:
 			if (!component.getChildren().every(
 					(child) => (
 						satisfiesForTarget(child, requirement) &&
-						(!runAggregate || runAggregate(child, true/*ignoreTarget*/))
+						(!runAggregate || runAggregate(child))
 					)
 				))
 				return false;
+			targetComponents = component.getChildren();
 			break;
 		case Target.ALL_DESCENDENTS:
 			var ok = true;
@@ -596,10 +642,12 @@ export function satisfies(component: comp.Component, requirement: Requirement, i
 					return;
 
 				if (!satisfiesForTarget(descendent, requirement) ||
-					!(!runAggregate || runAggregate(descendent, true/*ignoreTarget*/))) {
+					!(!runAggregate || runAggregate(descendent))) {
 					ok = false;
 					return comp.STOP_ITERATION;
 				}
+
+				targetComponents.push(descendent);
 			});
 			if (!ok)
 				return false;
@@ -611,14 +659,24 @@ export function satisfies(component: comp.Component, requirement: Requirement, i
 					return;
 
 				if (satisfiesForTarget(descendent, requirement) &&
-					(!runAggregate || runAggregate(descendent, true/*ignoreTarget*/))) {
+					(!runAggregate || runAggregate(descendent))) {
 					ok = true;
-					return comp.STOP_ITERATION;
+					targetComponents.push(descendent);
+					// Capture all matching descendents!. Don't return
+					// STOP_ITERATION; here.
 				}
 			});
 			if (!ok)
 				return false;
 			break;
+	}
+
+	if (requirement.capturedComponents) {
+		targetComponents.forEach((targetComponent) => {
+			if (requirement.capturedComponents.indexOf(targetComponent) === -1) {
+				requirement.capturedComponents.push(targetComponent);
+			}
+		});
 	}
 
 	return true;
