@@ -121,7 +121,7 @@ var PageComponent = React.createClass({
 	},
 
 	onRulesRun() {
-		var html = HTML.DOMNode.fromComponent(this.state.rootComponent).map((node) => node.toString()).join('');
+		var html = HTML.DOMNode.fromComponent(this.state.rootComponent, true).map((node) => node.toString()).join('');
 		this.setState({
 			html: html,
 		});

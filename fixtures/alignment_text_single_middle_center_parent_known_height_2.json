@@ -1,0 +1,397 @@
+{
+	"spec": {
+		"id": "0",
+		"w": {
+			"unit": 0,
+			"value": 600
+		},
+		"h": {
+			"unit": 0,
+			"value": 600
+		},
+		"direction": 2,
+		"children": [
+			{
+				"id": "11",
+				"w": {
+					"unit": 0,
+					"value": 100,
+					"runtime": true
+				},
+				"h": {
+					"unit": 0,
+					"value": 100,
+					"runtime": false
+				},
+				"direction": 2,
+				"children": [
+					{
+						"id": "12",
+						"w": {
+							"unit": 3,
+							"value": 40
+						},
+						"h": {
+							"unit": 3,
+							"value": 40
+						},
+						"direction": 2
+					},
+					{
+						"id": "2",
+						"w": {
+							"unit": 3,
+							"value": 40,
+							"runtime": false
+						},
+						"h": {
+							"unit": 4,
+							"value": 100,
+							"runtime": false
+						},
+						"direction": 1,
+						"children": [
+							{
+								"id": "3",
+								"w": {
+									"unit": 3,
+									"value": 40
+								},
+								"h": {
+									"unit": 3,
+									"value": 40
+								},
+								"direction": 2
+							},
+							{
+								"id": "1",
+								"w": {
+									"unit": 4,
+									"value": 40,
+									"runtime": false
+								},
+								"h": {
+									"unit": 4,
+									"value": 40,
+									"runtime": false
+								},
+								"direction": 2,
+								"createNode": false,
+								"staticContent": {
+									"text": {
+										"fontSize": 10,
+										"lineHeight": 10,
+										"value": "Derp",
+										"fontFamily": "",
+										"inputMinLines": 1,
+										"inputMaxLines": 1,
+										"outputMaxLines": 1
+									},
+									"image": null,
+									"fill": null
+								},
+								"children": []
+							},
+							{
+								"id": "4",
+								"w": {
+									"unit": 3,
+									"value": 40
+								},
+								"h": {
+									"unit": 3,
+									"value": 40
+								},
+								"direction": 2
+							}
+						],
+						"createNode": false
+					},
+					{
+						"id": "13",
+						"w": {
+							"unit": 3,
+							"value": 40
+						},
+						"h": {
+							"unit": 3,
+							"value": 40
+						},
+						"direction": 2
+					}
+				],
+				"createNode": true
+			}
+		]
+	},
+	"componentRepr": {
+		"title": "Component",
+		"id": "7605",
+		"children": [
+			{
+				"title": "BoxAttribute",
+				"children": [
+					{
+						"title": "Rules: "
+					}
+				],
+				"id": "0"
+			},
+			{
+				"title": "NodeAttribute",
+				"children": [
+					{
+						"title": "Rules: "
+					}
+				]
+			},
+			{
+				"title": "Width (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#7605"
+					}
+				]
+			},
+			{
+				"title": "Height (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#7605"
+					}
+				]
+			},
+			{
+				"title": "Vertical Alignment (Rules: alignment.equalSizes#7605)",
+				"children": [
+					{
+						"title": "Top Component",
+						"id": "7606",
+						"children": [
+							{
+								"title": "BoxAttribute",
+								"children": [
+									{
+										"title": "Rules: "
+									}
+								],
+								"id": "11"
+							},
+							{
+								"title": "NodeAttribute",
+								"children": [
+									{
+										"title": "Rules: userSpecified.createNode#7606"
+									}
+								]
+							},
+							{
+								"title": "Height (100px explicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.userExplicit#7606"
+									}
+								]
+							},
+							{
+								"title": "Vertical Alignment (Rules: alignment.expand#7606)",
+								"children": [
+									{
+										"title": "Center Component",
+										"id": "7608",
+										"children": [
+											{
+												"title": "BoxAttribute",
+												"children": [
+													{
+														"title": "Rules: "
+													}
+												],
+												"id": "2"
+											},
+											{
+												"title": "Width (1% implicit)",
+												"children": [
+													{
+														"title": "Rules: sizing.expandedChildren#7606"
+													}
+												]
+											},
+											{
+												"title": "Height (10px implicit)",
+												"children": [
+													{
+														"title": "Rules: sizing.shrink#7608"
+													}
+												]
+											},
+											{
+												"title": "Horizontal Alignment (Rules: alignment.expand#7608)",
+												"children": [
+													{
+														"title": "Center Component",
+														"id": "7610",
+														"children": [
+															{
+																"title": "BoxAttribute",
+																"children": [
+																	{
+																		"title": "Rules: "
+																	}
+																],
+																"id": "1"
+															},
+															{
+																"title": "TextContent (value: Derp)",
+																"children": [
+																	{
+																		"title": "Rules: userSpecified.staticText#7610"
+																	}
+																]
+															},
+															{
+																"title": "Height (10px implicit, 1% implicit, 1 lines explicit)",
+																"children": [
+																	{
+																		"title": "Rules: "
+																	}
+																]
+															},
+															{
+																"title": "LineHeight (line height: 100)",
+																"children": [
+																	{
+																		"title": "Rules: rendering.singleLineHeight#7606"
+																	}
+																]
+															},
+															{
+																"title": "CSSAttribute (isRendering = true)",
+																"children": [
+																	{
+																		"title": "font-size: 10px"
+																	},
+																	{
+																		"title": "line-height: 100px"
+																	}
+																]
+															}
+														]
+													}
+												],
+												"ordered": true
+											},
+											{
+												"title": "CSSAttribute (isRendering = true)",
+												"children": [
+													{
+														"title": "text-align: center"
+													}
+												]
+											}
+										]
+									}
+								],
+								"ordered": true
+							},
+							{
+								"title": "BlockFormat",
+								"children": [
+									{
+										"title": "Rules: rendering.sizeRuntimeInitial#7606"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = true)",
+								"children": [
+									{
+										"title": "width: 100px"
+									},
+									{
+										"title": "height: 100px"
+									},
+									{
+										"title": "display: block"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = false)",
+								"children": [
+									{
+										"title": "text-align: center"
+									},
+									{
+										"title": "font-size: 10px"
+									},
+									{
+										"title": "line-height: 100px"
+									},
+									{
+										"title": "width: 100px"
+									},
+									{
+										"title": "height: 100px"
+									},
+									{
+										"title": "display: block"
+									}
+								]
+							},
+							{
+								"title": "TagName (div)",
+								"children": [
+									{
+										"title": "Rules: tag.blockDiv#7606"
+									}
+								]
+							}
+						]
+					}
+				],
+				"ordered": true
+			}
+		]
+	},
+	"domRepr": {
+		"title": "DOM",
+		"children": [
+			{
+				"title": "Tag: div",
+				"ordered": false,
+				"children": [
+					{
+						"title": "Content: Derp"
+					},
+					{
+						"title": "Styles",
+						"ordered": false,
+						"children": [
+							{
+								"title": "text-align: center"
+							},
+							{
+								"title": "font-size: 10px"
+							},
+							{
+								"title": "line-height: 100px"
+							},
+							{
+								"title": "width: 100px"
+							},
+							{
+								"title": "height: 100px"
+							}
+						]
+					},
+					{
+						"title": "Children",
+						"ordered": true,
+						"children": []
+					}
+				]
+			}
+		]
+	}
+}

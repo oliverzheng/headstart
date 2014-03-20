@@ -23,77 +23,44 @@ function verticalCenterKnownSizes(component: c.Component): Rules.RuleResult[] {
 	if (patterns.containsSingleLineVerticallyCenteredTextWithKnownHeight(component))
 		return;
 
-	var satisfies = reqs.satisfies(component,
+	var middleComponent = patterns.findAlignedContent(
+		component,
+		sinf.vert,
+		sinf.center,
+		// Content
 		reqs.all([
-			reqs.vert,
-			reqs.anyChildrenOptional(
-				reqs.all([
-					reqs.m,
-					reqs.hasContent,
-					reqs.knownH,
-					reqs.not(reqs.runtimeH),
-				]),
-				// Optional spaces
-				reqs.not(reqs.hasContent)
-			),
 			reqs.knownH,
 			reqs.not(reqs.runtimeH),
-			reqs.parent(reqs.knownH),
+		]),
+		reqs.all([
+			reqs.knownH,
+			reqs.not(reqs.runtimeH),
 		])
 	);
-	if (!satisfies)
+	if (!middleComponent)
 		return;
 
-	var parent = component.getParent();
-	var isFirst = true;
-	var isLast = true;
-	if (parent) {
-		var children = parent.getChildren();
-		isFirst = children[0] === component;
-		isLast = children[children.length - 1] === component;
-	}
-
-	var alignment = Alignment.getFrom(component, sinf.vert);
-	assert(alignment && alignment.center);
+	if (reqs.satisfies(middleComponent, reqs.all([
+			reqs.isContentText,
+			reqs.textLines(1),
+		])))
+		return;
 
 	var outerHeight = LengthAttribute.getFrom(component, sinf.vert);
 	assert(outerHeight && outerHeight.px.isSet());
-	var innerHeight = LengthAttribute.getFrom(alignment.center, sinf.vert);
+	var innerHeight = LengthAttribute.getFrom(middleComponent, sinf.vert);
 	assert(innerHeight && innerHeight.px.isSet());
 
 	var length = (outerHeight.px.value - innerHeight.px.value) / 2;
-	var px = length.toString() + 'px';
-
-	var componentStyles: {[name: string]: string;} = {};
-	var parentAttributes: Attributes.BaseAttribute[] = [];
-	if (isFirst) {
-		parentAttributes.push(new BoxModel(null, { t: length }));
-	} else {
-		componentStyles['margin-top'] = px;
-	}
-
-	if (isLast) {
-		parentAttributes.push(new BoxModel(null, { b: length }));
-	} else {
-		componentStyles['margin-bottom'] = px;
-	}
-
-	var results: Rules.RuleResult[] = [{
+	return [{
 		component: component,
-		attributes: parentAttributes,
+		attributes: [
+			new BoxModel(null, {
+				t: length,
+				b: length,
+			}),
+		],
 	}];
-	if (Object.keys(componentStyles).length > 0) {
-		results.push({
-			component: alignment.center,
-			attributes: [
-				new CSSAttribute(componentStyles),
-				new NodeAttribute(),
-				new BlockFormat(),
-			],
-		});
-	}
-
-	return results;
 }
 
 function marginSpacing(component: c.Component): Rules.RuleResult[] {

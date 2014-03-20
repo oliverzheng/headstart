@@ -13,6 +13,10 @@ var DISPLAYS_FOR_DIV = [
 	'table-cell',
 ];
 
+var SELF_CLOSING = [
+	'br',
+];
+
 export class DOMNode {
 	tagName: string;
 	children: DOMNode[] = [];
@@ -79,6 +83,11 @@ export class DOMNode {
 		if (css) {
 			str += ' style="' + css + '"';
 		}
+		if (SELF_CLOSING.indexOf(this.tagName) !== -1) {
+			assert(!this.content && (!this.children || this.children.length === 0));
+			str += '/>';
+			return str;
+		}
 		str += '>\n';
 
 		if (this.content) {
@@ -92,11 +101,11 @@ export class DOMNode {
 		return str;
 	}
 
-	static fromComponent(component: c.Component): DOMNode[] {
+	static fromComponent(component: c.Component, convertLineBreaks: boolean = false): DOMNode[] {
 		var childrenNodes: DOMNode[] = [];
 
 		component.getChildren().forEach((child) => {
-			childrenNodes.push.apply(childrenNodes, DOMNode.fromComponent(child));
+			childrenNodes.push.apply(childrenNodes, DOMNode.fromComponent(child, convertLineBreaks));
 		});
 
 		var textContent: TextContent;
@@ -130,7 +139,21 @@ export class DOMNode {
 				node.styles = css.styles;
 			}
 			node.children = childrenNodes;
-			node.content = text;
+			if (convertLineBreaks && text) {
+				node.children = [];
+				text.split('\n').forEach((line: string, i: number) => {
+					if (line.trim().length === 0)
+						return;
+					var lineNode = new DOMNode('span');
+					lineNode.content = line;
+					if (node.children.length > 0) {
+						node.children.push(new DOMNode('br'));
+					}
+					node.children.push(lineNode);
+				});
+			} else {
+				node.content = text;
+			}
 			return [node];
 		} else {
 			return childrenNodes;
