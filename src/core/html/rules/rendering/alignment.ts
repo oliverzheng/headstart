@@ -19,10 +19,25 @@ import reqs = require('../../requirements');
 import patterns = require('./patterns');
 import util = require('../../util');
 
-var isAbsoluteReq: reqs.Requirement = reqs.custom((component: c.Component) => {
-	var cssAttr = CSSAttribute.getFrom(component);
-	return cssAttr && cssAttr.styles['position'] === 'absolute';
-});
+function getMiddleKnownParentUnknown(parent: c.Component): c.Component {
+	return patterns.findAlignedContent(
+		parent,
+		sinf.vert,
+		sinf.center,
+		reqs.knownH, 
+		reqs.eitherOr(
+			reqs.not(reqs.knownH),
+			reqs.runtimeH
+		)
+	);
+}
+
+function centerIsAbsolute(parent: c.Component, center: c.Component): boolean {
+	return (
+		reqs.satisfies(center, reqs.hasCSS({'position': 'absolute'})) ||
+		getMiddleKnownParentUnknown(parent) === center
+	);
+}
 
 // This file brought to you by
 // http://coding.smashingmagazine.com/2013/08/09/absolute-horizontal-vertical-centering-css/
@@ -81,7 +96,7 @@ function horizontalCenterText(component: c.Component): Rules.RuleResult[] {
 		],
 	}];
 
-	if (reqs.satisfies(center, isAbsoluteReq)) {
+	if (centerIsAbsolute(component, center)) {
 		results.push({
 			component: center,
 			attributes: [
@@ -129,9 +144,9 @@ function marginAutoRule(component: c.Component): Rules.RuleResult[] {
 
 	// We cannot include these reqs above, since it may just match the parent of
 	// a centered component we actually want to center.
-	if (centerComponent && reqs.satisfies(centerComponent, isAbsoluteReq))
+	if (centerComponent && centerIsAbsolute(component, centerComponent))
 		centerComponent = null;
-	if (rightComponent && reqs.satisfies(rightComponent, isAbsoluteReq))
+	if (rightComponent && centerIsAbsolute(component, rightComponent))
 		rightComponent = null;
 
 	if (!centerComponent && !rightComponent)
@@ -177,16 +192,7 @@ function singleLineHeight(component: c.Component): Rules.RuleResult[] {
 }
 
 function negativeMargin(component: c.Component): Rules.RuleResult[] {
-	var middleComponent = patterns.findAlignedContent(
-		component,
-		sinf.vert,
-		sinf.center,
-		reqs.knownH, 
-		reqs.eitherOr(
-			reqs.not(reqs.knownH),
-			reqs.runtimeH
-		)
-	);
+	var middleComponent = getMiddleKnownParentUnknown(component);
 	if (!middleComponent)
 		return;
 
@@ -256,6 +262,96 @@ function tableCell(component: c.Component): Rules.RuleResult[] {
 	return results;
 }
 
+function verticalCenterKnownSizes(component: c.Component): Rules.RuleResult[] {
+	if (patterns.containsSingleLineVerticallyCenteredTextWithKnownHeight(component))
+		return;
+
+	var middleComponent = patterns.findAlignedContent(
+		component,
+		sinf.vert,
+		sinf.center,
+		// Content
+		reqs.all([
+			reqs.knownH,
+			reqs.not(reqs.runtimeH),
+		]),
+		reqs.all([
+			reqs.knownH,
+			reqs.not(reqs.runtimeH),
+		])
+	);
+	if (!middleComponent)
+		return;
+
+	if (reqs.satisfies(middleComponent, reqs.all([
+			reqs.isContentText,
+			reqs.textLines(1),
+		])))
+		return;
+
+	var outerHeight = LengthAttribute.getFrom(component, sinf.vert);
+	assert(outerHeight && outerHeight.px.isSet());
+	var innerHeight = LengthAttribute.getFrom(middleComponent, sinf.vert);
+	assert(innerHeight && innerHeight.px.isSet());
+
+	var length = (outerHeight.px.value - innerHeight.px.value) / 2;
+	return [{
+		component: component,
+		attributes: [
+			new BoxModel(null, {
+				t: length,
+				b: length,
+			}),
+		],
+	}];
+}
+
+function horizontalCenterKnownSizes(component: c.Component): Rules.RuleResult[] {
+	var centerComponent = patterns.findAlignedContent(
+		component,
+		sinf.horiz,
+		sinf.center,
+		// Content
+		reqs.all([
+			reqs.knownW,
+			reqs.not(reqs.runtimeW),
+		]),
+		reqs.all([
+			reqs.knownW,
+			reqs.not(reqs.runtimeW),
+		])
+	);
+	if (!centerComponent)
+		return;
+
+	if (reqs.satisfies(centerComponent, reqs.all([
+			reqs.isContentText,
+			reqs.textLines(1),
+		])))
+		return;
+
+	// Margin-auto takes care of most cases
+	if (!centerIsAbsolute(component, centerComponent))
+		return;
+
+	var outerWidth = LengthAttribute.getFrom(component, sinf.horiz);
+	assert(outerWidth && outerWidth.px.isSet());
+	var innerWidth = LengthAttribute.getFrom(centerComponent, sinf.horiz);
+	assert(innerWidth && innerWidth.px.isSet());
+
+	var length = (outerWidth.px.value - innerWidth.px.value) / 2;
+	return [{
+		component: component,
+		attributes: [
+			new BoxModel(null, {
+				l: length,
+				r: length,
+			}),
+		],
+	}];
+}
+
+
 /*
 function floatRule(component: c.Component): Rules.RuleResult[] {
 	if (!getDirection(component) === sinf.horiz ||
@@ -288,6 +384,8 @@ var rules: Rules.RuleWithName[] = [
 	{name: 'marginAutoRule', rule: marginAutoRule},
 	{name: 'singleLineHeight', rule: singleLineHeight},
 	{name: 'negativeMargin', rule: negativeMargin},
+	{name: 'verticalCenterKnownSizes', rule: verticalCenterKnownSizes},
+	{name: 'horizontalCenterKnownSizes', rule: horizontalCenterKnownSizes},
 	{name: 'tableCell', rule: tableCell},
 ];
 

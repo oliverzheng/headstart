@@ -19,50 +19,6 @@ import sutil = require('../../../spec/util');
 import reqs = require('../../requirements');
 import patterns = require('./patterns');
 
-function verticalCenterKnownSizes(component: c.Component): Rules.RuleResult[] {
-	if (patterns.containsSingleLineVerticallyCenteredTextWithKnownHeight(component))
-		return;
-
-	var middleComponent = patterns.findAlignedContent(
-		component,
-		sinf.vert,
-		sinf.center,
-		// Content
-		reqs.all([
-			reqs.knownH,
-			reqs.not(reqs.runtimeH),
-		]),
-		reqs.all([
-			reqs.knownH,
-			reqs.not(reqs.runtimeH),
-		])
-	);
-	if (!middleComponent)
-		return;
-
-	if (reqs.satisfies(middleComponent, reqs.all([
-			reqs.isContentText,
-			reqs.textLines(1),
-		])))
-		return;
-
-	var outerHeight = LengthAttribute.getFrom(component, sinf.vert);
-	assert(outerHeight && outerHeight.px.isSet());
-	var innerHeight = LengthAttribute.getFrom(middleComponent, sinf.vert);
-	assert(innerHeight && innerHeight.px.isSet());
-
-	var length = (outerHeight.px.value - innerHeight.px.value) / 2;
-	return [{
-		component: component,
-		attributes: [
-			new BoxModel(null, {
-				t: length,
-				b: length,
-			}),
-		],
-	}];
-}
-
 function marginSpacing(component: c.Component): Rules.RuleResult[] {
 	var parent = component.getParent();
 	if (!parent)
@@ -154,7 +110,6 @@ function isSingleLine(component: c.Component): boolean {
 
 var rules: Rules.RuleWithName[] = [
 	{name: 'marginSpacing', rule: marginSpacing},
-	{name: 'verticalCenterKnownSizes', rule: verticalCenterKnownSizes},
 ];
 
 export = rules;
