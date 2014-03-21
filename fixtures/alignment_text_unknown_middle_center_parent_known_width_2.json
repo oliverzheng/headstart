@@ -1,0 +1,469 @@
+{
+	"spec": {
+		"id": "0",
+		"w": {
+			"unit": 0,
+			"value": 600
+		},
+		"h": {
+			"unit": 0,
+			"value": 600
+		},
+		"direction": 2,
+		"children": [
+			{
+				"id": "11",
+				"w": {
+					"unit": 0,
+					"value": 100,
+					"runtime": false
+				},
+				"h": {
+					"unit": 0,
+					"value": 100,
+					"runtime": true
+				},
+				"direction": 2,
+				"children": [
+					{
+						"id": "12",
+						"w": {
+							"unit": 3,
+							"value": 40
+						},
+						"h": {
+							"unit": 3,
+							"value": 40
+						},
+						"direction": 2
+					},
+					{
+						"id": "2",
+						"w": {
+							"unit": 3,
+							"value": 40,
+							"runtime": false
+						},
+						"h": {
+							"unit": 4,
+							"value": 100,
+							"runtime": false
+						},
+						"direction": 1,
+						"children": [
+							{
+								"id": "3",
+								"w": {
+									"unit": 3,
+									"value": 40
+								},
+								"h": {
+									"unit": 3,
+									"value": 40
+								},
+								"direction": 2
+							},
+							{
+								"id": "1",
+								"w": {
+									"unit": 4,
+									"value": 40,
+									"runtime": false
+								},
+								"h": {
+									"unit": 4,
+									"value": 40,
+									"runtime": false
+								},
+								"direction": 2,
+								"createNode": false,
+								"staticContent": {
+									"text": {
+										"fontSize": 10,
+										"lineHeight": 10,
+										"value": "Herp\nDerp\nDerpido",
+										"fontFamily": "",
+										"inputMinLines": null,
+										"inputMaxLines": null,
+										"outputMaxLines": null
+									},
+									"image": null,
+									"fill": null
+								},
+								"children": []
+							},
+							{
+								"id": "4",
+								"w": {
+									"unit": 3,
+									"value": 40
+								},
+								"h": {
+									"unit": 3,
+									"value": 40
+								},
+								"direction": 2
+							}
+						],
+						"createNode": false
+					},
+					{
+						"id": "13",
+						"w": {
+							"unit": 3,
+							"value": 40
+						},
+						"h": {
+							"unit": 3,
+							"value": 40
+						},
+						"direction": 2
+					}
+				],
+				"createNode": true
+			}
+		]
+	},
+	"componentRepr": {
+		"title": "Component",
+		"id": "8755",
+		"children": [
+			{
+				"title": "BoxAttribute",
+				"children": [
+					{
+						"title": "Rules: "
+					}
+				],
+				"id": "0"
+			},
+			{
+				"title": "NodeAttribute",
+				"children": [
+					{
+						"title": "Rules: "
+					}
+				]
+			},
+			{
+				"title": "Width (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#8755"
+					}
+				]
+			},
+			{
+				"title": "Height (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#8755"
+					}
+				]
+			},
+			{
+				"title": "Stacked Children",
+				"children": [
+					{
+						"title": "Component",
+						"id": "8763",
+						"children": [
+							{
+								"title": "Stacked Children",
+								"children": [
+									{
+										"title": "Component",
+										"id": "8756",
+										"children": [
+											{
+												"title": "BoxAttribute",
+												"children": [
+													{
+														"title": "Rules: "
+													}
+												],
+												"id": "11"
+											},
+											{
+												"title": "NodeAttribute",
+												"children": [
+													{
+														"title": "Rules: userSpecified.createNode#8756"
+													}
+												]
+											},
+											{
+												"title": "Width (100px explicit)",
+												"children": [
+													{
+														"title": "Rules: sizing.userExplicit#8756"
+													}
+												]
+											},
+											{
+												"title": "Vertical Alignment (Rules: alignment.expand#8756)",
+												"children": [
+													{
+														"title": "Center Component",
+														"id": "8758",
+														"children": [
+															{
+																"title": "BoxAttribute",
+																"children": [
+																	{
+																		"title": "Rules: "
+																	}
+																],
+																"id": "2"
+															},
+															{
+																"title": "Width (100px implicit, 1% implicit)",
+																"children": [
+																	{
+																		"title": "Rules: sizing.expandedChildren#8756"
+																	}
+																]
+															},
+															{
+																"title": "Horizontal Alignment (Rules: alignment.expand#8758)",
+																"children": [
+																	{
+																		"title": "Center Component",
+																		"id": "8760",
+																		"children": [
+																			{
+																				"title": "BoxAttribute",
+																				"children": [
+																					{
+																						"title": "Rules: "
+																					}
+																				],
+																				"id": "1"
+																			},
+																			{
+																				"title": "TextContent (value: Herp\nDerp\nDerpido)",
+																				"children": [
+																					{
+																						"title": "Rules: userSpecified.staticText#8760"
+																					}
+																				]
+																			},
+																			{
+																				"title": "LineHeight (line height: 10)",
+																				"children": [
+																					{
+																						"title": "Rules: userSpecified.staticText#8760"
+																					}
+																				]
+																			},
+																			{
+																				"title": "Height (1% implicit)",
+																				"children": [
+																					{
+																						"title": "Rules: sizing.shrink#8758"
+																					}
+																				]
+																			},
+																			{
+																				"title": "CSSAttribute (isRendering = true)",
+																				"children": [
+																					{
+																						"title": "font-size: 10px"
+																					},
+																					{
+																						"title": "line-height: 10px"
+																					}
+																				]
+																			}
+																		]
+																	}
+																],
+																"ordered": true
+															},
+															{
+																"title": "CSSAttribute (isRendering = true)",
+																"children": [
+																	{
+																		"title": "text-align: center"
+																	}
+																]
+															}
+														]
+													}
+												],
+												"ordered": true
+											},
+											{
+												"title": "BlockFormat",
+												"children": [
+													{
+														"title": "Rules: rendering.sizeRuntimeInitial#8756"
+													}
+												]
+											},
+											{
+												"title": "CSSAttribute (isRendering = true)",
+												"children": [
+													{
+														"title": "display: table-cell"
+													},
+													{
+														"title": "vertical-align: middle"
+													},
+													{
+														"title": "height: 100px"
+													},
+													{
+														"title": "width: 100px"
+													}
+												]
+											},
+											{
+												"title": "CSSAttribute (isRendering = false)",
+												"children": [
+													{
+														"title": "display: table-cell"
+													},
+													{
+														"title": "vertical-align: middle"
+													},
+													{
+														"title": "height: 100px"
+													},
+													{
+														"title": "width: 100px"
+													}
+												]
+											},
+											{
+												"title": "TagName (div)",
+												"children": [
+													{
+														"title": "Rules: tag.blockDiv#8756"
+													}
+												]
+											}
+										]
+									}
+								],
+								"ordered": true
+							},
+							{
+								"title": "CSSAttribute (isRendering = true)",
+								"children": [
+									{
+										"title": "display: table"
+									}
+								]
+							},
+							{
+								"title": "Width (100px implicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.childrenSum#8763"
+									}
+								]
+							},
+							{
+								"title": "NodeAttribute",
+								"children": [
+									{
+										"title": "Rules: bubble.bubbleUpInheritedStylesRule#8763"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = false)",
+								"children": [
+									{
+										"title": "text-align: center"
+									},
+									{
+										"title": "font-size: 10px"
+									},
+									{
+										"title": "line-height: 10px"
+									},
+									{
+										"title": "display: table"
+									}
+								]
+							}
+						]
+					}
+				],
+				"ordered": true
+			}
+		]
+	},
+	"domRepr": {
+		"title": "DOM",
+		"children": [
+			{
+				"title": "Tag: div",
+				"ordered": false,
+				"children": [
+					{
+						"title": "Content: "
+					},
+					{
+						"title": "Styles",
+						"ordered": false,
+						"children": [
+							{
+								"title": "text-align: center"
+							},
+							{
+								"title": "font-size: 10px"
+							},
+							{
+								"title": "line-height: 10px"
+							},
+							{
+								"title": "display: table"
+							}
+						]
+					},
+					{
+						"title": "Children",
+						"ordered": true,
+						"children": [
+							{
+								"title": "Tag: div",
+								"ordered": false,
+								"children": [
+									{
+										"title": "Content: Herp\nDerp\nDerpido"
+									},
+									{
+										"title": "Styles",
+										"ordered": false,
+										"children": [
+											{
+												"title": "display: table-cell"
+											},
+											{
+												"title": "vertical-align: middle"
+											},
+											{
+												"title": "height: 100px"
+											},
+											{
+												"title": "width: 100px"
+											}
+										]
+									},
+									{
+										"title": "Children",
+										"ordered": true,
+										"children": []
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

@@ -550,7 +550,7 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 		if (!cssAttr)
 			return false;
 
-		for (var name in Object.keys(requirement.hasCSS)) {
+		for (var name in requirement.hasCSS) {
 			var value = requirement.hasCSS[name];
 			if (cssAttr.styles[name] !== value) {
 				return false;

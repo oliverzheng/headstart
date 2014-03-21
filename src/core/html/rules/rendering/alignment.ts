@@ -214,44 +214,29 @@ function negativeMargin(component: c.Component): Rules.RuleResult[] {
 }
 
 function tableCell(component: c.Component): Rules.RuleResult[] {
-	var satisfies = reqs.satisfies(component,
-		reqs.all([
-			// Parent can be of known or unknown height
-			reqs.vert,
-
-			// This component is going to be the table-cell guy
-			reqs.not(
-				reqs.hasCSS({
-					'display': 'table-cell',
-				})
-			),
-			reqs.anyChildrenOptional(
-				reqs.all([
-					reqs.hasContent,
-					reqs.m,
-					// Child is of unknown height
-					reqs.eitherOr(
-						reqs.not(reqs.knownH),
-						reqs.runtimeH
-					),
-				]),
-				reqs.not(reqs.hasContent)
-			),
-		])
+	var middleComponent = patterns.findAlignedContent(
+		component,
+		sinf.vert,
+		sinf.center,
+		// Content
+		reqs.eitherOr(
+			reqs.not(reqs.knownH),
+			reqs.runtimeH
+		)
 	);
-	if (!satisfies)
+	if (!middleComponent)
 		return;
 
-	var alignment = Alignment.getFrom(component, sinf.vert);
-	assert(alignment && alignment.center);
+	// If we already applied this rule, don't do it again.
+	if (reqs.satisfies(component, reqs.hasCSS({'display': 'table-cell'})))
+		return;
 
 	var results = component.getParent().getChildrenManager().wrapChild(component);
 
-	var outer = results[1].component;
-	var inner = component;
+	var wrapper = results[1].component;
 
 	results.push({
-		component: inner,
+		component: component,
 		attributes: [
 			new CSSAttribute({
 				'display': 'table-cell',
@@ -260,7 +245,7 @@ function tableCell(component: c.Component): Rules.RuleResult[] {
 		],
 	});
 	results.push({
-		component: outer,
+		component: wrapper,
 		attributes: [
 			new CSSAttribute({
 				'display': 'table',
