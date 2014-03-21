@@ -24,10 +24,29 @@ function getMiddleKnownParentUnknown(parent: c.Component): c.Component {
 		parent,
 		sinf.vert,
 		sinf.center,
-		reqs.knownH, 
+		reqs.all([
+			reqs.knownH,
+			reqs.not(reqs.runtimeH),
+		]),
 		reqs.eitherOr(
 			reqs.not(reqs.knownH),
 			reqs.runtimeH
+		)
+	);
+}
+
+function getCenterKnownParentUnknown(parent: c.Component): c.Component {
+	return patterns.findAlignedContent(
+		parent,
+		sinf.horiz,
+		sinf.center,
+		reqs.all([
+			reqs.knownW,
+			reqs.not(reqs.runtimeW),
+		]),
+		reqs.eitherOr(
+			reqs.not(reqs.knownW),
+			reqs.runtimeW
 		)
 	);
 }
@@ -191,7 +210,7 @@ function singleLineHeight(component: c.Component): Rules.RuleResult[] {
 	}];
 }
 
-function negativeMargin(component: c.Component): Rules.RuleResult[] {
+function verticalNegativeMargin(component: c.Component): Rules.RuleResult[] {
 	var middleComponent = getMiddleKnownParentUnknown(component);
 	if (!middleComponent)
 		return;
@@ -206,6 +225,39 @@ function negativeMargin(component: c.Component): Rules.RuleResult[] {
 				'position': 'absolute',
 				'top': '50%',
 				'margin-top': (-height.px.value / 2).toString() + 'px',
+			}),
+			new BlockFormat(),
+		],
+	}, {
+		component: component,
+		attributes: [
+			new CSSAttribute({
+				'position': 'relative',
+			}),
+		],
+	}];
+}
+
+function horizontalNegativeMargin(component: c.Component): Rules.RuleResult[] {
+	var center = getCenterKnownParentUnknown(component);
+	if (!center)
+		return;
+
+	// Only do this if we are using absolute to vertically center already.
+	// Margin-auto takes care of non-absolute cases.
+	if (getMiddleKnownParentUnknown(component) !== center)
+		return;
+
+	var width = LengthAttribute.getFrom(center, sinf.horiz);
+	assert(width && width.px.isSet());
+
+	return [{
+		component: center,
+		attributes: [
+			new CSSAttribute({
+				'position': 'absolute',
+				'left': '50%',
+				'margin-left': (-width.px.value / 2).toString() + 'px',
 			}),
 			new BlockFormat(),
 		],
@@ -383,7 +435,8 @@ var rules: Rules.RuleWithName[] = [
 	{name: 'horizontalRightText', rule: horizontalRightText},
 	{name: 'marginAutoRule', rule: marginAutoRule},
 	{name: 'singleLineHeight', rule: singleLineHeight},
-	{name: 'negativeMargin', rule: negativeMargin},
+	{name: 'verticalNegativeMargin', rule: verticalNegativeMargin},
+	{name: 'horizontalNegativeMargin', rule: horizontalNegativeMargin},
 	{name: 'verticalCenterKnownSizes', rule: verticalCenterKnownSizes},
 	{name: 'horizontalCenterKnownSizes', rule: horizontalCenterKnownSizes},
 	{name: 'tableCell', rule: tableCell},
