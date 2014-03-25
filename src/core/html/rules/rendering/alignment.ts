@@ -141,6 +141,28 @@ export function horizontalNegativeMargin(component: c.Component, matches: p.Patt
 	}];
 }
 
+export function horizontalRightZero(component: c.Component, matches: p.PatternMatches): Rules.RuleResult[] {
+	var center = matches.getMatch(component, p.getOnlyContentChild);
+
+	return [{
+		component: center,
+		attributes: [
+			new CSSAttribute({
+				'position': 'absolute',
+				'right': '0',
+			}),
+			new BlockFormat(),
+		],
+	}, {
+		component: component,
+		attributes: [
+			new CSSAttribute({
+				'position': 'relative',
+			}),
+		],
+	}];
+}
+
 export function tableCell(component: c.Component, matches: p.PatternMatches): Rules.RuleResult[] {
 	var content = matches.getMatch(component, p.getOnlyContentChild);
 
