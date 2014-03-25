@@ -128,7 +128,7 @@ export function verticalNegativeMargin(component: c.Component, matches: p.Patter
 export function horizontalNegativeMargin(component: c.Component, matches: p.PatternMatches): Rules.RuleResult[] {
 	var center = matches.getMatch(component, p.getOnlyContentChild);
 
-	var width = LengthAttribute.getFrom(center, sinf.vert);
+	var width = LengthAttribute.getFrom(center, sinf.horiz);
 	assert(width && width.px.isSet());
 
 	return [{
