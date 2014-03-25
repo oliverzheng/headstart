@@ -118,7 +118,7 @@
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "10",
+		"id": "6245",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -142,7 +142,7 @@
 				"children": [
 					{
 						"title": "Component",
-						"id": "11",
+						"id": "6246",
 						"children": [
 							{
 								"title": "BoxAttribute",
@@ -157,7 +157,7 @@
 								"title": "NodeAttribute",
 								"children": [
 									{
-										"title": "Rules: userSpecified.createNode#11"
+										"title": "Rules: userSpecified.createNode#6246"
 									}
 								]
 							},
@@ -165,16 +165,16 @@
 								"title": "Width (100px explicit)",
 								"children": [
 									{
-										"title": "Rules: sizing.userExplicit#11"
+										"title": "Rules: sizing.userExplicit#6246"
 									}
 								]
 							},
 							{
-								"title": "Vertical Alignment (Rules: alignment.expand#11)",
+								"title": "Vertical Alignment (Rules: alignment.expand#6246)",
 								"children": [
 									{
 										"title": "Center Component",
-										"id": "13",
+										"id": "6248",
 										"children": [
 											{
 												"title": "BoxAttribute",
@@ -189,7 +189,7 @@
 												"title": "Width (100px implicit, 1% implicit)",
 												"children": [
 													{
-														"title": "Rules: sizing.expandedChildren#11"
+														"title": "Rules: sizing.expandedChildren#6246"
 													}
 												]
 											},
@@ -197,16 +197,16 @@
 												"title": "Height (40px implicit)",
 												"children": [
 													{
-														"title": "Rules: sizing.shrink#13"
+														"title": "Rules: sizing.shrink#6248"
 													}
 												]
 											},
 											{
-												"title": "Horizontal Alignment (Rules: alignment.expand#13)",
+												"title": "Horizontal Alignment (Rules: alignment.expand#6248)",
 												"children": [
 													{
 														"title": "Center Component",
-														"id": "15",
+														"id": "6250",
 														"children": [
 															{
 																"title": "BoxAttribute",
@@ -221,7 +221,7 @@
 																"title": "NodeAttribute",
 																"children": [
 																	{
-																		"title": "Rules: userSpecified.createNode#15"
+																		"title": "Rules: userSpecified.createNode#6250"
 																	}
 																]
 															},
@@ -229,7 +229,7 @@
 																"title": "Width (40px explicit)",
 																"children": [
 																	{
-																		"title": "Rules: sizing.userExplicit#15"
+																		"title": "Rules: sizing.userExplicit#6250"
 																	}
 																]
 															},
@@ -245,7 +245,7 @@
 																"title": "BlockFormat",
 																"children": [
 																	{
-																		"title": "Rules: rendering.negativeMargin#11"
+																		"title": "Rules: rendering.horizontalAlignment#6246"
 																	}
 																]
 															},
@@ -253,7 +253,7 @@
 																"title": "Background",
 																"children": [
 																	{
-																		"title": "Rules: rendering.backgroundFillRule#15"
+																		"title": "Rules: rendering.backgroundFillRule#6250"
 																	}
 																]
 															},
@@ -262,6 +262,12 @@
 																"children": [
 																	{
 																		"title": "position: absolute"
+																	},
+																	{
+																		"title": "left: 50%"
+																	},
+																	{
+																		"title": "margin-left: -20px"
 																	},
 																	{
 																		"title": "top: 50%"
@@ -290,6 +296,12 @@
 																		"title": "position: absolute"
 																	},
 																	{
+																		"title": "left: 50%"
+																	},
+																	{
+																		"title": "margin-left: -20px"
+																	},
+																	{
 																		"title": "top: 50%"
 																	},
 																	{
@@ -313,7 +325,7 @@
 																"title": "TagName (div)",
 																"children": [
 																	{
-																		"title": "Rules: tag.blockDiv#15"
+																		"title": "Rules: tag.blockDiv#6250"
 																	}
 																]
 															}
@@ -328,21 +340,10 @@
 								"ordered": true
 							},
 							{
-								"title": "BoxModel",
-								"children": [
-									{
-										"title": "paddingRight: 30"
-									},
-									{
-										"title": "paddingLeft: 30"
-									}
-								]
-							},
-							{
 								"title": "BlockFormat",
 								"children": [
 									{
-										"title": "Rules: rendering.sizeRuntimeInitial#11"
+										"title": "Rules: rendering.sizeRuntimeInitial#6246"
 									}
 								]
 							},
@@ -350,19 +351,13 @@
 								"title": "CSSAttribute (isRendering = true)",
 								"children": [
 									{
-										"title": "position: relative"
-									},
-									{
 										"title": "height: 100px"
 									},
 									{
-										"title": "width: 40px"
+										"title": "position: relative"
 									},
 									{
-										"title": "padding-left: 30px"
-									},
-									{
-										"title": "padding-right: 30px"
+										"title": "width: 100px"
 									},
 									{
 										"title": "display: block"
@@ -373,19 +368,13 @@
 								"title": "CSSAttribute (isRendering = false)",
 								"children": [
 									{
-										"title": "position: relative"
-									},
-									{
 										"title": "height: 100px"
 									},
 									{
-										"title": "width: 40px"
+										"title": "position: relative"
 									},
 									{
-										"title": "padding-left: 30px"
-									},
-									{
-										"title": "padding-right: 30px"
+										"title": "width: 100px"
 									},
 									{
 										"title": "display: block"
@@ -396,7 +385,7 @@
 								"title": "TagName (div)",
 								"children": [
 									{
-										"title": "Rules: tag.blockDiv#11"
+										"title": "Rules: tag.blockDiv#6246"
 									}
 								]
 							}
@@ -409,7 +398,7 @@
 				"title": "Width (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#10"
+						"title": "Rules: sizing.userExplicit#6245"
 					}
 				]
 			},
@@ -417,7 +406,7 @@
 				"title": "Height (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#10"
+						"title": "Rules: sizing.userExplicit#6245"
 					}
 				]
 			}
@@ -438,19 +427,13 @@
 						"ordered": false,
 						"children": [
 							{
-								"title": "position: relative"
-							},
-							{
 								"title": "height: 100px"
 							},
 							{
-								"title": "width: 40px"
+								"title": "position: relative"
 							},
 							{
-								"title": "padding-left: 30px"
-							},
-							{
-								"title": "padding-right: 30px"
+								"title": "width: 100px"
 							}
 						]
 					},
@@ -471,6 +454,12 @@
 										"children": [
 											{
 												"title": "position: absolute"
+											},
+											{
+												"title": "left: 50%"
+											},
+											{
+												"title": "margin-left: -20px"
 											},
 											{
 												"title": "top: 50%"

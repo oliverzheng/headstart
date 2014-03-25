@@ -49,21 +49,30 @@ export class RuleRunner {
 	start(component: c.Component) {
 		var overallUpdated = false;
 		var updated: boolean;
+		var created = false;
 		do {
 			updated = false;
 			component.iterateChildrenBreadthFirst((child) => {
-				updated = this.runAllRulesOn(child);
+				var result = this.runAllRulesOn(child);
+				updated = updated || result.updated;
+				created = created || result.created;
+				if (created) {
+					overallUpdated = true;
+					return c.STOP_ITERATION;
+				}
+
 				if (updated) {
 					overallUpdated = true;
 					return c.STOP_RECURSION;
 				}
 			});
-		} while (updated);
+		} while (updated && !created);
 		return overallUpdated;
 	}
 
-	runSingleRuleOn(component: c.Component, rule: RuleWithName): boolean {
+	runSingleRuleOn(component: c.Component, rule: RuleWithName): { updated: boolean; created: boolean; } {
 		var updated = false;
+		var created = false;
 		var attrsForComponents = rule.rule(component, this.context);
 		if (attrsForComponents) {
 			attrsForComponents.forEach((attrsForComponent) => {
@@ -85,20 +94,28 @@ export class RuleRunner {
 
 				var replaceAttrs = attrsForComponent.replaceAttributes;
 				if (replaceAttrs) {
-					updated = changedComponent.replaceAttributes(replaceAttrs) || updated;
+					var result = changedComponent.replaceAttributes(replaceAttrs);
+					updated = updated || result.updated;
+					created = created || result.created;
 					replaceAttrs.forEach((attr) => attr.addRule(this.rulesPrefix + '.' + rule.name, component.id));
 				}
 			});
 		}
-		return updated;
+		return {updated: updated, created: created};
 	}
 
-	runAllRulesOn(component: c.Component): boolean {
+	runAllRulesOn(component: c.Component): { updated: boolean; created: boolean; } {
 		var updated = false;
+		var created = false;
 		this.rules.forEach((rule) => {
-			updated = this.runSingleRuleOn(component, rule) || updated;
+			if (created)
+				return;
+
+			var result = this.runSingleRuleOn(component, rule);
+			updated = updated || result.updated;
+			created = created || result.created;
 		});
-		return updated;
+		return {updated: updated, created: created};
 	}
 }
 

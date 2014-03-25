@@ -56,6 +56,13 @@ class CSSAttribute extends Attributes.BaseAttribute {
 			return <CSSAttribute>component.getAttr(Attributes.Type.CSS);
 	}
 
+	static getStyle(component: c.Component, styleName: string, isRendering = true): string {
+		var cssAttr = CSSAttribute.getFrom(component, isRendering);
+		if (!cssAttr)
+			return null;
+		return cssAttr.styles[styleName];
+	}
+
 	getType() {
 		if (this.isRendering)
 			return Attributes.Type.RENDERING_VALUES;

@@ -6,6 +6,7 @@ import c = require('../core/html/Component');
 import HTML = require('../core/html/HTML');
 import RuleRunner = require('../core/html/RuleRunner');
 import Context = require('../core/html/Context');
+import p = require('../core/html/patterns');
 
 export var RootComponent = React.createClass({
 	getInitialState() {
@@ -27,7 +28,14 @@ export var RootComponent = React.createClass({
 	},
 
 	debug() {
-		debugger;
+		var root = this.props.component.getRoot();
+		var componentID = parseInt(this.refs.debugComponentID.getDOMNode().value, 10);
+		assert(!isNaN(componentID));
+		root.iterateChildrenBreadthFirst((descendent: c.Component) => {
+			var matches = new p.PatternMatches();
+			if (descendent.id === componentID)
+				debugger;
+		});
 	},
 
 	render() {
@@ -36,6 +44,10 @@ export var RootComponent = React.createClass({
 				React.DOM.button({
 					onClick: this.runRules,
 				}, 'Run rules'),
+				React.DOM.input({
+					ref: 'debugComponentID',
+					placeholder: 'Component ID',
+				}),
 				React.DOM.button({
 					onClick: this.debug,
 				}, 'Debugger'),

@@ -75,7 +75,7 @@ export class Component {
 				if (!mergeAttr) {
 					throw new Error('Cannot merge to an existing attr!');
 				}
-				assert(this.replaceAttributes([mergeAttr]));
+				assert(this.replaceAttributes([mergeAttr]).updated);
 				added = true;
 			}
 		});
@@ -84,7 +84,7 @@ export class Component {
 	}
 
 	// Returns true if any rule was added because it actually replaced others
-	replaceAttributes(attrs: Attributes.BaseAttribute[]): boolean {
+	replaceAttributes(attrs: Attributes.BaseAttribute[]): { updated: boolean; created: boolean; } {
 		if (this.getAttr(Attributes.Type.SEALED)) {
 			throw new Error('Cannot modify a sealed component');
 		}
@@ -101,22 +101,29 @@ export class Component {
 				attr.setComponent(this);
 			}
 		});
-		this.recalcParent(attrs);
-		return replaced;
+		return {
+			updated: replaced,
+			created: this.recalcParent(attrs),
+		};
 	}
 
-	private recalcParent(attrs: Attributes.BaseAttribute[]) {
+	private recalcParent(attrs: Attributes.BaseAttribute[]): boolean {
+		var added = false;
 		if (attrs.length !== 1 || attrs[0].getType() !== Attributes.Type.PARENT) {
 			attrs.forEach((attr) => {
 				var attrType = attr.getType();
 				assert(attrType !== Attributes.Type.PARENT);
 				if (attr.managesChildren()) {
 					attr.getComponentChildren().forEach((child) => {
-						child.addAttributes([new ParentAttribute(this)]);
+						if (child.getParent() !== this) {
+							added = true;
+							child.addAttributes([new ParentAttribute(this)]);
+						}
 					});
 				}
 			});
 		}
+		return added;
 	}
 
 	getChildrenManager(): Attributes.BaseAttribute {

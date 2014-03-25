@@ -68,11 +68,19 @@ var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rules.Rule
 		return;
 	}
 
+	var children1PctWide: c.Component[] = [];
+	var children1PctTall: c.Component[] = [];
+
 	var direction = getDirection(component);
 	var children = StackedChildren.getFrom(component);
 	if (direction && children && !children.isEmpty()) {
 		// Sum up children lengths
 		var childrenComponents = children.get();
+		if (childrenComponents.length === 1) {
+			children1PctWide = childrenComponents;
+			children1PctTall = childrenComponents;
+		}
+
 		var childrenWidths = childrenComponents.map(
 			(child) => LengthAttribute.getFrom(child, sinf.horiz)
 		).filter((attr) => !!attr);
@@ -92,6 +100,12 @@ var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rules.Rule
 				if (canCompare) {
 					childrenWidths.sort(LengthAttribute.compare);
 					width = childrenWidths[childrenWidths.length - 1].makeImplicit();
+
+					children1PctWide = childrenWidths.filter(
+						(w) => w.looksEqual(width)
+					).map(
+						(w) => w.component
+					);
 				}
 			}
 		}
@@ -115,12 +129,31 @@ var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rules.Rule
 				if (canCompare) {
 					childrenHeights.sort(LengthAttribute.compare);
 					height = childrenHeights[childrenHeights.length - 1].makeImplicit();
+
+					children1PctTall = childrenHeights.filter(
+						(h) => h.looksEqual(height)
+					).map(
+						(h) => h.component
+					);
 				}
 			}
 		}
 	}
 
-	return makeResults(component, width, height);
+	var results: Rules.RuleResult[] = makeResults(component, width, height) || [];
+	children1PctWide.forEach((child) => {
+		results.push({
+			component: child,
+			attributes: [LengthAttribute.get100Pct(sinf.horiz)],
+		});
+	});
+	children1PctTall.forEach((child) => {
+		results.push({
+			component: child,
+			attributes: [LengthAttribute.get100Pct(sinf.vert)],
+		});
+	});
+	return results;
 }
 
 // Set the px length of children that have % lengths and if the parent has
@@ -353,8 +386,8 @@ function sizeShrink(component: c.Component): Rules.RuleResult[] {
 		if (sizedChildren.length === 0) {
 			var shrinkChildren = children.filter((child) => {
 				var box = child.boxAttr().getBox();
-				var unit = util.getLength<sinf.Length>(box, direction).unit;
-				return unit === sinf.shrinkUnit;
+				var length = util.getLength<sinf.Length>(box, direction);
+				return length.unit === sinf.shrinkUnit || length.runtime;
 			});
 			if (shrinkChildren.length === 1 && (pctAndExpandChildren.length + 1) === children.length) {
 				results.push({
