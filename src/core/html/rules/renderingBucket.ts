@@ -35,18 +35,26 @@ var isVerticalMiddleOrBottom = p.any([
 	p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.far),
 ]);
 
-var needsAbsolutePositioning = p.all(<p.Pattern<any>[]>[
-	isVerticalMiddleOrBottom,
-	// Parent has unknown height
-	p.not(p.getKnownHeight),
-	// Content has known height
-	p.is(p.getOnlyContentChild, p.getKnownHeight),
+var needsAbsolutePositioning = p.any([
+	p.all(<p.Pattern<any>[]>[
+		// Parent has unknown height
+		p.not(p.getKnownHeight),
+		// Content has known height
+		p.is(p.getOnlyContentChild, p.getKnownHeight),
+		isVerticalMiddleOrBottom,
+	]),
+	p.all([
+		p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.far),
+		// Content has unknown height
+		p.not(p.is(p.getOnlyContentChild, p.getKnownHeight)),
+	]),
 ]);
 
 var needsTableCell = p.any([
 	p.all([
+		// Content is vertically middle aligned.
+		p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.center),
 		// Content has unknown height
-		isVerticalMiddleOrBottom,
 		p.not(p.is(p.getOnlyContentChild, p.getKnownHeight)),
 	]),
 	p.all([

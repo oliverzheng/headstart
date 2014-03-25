@@ -12,11 +12,11 @@
 		"direction": 2,
 		"children": [
 			{
-				"id": "2",
+				"id": "1",
 				"w": {
 					"unit": 0,
-					"value": 40,
-					"runtime": true
+					"value": 100,
+					"runtime": false
 				},
 				"h": {
 					"unit": 0,
@@ -24,9 +24,10 @@
 					"runtime": true
 				},
 				"direction": 2,
+				"createNode": true,
 				"children": [
 					{
-						"id": "3",
+						"id": "6",
 						"w": {
 							"unit": 3,
 							"value": 40
@@ -38,42 +39,35 @@
 						"direction": 2
 					},
 					{
-						"id": "1",
+						"id": "2",
 						"w": {
-							"unit": 4,
+							"unit": 0,
 							"value": 40,
 							"runtime": false
 						},
 						"h": {
-							"unit": 4,
+							"unit": 0,
 							"value": 40,
-							"runtime": false
+							"runtime": true
 						},
 						"direction": 2,
-						"createNode": false,
+						"createNode": true,
 						"staticContent": {
-							"text": {
-								"fontSize": 10,
-								"lineHeight": 10,
-								"value": "Herp\nDerp\nDerpido",
-								"fontFamily": "",
-								"inputMinLines": null,
-								"inputMaxLines": null,
-								"outputMaxLines": null
-							},
+							"text": null,
 							"image": null,
-							"fill": null
+							"fill": {
+								"color": "#1FFF8F"
+							}
 						},
 						"children": []
 					}
-				],
-				"createNode": true
+				]
 			}
 		]
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "16710",
+		"id": "18266",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -97,7 +91,7 @@
 				"children": [
 					{
 						"title": "Component",
-						"id": "16711",
+						"id": "18267",
 						"children": [
 							{
 								"title": "BoxAttribute",
@@ -106,22 +100,30 @@
 										"title": "Rules: "
 									}
 								],
-								"id": "2"
+								"id": "1"
 							},
 							{
 								"title": "NodeAttribute",
 								"children": [
 									{
-										"title": "Rules: userSpecified.createNode#16711"
+										"title": "Rules: userSpecified.createNode#18267"
 									}
 								]
 							},
 							{
-								"title": "Vertical Alignment (Rules: alignment.expand#16711)",
+								"title": "Width (100px explicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.userExplicit#18267"
+									}
+								]
+							},
+							{
+								"title": "Vertical Alignment (Rules: alignment.expand#18267)",
 								"children": [
 									{
 										"title": "Bottom Component",
-										"id": "16713",
+										"id": "18269",
 										"children": [
 											{
 												"title": "BoxAttribute",
@@ -130,21 +132,21 @@
 														"title": "Rules: "
 													}
 												],
-												"id": "1"
+												"id": "2"
 											},
 											{
-												"title": "TextContent (value: Herp\nDerp\nDerpido)",
+												"title": "NodeAttribute",
 												"children": [
 													{
-														"title": "Rules: userSpecified.staticText#16713"
+														"title": "Rules: userSpecified.createNode#18269"
 													}
 												]
 											},
 											{
-												"title": "LineHeight (line height: 10)",
+												"title": "Width (40px explicit)",
 												"children": [
 													{
-														"title": "Rules: userSpecified.staticText#16713"
+														"title": "Rules: sizing.userExplicit#18269"
 													}
 												]
 											},
@@ -152,7 +154,15 @@
 												"title": "BlockFormat",
 												"children": [
 													{
-														"title": "Rules: rendering.verticalAlignment#16711"
+														"title": "Rules: rendering.verticalAlignment#18267"
+													}
+												]
+											},
+											{
+												"title": "Background",
+												"children": [
+													{
+														"title": "Rules: rendering.backgroundFillRule#18269"
 													}
 												]
 											},
@@ -166,13 +176,16 @@
 														"title": "bottom: 0"
 													},
 													{
-														"title": "font-size: 10px"
+														"title": "height: 40px"
 													},
 													{
-														"title": "line-height: 10px"
+														"title": "width: 40px"
 													},
 													{
 														"title": "display: block"
+													},
+													{
+														"title": "background: #1FFF8F"
 													}
 												]
 											},
@@ -186,15 +199,16 @@
 														"title": "bottom: 0"
 													},
 													{
-														"title": "display: block"
-													}
-												]
-											},
-											{
-												"title": "NodeAttribute",
-												"children": [
+														"title": "height: 40px"
+													},
 													{
-														"title": "Rules: css.copyRenderingValuesToCSS#16713"
+														"title": "width: 40px"
+													},
+													{
+														"title": "display: block"
+													},
+													{
+														"title": "background: #1FFF8F"
 													}
 												]
 											},
@@ -202,7 +216,7 @@
 												"title": "TagName (div)",
 												"children": [
 													{
-														"title": "Rules: tag.blockDiv#16713"
+														"title": "Rules: tag.blockDiv#18269"
 													}
 												]
 											}
@@ -215,7 +229,7 @@
 								"title": "BlockFormat",
 								"children": [
 									{
-										"title": "Rules: rendering.sizeRuntimeInitial#16711"
+										"title": "Rules: rendering.sizeRuntimeInitial#18267"
 									}
 								]
 							},
@@ -223,13 +237,13 @@
 								"title": "CSSAttribute (isRendering = true)",
 								"children": [
 									{
-										"title": "width: 40px"
-									},
-									{
 										"title": "height: 100px"
 									},
 									{
 										"title": "position: relative"
+									},
+									{
+										"title": "width: 100px"
 									},
 									{
 										"title": "display: block"
@@ -240,19 +254,13 @@
 								"title": "CSSAttribute (isRendering = false)",
 								"children": [
 									{
-										"title": "font-size: 10px"
-									},
-									{
-										"title": "line-height: 10px"
-									},
-									{
-										"title": "width: 40px"
-									},
-									{
 										"title": "height: 100px"
 									},
 									{
 										"title": "position: relative"
+									},
+									{
+										"title": "width: 100px"
 									},
 									{
 										"title": "display: block"
@@ -263,7 +271,7 @@
 								"title": "TagName (div)",
 								"children": [
 									{
-										"title": "Rules: tag.blockDiv#16711"
+										"title": "Rules: tag.blockDiv#18267"
 									}
 								]
 							}
@@ -276,7 +284,7 @@
 				"title": "Width (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#16710"
+						"title": "Rules: sizing.userExplicit#18266"
 					}
 				]
 			},
@@ -284,7 +292,7 @@
 				"title": "Height (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#16710"
+						"title": "Rules: sizing.userExplicit#18266"
 					}
 				]
 			}
@@ -305,19 +313,13 @@
 						"ordered": false,
 						"children": [
 							{
-								"title": "font-size: 10px"
-							},
-							{
-								"title": "line-height: 10px"
-							},
-							{
-								"title": "width: 40px"
-							},
-							{
 								"title": "height: 100px"
 							},
 							{
 								"title": "position: relative"
+							},
+							{
+								"title": "width: 100px"
 							}
 						]
 					},
@@ -330,7 +332,7 @@
 								"ordered": false,
 								"children": [
 									{
-										"title": "Content: Herp\nDerp\nDerpido"
+										"title": "Content: "
 									},
 									{
 										"title": "Styles",
@@ -341,6 +343,15 @@
 											},
 											{
 												"title": "bottom: 0"
+											},
+											{
+												"title": "height: 40px"
+											},
+											{
+												"title": "width: 40px"
+											},
+											{
+												"title": "background: #1FFF8F"
 											}
 										]
 									},
