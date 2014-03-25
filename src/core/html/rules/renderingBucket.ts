@@ -43,10 +43,24 @@ var needsAbsolutePositioning = p.all(<p.Pattern<any>[]>[
 	p.is(p.getOnlyContentChild, p.getKnownHeight),
 ]);
 
-var needsTableCell = p.all([
-	// Content has unknown height
-	isVerticalMiddleOrBottom,
-	p.not(p.is(p.getOnlyContentChild, p.getKnownHeight)),
+var needsTableCell = p.any([
+	p.all([
+		// Content has unknown height
+		isVerticalMiddleOrBottom,
+		p.not(p.is(p.getOnlyContentChild, p.getKnownHeight)),
+	]),
+	p.all([
+		// Normally, we can use absolute negative margins, but not if
+		// the content has unknown width...
+		// Parent has unknown height
+		p.not(p.getKnownHeight),
+		// Content needs to be horizontally centered
+		p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.center),
+		// and has unknown width
+		p.not(p.is(p.getOnlyContentChild, p.getKnownWidth)),
+		// and is not text. We can always text-align center text.
+		p.not(p.is(p.getOnlyContentChild, p.isText)),
+	]),
 ]);
 
 
@@ -77,15 +91,23 @@ var horizontalAlignment: h.RuleHierarchy[] = [{
 		}],
 
 		otherwise: [{
-			// Absolute positioning
+			// Table cell positioning
 			patterns: [
-				needsAbsolutePositioning,
+				needsTableCell,
 			],
-			rule: alignment.horizontalNegativeMargin,
+			rule: alignment.marginAuto,
 
 			otherwise: [{
-				// Normal known widths
-				rule: alignment.marginAuto,
+				// Absolute positioning
+				patterns: [
+					needsAbsolutePositioning,
+				],
+				rule: alignment.horizontalNegativeMargin,
+
+				otherwise: [{
+					// Normal known widths
+					rule: alignment.marginAuto,
+				}],
 			}],
 		}],
 	}],
