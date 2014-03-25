@@ -236,20 +236,30 @@ export function tableCell(component: c.Component, matches: p.PatternMatches): Ru
 }
 
 export function verticalCenterKnownSizes(component: c.Component, matches: p.PatternMatches): Rules.RuleResult[] {
-	var middle = matches.getMatch(component, p.getOnlyContentChild);
+	var content = matches.getMatch(component, p.getOnlyContentChild);
 
 	var outerHeight = LengthAttribute.getFrom(component, sinf.vert);
 	assert(outerHeight && outerHeight.px.isSet());
-	var innerHeight = LengthAttribute.getFrom(middle, sinf.vert);
+	var innerHeight = LengthAttribute.getFrom(content, sinf.vert);
 	assert(innerHeight && innerHeight.px.isSet());
 
-	var length = (outerHeight.px.value - innerHeight.px.value) / 2;
+	var isBottom = matches.getMatch(component, p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.far));
+	var topLength: number;
+	var bottomLength: number;
+	if (!isBottom) {
+		topLength = (outerHeight.px.value - innerHeight.px.value) / 2;
+		bottomLength = topLength;
+	} else {
+		topLength = (outerHeight.px.value - innerHeight.px.value);
+		bottomLength = 0;
+	}
+
 	return [{
 		component: component,
 		attributes: [
 			new BoxModel(null, {
-				t: length,
-				b: length,
+				t: topLength,
+				b: bottomLength,
 			}),
 		],
 	}];
