@@ -113,7 +113,18 @@ var horizontalAlignment: h.RuleHierarchy[] = [{
 				patterns: [
 					needsAbsolutePositioning,
 				],
-				rule: alignment.horizontalNegativeMargin,
+				ifMatch: [{
+					// Center
+					patterns: [
+						p.isAligned(p.getOnlyContentChild, sinf.horiz, sinf.center),
+					],
+					rule: alignment.horizontalNegativeMargin,
+
+					// Right
+					otherwise: [{
+						rule: alignment.horizontalRightZero,
+					}],
+				}],
 
 				otherwise: [{
 					// Normal known widths
