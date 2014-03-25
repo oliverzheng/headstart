@@ -60,8 +60,12 @@ var needsTableCell = p.any([
 	p.all([
 		// Normally, we can use absolute negative margins, but not if
 		// the content has unknown width...
-		// Parent has unknown height
-		p.not(p.getKnownHeight),
+		p.any([
+			// Either parent has unknown height
+			p.not(p.getKnownHeight),
+			// or content has unknown height (so parent cannot use padding-top)
+			p.not(p.is(p.getOnlyContentChild, p.getKnownHeight)),
+		]),
 		// Content needs to be horizontally centered
 		p.isAligned(p.getOnlyContentChild, sinf.horiz, sinf.center),
 		// and has unknown width
