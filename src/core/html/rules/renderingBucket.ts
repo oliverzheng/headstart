@@ -154,7 +154,18 @@ var verticalAlignment: h.RuleHierarchy[] = [{
 			patterns: [
 				needsAbsolutePositioning,
 			],
-			rule: alignment.verticalNegativeMargin,
+			ifMatch: [{
+				// Middle
+				patterns: [
+					p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.center),
+				],
+				rule: alignment.verticalNegativeMargin,
+
+				otherwise: [{
+					// Bottom
+					rule: alignment.verticalBottomZero,
+				}],
+			}],
 
 			otherwise: [{
 				// Text single line
@@ -162,7 +173,6 @@ var verticalAlignment: h.RuleHierarchy[] = [{
 					p.is(p.getOnlyContentChild, p.isText),
 					p.is(p.getOnlyContentChild, p.isShrinkWidth),
 					p.is(p.getOnlyContentChild, p.isShrinkHeight),
-					p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.center),
 					p.is(p.getOnlyContentChild, p.isText1Line),
 				],
 				rule: alignment.lineHeightToHeight,

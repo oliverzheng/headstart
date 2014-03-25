@@ -81,10 +81,20 @@ export function lineHeightToHeight(component: c.Component, matches: p.PatternMat
 	var height = LengthAttribute.getFrom(component, sinf.vert);
 	assert(height && height.px.isSet());
 
+	var lineHeight = height.px.value;
+
+	var isBottom = matches.getMatch(component, p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.far));
+	if (isBottom) {
+		var contentHeight = LengthAttribute.getFrom(content, sinf.vert);
+		assert(contentHeight && contentHeight.px.isSet());
+
+		lineHeight = lineHeight * 2 - contentHeight.px.value;
+	}
+
 	return [{
 		component: content,
 		replaceAttributes: [
-			new LineHeight(height.px.value),
+			new LineHeight(lineHeight),
 		],
 	}];
 }
@@ -142,14 +152,36 @@ export function horizontalNegativeMargin(component: c.Component, matches: p.Patt
 }
 
 export function horizontalRightZero(component: c.Component, matches: p.PatternMatches): Rules.RuleResult[] {
-	var center = matches.getMatch(component, p.getOnlyContentChild);
+	var content = matches.getMatch(component, p.getOnlyContentChild);
 
 	return [{
-		component: center,
+		component: content,
 		attributes: [
 			new CSSAttribute({
 				'position': 'absolute',
 				'right': '0',
+			}),
+			new BlockFormat(),
+		],
+	}, {
+		component: component,
+		attributes: [
+			new CSSAttribute({
+				'position': 'relative',
+			}),
+		],
+	}];
+}
+
+export function verticalBottomZero(component: c.Component, matches: p.PatternMatches): Rules.RuleResult[] {
+	var content = matches.getMatch(component, p.getOnlyContentChild);
+
+	return [{
+		component: content,
+		attributes: [
+			new CSSAttribute({
+				'position': 'absolute',
+				'bottom': '0',
 			}),
 			new BlockFormat(),
 		],
