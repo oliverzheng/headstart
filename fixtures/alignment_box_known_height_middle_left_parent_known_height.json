@@ -33,7 +33,7 @@
 							"value": 40
 						},
 						"h": {
-							"unit": 0,
+							"unit": 3,
 							"value": 40
 						},
 						"direction": 2
@@ -43,7 +43,7 @@
 						"w": {
 							"unit": 0,
 							"value": 40,
-							"runtime": false
+							"runtime": true
 						},
 						"h": {
 							"unit": 0,
@@ -56,7 +56,7 @@
 							"text": null,
 							"image": null,
 							"fill": {
-								"color": "#59FF38"
+								"color": "#1FFF8F"
 							}
 						},
 						"children": []
@@ -68,7 +68,7 @@
 							"value": 40
 						},
 						"h": {
-							"unit": 0,
+							"unit": 3,
 							"value": 40
 						},
 						"direction": 2
@@ -79,7 +79,7 @@
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "5236",
+		"id": "7201",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -102,7 +102,7 @@
 				"title": "Width (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#5236"
+						"title": "Rules: sizing.userExplicit#7201"
 					}
 				]
 			},
@@ -110,16 +110,16 @@
 				"title": "Height (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#5236"
+						"title": "Rules: sizing.userExplicit#7201"
 					}
 				]
 			},
 			{
-				"title": "Vertical Alignment (Rules: alignment.equalSizes#5236)",
+				"title": "Vertical Alignment (Rules: alignment.equalSizes#7201)",
 				"children": [
 					{
 						"title": "Top Component",
-						"id": "5237",
+						"id": "7202",
 						"children": [
 							{
 								"title": "BoxAttribute",
@@ -134,7 +134,7 @@
 								"title": "NodeAttribute",
 								"children": [
 									{
-										"title": "Rules: userSpecified.createNode#5237"
+										"title": "Rules: userSpecified.createNode#7202"
 									}
 								]
 							},
@@ -142,71 +142,16 @@
 								"title": "Height (100px explicit)",
 								"children": [
 									{
-										"title": "Rules: sizing.userExplicit#5237"
+										"title": "Rules: sizing.userExplicit#7202"
 									}
 								]
 							},
 							{
-								"title": "Vertical Alignment (Rules: alignment.equalSizes#5237)",
+								"title": "Vertical Alignment (Rules: alignment.expand#7202)",
 								"children": [
 									{
-										"title": "Top Component",
-										"id": "5238",
-										"children": [
-											{
-												"title": "BoxAttribute",
-												"children": [
-													{
-														"title": "Rules: "
-													}
-												],
-												"id": "6"
-											},
-											{
-												"title": "Height (40px explicit)",
-												"children": [
-													{
-														"title": "Rules: sizing.userExplicit#5238"
-													}
-												]
-											},
-											{
-												"title": "Spacing",
-												"children": [
-													{
-														"title": "Rules: reduce.markSpaces#5238"
-													}
-												]
-											},
-											{
-												"title": "CSSAttribute (isRendering = true)",
-												"children": [
-													{
-														"title": "height: 40px"
-													}
-												]
-											},
-											{
-												"title": "CSSAttribute (isRendering = false)",
-												"children": [
-													{
-														"title": "height: 40px"
-													}
-												]
-											},
-											{
-												"title": "TagName (div)",
-												"children": [
-													{
-														"title": "Rules: tag.explicitSizeDiv#5238"
-													}
-												]
-											}
-										]
-									},
-									{
 										"title": "Center Component",
-										"id": "5239",
+										"id": "7204",
 										"children": [
 											{
 												"title": "BoxAttribute",
@@ -221,15 +166,7 @@
 												"title": "NodeAttribute",
 												"children": [
 													{
-														"title": "Rules: userSpecified.createNode#5239"
-													}
-												]
-											},
-											{
-												"title": "Width (40px explicit)",
-												"children": [
-													{
-														"title": "Rules: sizing.userExplicit#5239"
+														"title": "Rules: userSpecified.createNode#7204"
 													}
 												]
 											},
@@ -237,7 +174,7 @@
 												"title": "Height (40px explicit)",
 												"children": [
 													{
-														"title": "Rules: sizing.userExplicit#5239"
+														"title": "Rules: sizing.userExplicit#7204"
 													}
 												]
 											},
@@ -245,7 +182,15 @@
 												"title": "Background",
 												"children": [
 													{
-														"title": "Rules: rendering.backgroundFillRule#5239"
+														"title": "Rules: rendering.backgroundFillRule#7204"
+													}
+												]
+											},
+											{
+												"title": "BlockFormat",
+												"children": [
+													{
+														"title": "Rules: rendering.sizeRuntimeInitial#7204"
 													}
 												]
 											},
@@ -259,7 +204,10 @@
 														"title": "height: 40px"
 													},
 													{
-														"title": "background: #59FF38"
+														"title": "background: #1FFF8F"
+													},
+													{
+														"title": "display: block"
 													}
 												]
 											},
@@ -273,7 +221,10 @@
 														"title": "height: 40px"
 													},
 													{
-														"title": "background: #59FF38"
+														"title": "background: #1FFF8F"
+													},
+													{
+														"title": "display: block"
 													}
 												]
 											},
@@ -281,62 +232,7 @@
 												"title": "TagName (div)",
 												"children": [
 													{
-														"title": "Rules: tag.explicitSizeDiv#5239"
-													}
-												]
-											}
-										]
-									},
-									{
-										"title": "Bottom Component",
-										"id": "5240",
-										"children": [
-											{
-												"title": "BoxAttribute",
-												"children": [
-													{
-														"title": "Rules: "
-													}
-												],
-												"id": "7"
-											},
-											{
-												"title": "Height (40px explicit)",
-												"children": [
-													{
-														"title": "Rules: sizing.userExplicit#5240"
-													}
-												]
-											},
-											{
-												"title": "Spacing",
-												"children": [
-													{
-														"title": "Rules: reduce.markSpaces#5240"
-													}
-												]
-											},
-											{
-												"title": "CSSAttribute (isRendering = true)",
-												"children": [
-													{
-														"title": "height: 40px"
-													}
-												]
-											},
-											{
-												"title": "CSSAttribute (isRendering = false)",
-												"children": [
-													{
-														"title": "height: 40px"
-													}
-												]
-											},
-											{
-												"title": "TagName (div)",
-												"children": [
-													{
-														"title": "Rules: tag.explicitSizeDiv#5240"
+														"title": "Rules: tag.blockDiv#7204"
 													}
 												]
 											}
@@ -349,7 +245,7 @@
 								"title": "BlockFormat",
 								"children": [
 									{
-										"title": "Rules: rendering.sizeRuntimeInitial#5237"
+										"title": "Rules: rendering.sizeRuntimeInitial#7202"
 									}
 								]
 							},
@@ -408,7 +304,7 @@
 								"title": "TagName (div)",
 								"children": [
 									{
-										"title": "Rules: tag.blockDiv#5237"
+										"title": "Rules: tag.blockDiv#7202"
 									}
 								]
 							}
@@ -469,7 +365,7 @@
 												"title": "height: 40px"
 											},
 											{
-												"title": "background: #59FF38"
+												"title": "background: #1FFF8F"
 											}
 										]
 									},

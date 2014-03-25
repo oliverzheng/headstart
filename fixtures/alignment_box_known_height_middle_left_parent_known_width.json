@@ -30,25 +30,20 @@
 						"id": "6",
 						"w": {
 							"unit": 3,
-							"value": 40,
-							"runtime": false
+							"value": 40
 						},
 						"h": {
 							"unit": 3,
-							"value": 40,
-							"runtime": false
+							"value": 40
 						},
-						"direction": 2,
-						"createNode": false,
-						"staticContent": null,
-						"children": []
+						"direction": 2
 					},
 					{
 						"id": "2",
 						"w": {
 							"unit": 0,
 							"value": 40,
-							"runtime": false
+							"runtime": true
 						},
 						"h": {
 							"unit": 0,
@@ -61,7 +56,7 @@
 							"text": null,
 							"image": null,
 							"fill": {
-								"color": "#FF8742"
+								"color": "#1FFF8F"
 							}
 						},
 						"children": []
@@ -84,7 +79,7 @@
 	},
 	"componentRepr": {
 		"title": "Component",
-		"id": "5345",
+		"id": "7210",
 		"children": [
 			{
 				"title": "BoxAttribute",
@@ -108,7 +103,7 @@
 				"children": [
 					{
 						"title": "Component",
-						"id": "5346",
+						"id": "7211",
 						"children": [
 							{
 								"title": "BoxAttribute",
@@ -123,7 +118,7 @@
 								"title": "NodeAttribute",
 								"children": [
 									{
-										"title": "Rules: userSpecified.createNode#5346"
+										"title": "Rules: userSpecified.createNode#7211"
 									}
 								]
 							},
@@ -131,16 +126,16 @@
 								"title": "Width (100px explicit)",
 								"children": [
 									{
-										"title": "Rules: sizing.userExplicit#5346"
+										"title": "Rules: sizing.userExplicit#7211"
 									}
 								]
 							},
 							{
-								"title": "Vertical Alignment (Rules: alignment.expand#5346)",
+								"title": "Vertical Alignment (Rules: alignment.expand#7211)",
 								"children": [
 									{
 										"title": "Center Component",
-										"id": "5348",
+										"id": "7213",
 										"children": [
 											{
 												"title": "BoxAttribute",
@@ -155,15 +150,7 @@
 												"title": "NodeAttribute",
 												"children": [
 													{
-														"title": "Rules: userSpecified.createNode#5348"
-													}
-												]
-											},
-											{
-												"title": "Width (40px explicit)",
-												"children": [
-													{
-														"title": "Rules: sizing.userExplicit#5348"
+														"title": "Rules: userSpecified.createNode#7213"
 													}
 												]
 											},
@@ -171,7 +158,7 @@
 												"title": "Height (40px explicit)",
 												"children": [
 													{
-														"title": "Rules: sizing.userExplicit#5348"
+														"title": "Rules: sizing.userExplicit#7213"
 													}
 												]
 											},
@@ -179,7 +166,7 @@
 												"title": "BlockFormat",
 												"children": [
 													{
-														"title": "Rules: rendering.negativeMargin#5346"
+														"title": "Rules: rendering.verticalAlignment#7211"
 													}
 												]
 											},
@@ -187,7 +174,7 @@
 												"title": "Background",
 												"children": [
 													{
-														"title": "Rules: rendering.backgroundFillRule#5348"
+														"title": "Rules: rendering.backgroundFillRule#7213"
 													}
 												]
 											},
@@ -213,7 +200,7 @@
 														"title": "display: block"
 													},
 													{
-														"title": "background: #FF8742"
+														"title": "background: #1FFF8F"
 													}
 												]
 											},
@@ -239,7 +226,7 @@
 														"title": "display: block"
 													},
 													{
-														"title": "background: #FF8742"
+														"title": "background: #1FFF8F"
 													}
 												]
 											},
@@ -247,7 +234,7 @@
 												"title": "TagName (div)",
 												"children": [
 													{
-														"title": "Rules: tag.blockDiv#5348"
+														"title": "Rules: tag.blockDiv#7213"
 													}
 												]
 											}
@@ -260,7 +247,7 @@
 								"title": "BlockFormat",
 								"children": [
 									{
-										"title": "Rules: rendering.sizeRuntimeInitial#5346"
+										"title": "Rules: rendering.sizeRuntimeInitial#7211"
 									}
 								]
 							},
@@ -268,10 +255,10 @@
 								"title": "CSSAttribute (isRendering = true)",
 								"children": [
 									{
-										"title": "position: relative"
+										"title": "height: 100px"
 									},
 									{
-										"title": "height: 100px"
+										"title": "position: relative"
 									},
 									{
 										"title": "width: 100px"
@@ -285,10 +272,10 @@
 								"title": "CSSAttribute (isRendering = false)",
 								"children": [
 									{
-										"title": "position: relative"
+										"title": "height: 100px"
 									},
 									{
-										"title": "height: 100px"
+										"title": "position: relative"
 									},
 									{
 										"title": "width: 100px"
@@ -302,7 +289,7 @@
 								"title": "TagName (div)",
 								"children": [
 									{
-										"title": "Rules: tag.blockDiv#5346"
+										"title": "Rules: tag.blockDiv#7211"
 									}
 								]
 							}
@@ -315,7 +302,7 @@
 				"title": "Width (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#5345"
+						"title": "Rules: sizing.userExplicit#7210"
 					}
 				]
 			},
@@ -323,7 +310,7 @@
 				"title": "Height (600px explicit)",
 				"children": [
 					{
-						"title": "Rules: sizing.userExplicit#5345"
+						"title": "Rules: sizing.userExplicit#7210"
 					}
 				]
 			}
@@ -344,10 +331,10 @@
 						"ordered": false,
 						"children": [
 							{
-								"title": "position: relative"
+								"title": "height: 100px"
 							},
 							{
-								"title": "height: 100px"
+								"title": "position: relative"
 							},
 							{
 								"title": "width: 100px"
@@ -385,7 +372,7 @@
 												"title": "height: 40px"
 											},
 											{
-												"title": "background: #FF8742"
+												"title": "background: #1FFF8F"
 											}
 										]
 									},

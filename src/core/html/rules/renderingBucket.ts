@@ -55,7 +55,7 @@ var needsTableCell = p.any([
 		// Parent has unknown height
 		p.not(p.getKnownHeight),
 		// Content needs to be horizontally centered
-		p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.center),
+		p.isAligned(p.getOnlyContentChild, sinf.horiz, sinf.center),
 		// and has unknown width
 		p.not(p.is(p.getOnlyContentChild, p.getKnownWidth)),
 		// and is not text. We can always text-align center text.
