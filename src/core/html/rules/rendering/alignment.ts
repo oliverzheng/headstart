@@ -212,12 +212,14 @@ export function tableCell(component: c.Component, matches: p.PatternMatches): Ru
 		cell = component;
 	}
 
+	var isMiddle = matches.getMatch(component, p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.center));
+
 	results.push({
 		component: cell,
 		attributes: [
 			new CSSAttribute({
 				'display': 'table-cell',
-				'vertical-align': 'middle',
+				'vertical-align': isMiddle ? 'middle' : 'bottom',
 			}),
 			new NodeAttribute(),
 		],
