@@ -1,15 +1,13 @@
 {
-  "name": "typescript-project-template",
+  "name": "headstart",
   "version": "0.0.1",
-  "description": "A starting repo for new TypeScript projects.",
+  "description": "Get a head start HTML/CSS markup",
   "main": "index.js",
   "scripts": {
-    "build": "node_modules/.bin/jake build"
+    "build": "node_modules/.bin/jake build",
+    "start": "node_modules/.bin/jake serve"
   },
-  "repository": "https://github.com/oliverzheng/typescript-project-template.git",
-  "keywords": [
-    "typescript"
-  ],
+  "repository": "https://github.com/oliverzheng/headstart.git",
   "author": "Oliver Zheng <npm@oliverzheng.com>",
   "license": "MIT",
   "dependencies": {

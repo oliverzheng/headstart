@@ -215,7 +215,7 @@ task('open', function() {
 	browser.run();
 });
 
-task('serve', function() {
+task('serve', ['build'], function() {
 	var cmd = 'node ' + __dirname + '/expressApp.js';
 	var ex = jake.createExec(cmd);
 	ex.addListener('error', function(msg) {

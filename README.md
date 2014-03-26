@@ -1,15 +1,14 @@
 # Building
 
 ```
-npm install -g jake
 npm install
-jake
+npm build
 ```
 
 # Running
 
 ```
-jake serve
+npm start
 ```
 
 Then go to `http://localhost:3000/bin/`.
