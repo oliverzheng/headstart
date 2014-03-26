@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "node_modules/.bin/jake build",
+    "clean": "node_modules/.bin/jake clean",
     "start": "node_modules/.bin/jake serve"
   },
   "repository": "https://github.com/oliverzheng/headstart.git",
