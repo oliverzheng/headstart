@@ -38,4 +38,5 @@ app.use('/fixture', express.static('fixtures'));
 app.use('/bower_components', express.static('bower_components'));
 
 app.listen(3000);
-console.log('Listening on port 3000');
+console.log('Listening on port 3000.');
+console.log('Go to http://localhost:3000/bin/');

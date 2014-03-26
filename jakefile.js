@@ -86,6 +86,24 @@ file('d.ts/typings.d.ts', ['package.json', 'd.ts'], {async: true}, function() {
 	ex.run();
 });
 
+desc('Download Bower scripts');
+file('bower_components', ['bower.json'], {async: true}, function() {
+	process.stdout.write('Downloading Bower scripts... ');
+	var cmd = 'bower install';
+	var ex = jake.createExec(cmd);
+	ex.addListener('error', function(msg) {
+		console.log(RED_COLOR + 'Failed.' + RESET_COLOR);
+		console.log(msg);
+		fail('Bower install failed');
+	});
+	var fullName = this.fullName;
+	ex.addListener('cmdEnd', function() {
+		console.log('Done.');
+		complete();
+	});
+	ex.run();
+});
+
 var srcTs = [];
 var testTs = [];
 try {
@@ -159,7 +177,7 @@ rule(/^lib\/test\/.*/, testLibToFile, {async: true}, function() {
 });
 
 desc('Build project.');
-var buildDeps = ['node_modules', 'lib'];
+var buildDeps = ['node_modules', 'bower_components', 'lib'];
 buildDeps.push.apply(buildDeps, testLibFiles);
 task('build', buildDeps);
 
@@ -209,7 +227,6 @@ task('serve', function() {
 		process.stdout.write(msg);
 	});
 
-	console.log('Executing ' + cmd);
 	ex.run();
 });
 
