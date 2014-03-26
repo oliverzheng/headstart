@@ -1,0 +1,394 @@
+{
+	"spec": {
+		"id": "0",
+		"w": {
+			"unit": 0,
+			"value": 600
+		},
+		"h": {
+			"unit": 0,
+			"value": 600
+		},
+		"direction": 2,
+		"children": [
+			{
+				"id": "11",
+				"w": {
+					"unit": 0,
+					"value": 100
+				},
+				"h": {
+					"unit": 0,
+					"value": 100
+				},
+				"direction": 1,
+				"children": [
+					{
+						"id": "12",
+						"w": {
+							"unit": 3,
+							"value": 40
+						},
+						"h": {
+							"unit": 3,
+							"value": 40
+						},
+						"direction": 2
+					},
+					{
+						"id": "2",
+						"w": {
+							"unit": 4,
+							"value": 40,
+							"runtime": false
+						},
+						"h": {
+							"unit": 3,
+							"value": 100,
+							"runtime": false
+						},
+						"direction": 2,
+						"children": [
+							{
+								"id": "3",
+								"w": {
+									"unit": 3,
+									"value": 40
+								},
+								"h": {
+									"unit": 3,
+									"value": 40
+								},
+								"direction": 2
+							},
+							{
+								"id": "1",
+								"w": {
+									"unit": 4,
+									"value": 40,
+									"runtime": false
+								},
+								"h": {
+									"unit": 4,
+									"value": 40,
+									"runtime": false
+								},
+								"direction": 2,
+								"createNode": false,
+								"staticContent": {
+									"text": {
+										"fontSize": 10,
+										"lineHeight": 10,
+										"value": "Herp\nDerp",
+										"fontFamily": "",
+										"inputMinLines": 2,
+										"inputMaxLines": 2,
+										"outputMaxLines": 2
+									},
+									"image": null,
+									"fill": null
+								},
+								"children": []
+							}
+						],
+						"createNode": false
+					}
+				],
+				"createNode": true
+			}
+		]
+	},
+	"componentRepr": {
+		"title": "Component",
+		"id": "20250",
+		"children": [
+			{
+				"title": "BoxAttribute",
+				"children": [
+					{
+						"title": "Rules: "
+					}
+				],
+				"id": "0"
+			},
+			{
+				"title": "NodeAttribute",
+				"children": [
+					{
+						"title": "Rules: "
+					}
+				]
+			},
+			{
+				"title": "Width (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#20250"
+					}
+				]
+			},
+			{
+				"title": "Height (600px explicit)",
+				"children": [
+					{
+						"title": "Rules: sizing.userExplicit#20250"
+					}
+				]
+			},
+			{
+				"title": "Vertical Alignment (Rules: alignment.equalSizes#20250)",
+				"children": [
+					{
+						"title": "Top Component",
+						"id": "20251",
+						"children": [
+							{
+								"title": "BoxAttribute",
+								"children": [
+									{
+										"title": "Rules: "
+									}
+								],
+								"id": "11"
+							},
+							{
+								"title": "NodeAttribute",
+								"children": [
+									{
+										"title": "Rules: userSpecified.createNode#20251"
+									}
+								]
+							},
+							{
+								"title": "Width (100px explicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.userExplicit#20251"
+									}
+								]
+							},
+							{
+								"title": "Height (100px explicit)",
+								"children": [
+									{
+										"title": "Rules: sizing.userExplicit#20251"
+									}
+								]
+							},
+							{
+								"title": "Horizontal Alignment (Rules: alignment.expand#20251)",
+								"children": [
+									{
+										"title": "Right Component",
+										"id": "20253",
+										"children": [
+											{
+												"title": "BoxAttribute",
+												"children": [
+													{
+														"title": "Rules: "
+													}
+												],
+												"id": "2"
+											},
+											{
+												"title": "Height (100px implicit, 1% implicit)",
+												"children": [
+													{
+														"title": "Rules: sizing.expandedChildren#20251"
+													}
+												]
+											},
+											{
+												"title": "Vertical Alignment (Rules: alignment.expand#20253)",
+												"children": [
+													{
+														"title": "Bottom Component",
+														"id": "20255",
+														"children": [
+															{
+																"title": "BoxAttribute",
+																"children": [
+																	{
+																		"title": "Rules: "
+																	}
+																],
+																"id": "1"
+															},
+															{
+																"title": "TextContent (value: Herp\nDerp)",
+																"children": [
+																	{
+																		"title": "Rules: userSpecified.staticText#20255"
+																	}
+																]
+															},
+															{
+																"title": "LineHeight (line height: 10)",
+																"children": [
+																	{
+																		"title": "Rules: userSpecified.staticText#20255"
+																	}
+																]
+															},
+															{
+																"title": "Width (1% implicit)",
+																"children": [
+																	{
+																		"title": "Rules: sizing.shrink#20253"
+																	}
+																]
+															},
+															{
+																"title": "Height (20px implicit, 2 lines explicit)",
+																"children": [
+																	{
+																		"title": "Rules: sizing.shrinkHeightToText#20255"
+																	}
+																]
+															},
+															{
+																"title": "CSSAttribute (isRendering = true)",
+																"children": [
+																	{
+																		"title": "font-size: 10px"
+																	},
+																	{
+																		"title": "line-height: 10px"
+																	}
+																]
+															}
+														]
+													}
+												],
+												"ordered": true
+											}
+										]
+									}
+								],
+								"ordered": true
+							},
+							{
+								"title": "BlockFormat",
+								"children": [
+									{
+										"title": "Rules: rendering.horizontalAlignment#20251"
+									}
+								]
+							},
+							{
+								"title": "BoxModel",
+								"children": [
+									{
+										"title": "paddingTop: 80"
+									},
+									{
+										"title": "paddingBottom: 0"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = true)",
+								"children": [
+									{
+										"title": "text-align: right"
+									},
+									{
+										"title": "width: 100px"
+									},
+									{
+										"title": "height: 20px"
+									},
+									{
+										"title": "padding-top: 80px"
+									},
+									{
+										"title": "display: block"
+									}
+								]
+							},
+							{
+								"title": "CSSAttribute (isRendering = false)",
+								"children": [
+									{
+										"title": "text-align: right"
+									},
+									{
+										"title": "font-size: 10px"
+									},
+									{
+										"title": "line-height: 10px"
+									},
+									{
+										"title": "width: 100px"
+									},
+									{
+										"title": "height: 20px"
+									},
+									{
+										"title": "padding-top: 80px"
+									},
+									{
+										"title": "display: block"
+									}
+								]
+							},
+							{
+								"title": "TagName (div)",
+								"children": [
+									{
+										"title": "Rules: tag.blockDiv#20251"
+									}
+								]
+							}
+						]
+					}
+				],
+				"ordered": true
+			}
+		]
+	},
+	"domRepr": {
+		"title": "DOM",
+		"children": [
+			{
+				"title": "Tag: div",
+				"ordered": false,
+				"children": [
+					{
+						"title": "Content: Herp\nDerp"
+					},
+					{
+						"title": "Styles",
+						"ordered": false,
+						"children": [
+							{
+								"title": "text-align: right"
+							},
+							{
+								"title": "font-size: 10px"
+							},
+							{
+								"title": "line-height: 10px"
+							},
+							{
+								"title": "width: 100px"
+							},
+							{
+								"title": "height: 20px"
+							},
+							{
+								"title": "padding-top: 80px"
+							}
+						]
+					},
+					{
+						"title": "Children",
+						"ordered": true,
+						"children": []
+					}
+				]
+			}
+		]
+	}
+}
