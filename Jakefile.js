@@ -10,6 +10,7 @@ var LIBSRC_DIR = path.join(LIB_DIR, SRC_DIR);
 var LIBTEST_DIR = path.join(LIB_DIR, TEST_DIR);
 var TSC = 'node_modules/.bin/tsc';
 var TSD = 'node_modules/.bin/tsd';
+var BOWER = 'node_modules/.bin/bower';
 var RED_COLOR = '\033[31m';
 var RESET_COLOR = '\033[0m';
 var AMD = true;
@@ -87,9 +88,9 @@ file('d.ts/typings.d.ts', ['package.json', 'd.ts'], {async: true}, function() {
 });
 
 desc('Download Bower scripts');
-file('bower_components', ['bower.json'], {async: true}, function() {
+file('bower_components', ['bower.json', 'node_modules'], {async: true}, function() {
 	process.stdout.write('Downloading Bower scripts... ');
-	var cmd = 'bower install';
+	var cmd = BOWER + ' install --config.interactive=false';
 	var ex = jake.createExec(cmd);
 	ex.addListener('error', function(msg) {
 		console.log(RED_COLOR + 'Failed.' + RESET_COLOR);
