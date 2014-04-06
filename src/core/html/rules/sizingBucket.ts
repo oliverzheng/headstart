@@ -87,7 +87,7 @@ var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rules.Rule
 		if (childrenWidths.length === childrenComponents.length) {
 			// TODO take into account spacing
 			if (direction === sinf.horiz) {
-				width = childrenWidths.reduce(LengthAttribute.add).makeImplicit();
+				width = childrenWidths.reduce(LengthAttribute.add).makeImplicit().makeWithoutPct();
 			} else {
 				var canCompare = childrenWidths.every((w, i) => {
 					if (i === 0) {
@@ -99,7 +99,7 @@ var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rules.Rule
 				// Find the max
 				if (canCompare) {
 					childrenWidths.sort(LengthAttribute.compare);
-					width = childrenWidths[childrenWidths.length - 1].makeImplicit();
+					width = childrenWidths[childrenWidths.length - 1].makeImplicit().makeWithoutPct();
 
 					children1PctWide = childrenWidths.filter(
 						(w) => w.looksEqual(width)
@@ -116,7 +116,7 @@ var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rules.Rule
 		if (childrenHeights.length === childrenComponents.length) {
 			// TODO take into account spacing
 			if (direction === sinf.vert) {
-				height = childrenHeights.reduce(LengthAttribute.add).makeImplicit();
+				height = childrenHeights.reduce(LengthAttribute.add).makeImplicit().makeWithoutPct();
 			} else {
 				var canCompare = childrenHeights.every((h, i) => {
 					if (i === 0) {
@@ -128,7 +128,7 @@ var sizeByChildrenSum: Rules.Rule = function(component: c.Component): Rules.Rule
 				// Find the max
 				if (canCompare) {
 					childrenHeights.sort(LengthAttribute.compare);
-					height = childrenHeights[childrenHeights.length - 1].makeImplicit();
+					height = childrenHeights[childrenHeights.length - 1].makeImplicit().makeWithoutPct();
 
 					children1PctTall = childrenHeights.filter(
 						(h) => h.looksEqual(height)
@@ -484,6 +484,45 @@ function sizeShrinkHeightToText(component: c.Component): Rules.RuleResult[] {
 	}];
 }
 
+function sizeExplicitPxToPct(component: c.Component): Rules.RuleResult[] {
+	var direction = getDirection(component);
+	var parentLength = LengthAttribute.getFrom(component, direction);
+	var parentLengthOther = LengthAttribute.getFrom(component, sinf.otherDirection(direction));
+	if ((!parentLength || !parentLength.px.isSet()) &&
+		(!parentLengthOther || !parentLengthOther.px.isSet()))
+		return;
+
+	var results: Rules.RuleResult[] = [];
+	component.getChildren().forEach((child) => {
+		var length = LengthAttribute.getFrom(child, direction);
+		var lengthOther = LengthAttribute.getFrom(child, sinf.otherDirection(direction));
+		if (parentLength && parentLength.px.isSet() &&
+			length && length.px.isSet() && !length.pct.isSet()) {
+			results.push({
+				component: child,
+				attributes: [
+					new LengthAttribute(direction, null,
+						Measurement.implicit(length.px.value / parentLength.px.value)
+					),
+				],
+			});
+		}
+
+		if (parentLengthOther && parentLengthOther.px.isSet() &&
+			lengthOther && lengthOther.px.isSet() && !lengthOther.pct.isSet()) {
+			results.push({
+				component: child,
+				attributes: [
+					new LengthAttribute(sinf.otherDirection(direction), null,
+						Measurement.implicit(lengthOther.px.value / parentLengthOther.px.value)
+					),
+				],
+			});
+		}
+	});
+	return results;
+}
+
 var bucket: Rules.Bucket = {
 	name: 'sizing',
 	rules: [
@@ -493,6 +532,7 @@ var bucket: Rules.Bucket = {
 		{name: 'shrink', rule: sizeShrink},
 		{name: 'shrinkHeightToText', rule: sizeShrinkHeightToText},
 		{name: 'childrenSum', rule: sizeByChildrenSum},
+		{name: 'explicitPxToPCt', rule: sizeExplicitPxToPct},
 	],
 };
 

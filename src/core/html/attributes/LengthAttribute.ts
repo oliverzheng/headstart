@@ -1,7 +1,9 @@
 import c = require('../Component');
 import Attributes = require('../Attributes');
+import Rules = require('../Rules');
 import Markup = require('../Markup');
 import sinf = require('../../spec/interfaces');
+import sutil = require('../../spec/util');
 import assert = require('assert');
 import Measurement = require('./Measurement');
 import BoxModel = require('./BoxModel');
@@ -11,6 +13,7 @@ class LengthAttribute extends Markup {
 
 	px: Measurement;
 	pct: Measurement;
+	pct2: Measurement; // TODO hack
 	lines: Measurement; // For heights only
 
 	constructor(
@@ -122,6 +125,10 @@ class LengthAttribute extends Markup {
 			length.lines = this.lines.makeImplicit();
 		}
 		return length;
+	}
+
+	makeWithoutPct(): LengthAttribute {
+		return new LengthAttribute(this.direction, this.px, null, this.lines);
 	}
 
 	repr() {
@@ -372,6 +379,28 @@ class LengthAttribute extends Markup {
 
 	static get100Pct(direction: sinf.Direction) {
 		return new LengthAttribute(direction, null, Measurement.implicit(1));
+	}
+
+	static resetPctForNewParent(wrapped: c.Component, newParent: c.Component): Rules.RuleResult[] {
+		var results: Rules.RuleResult[] = [];
+		sutil.forEachDirection((direction) => {
+			var length = LengthAttribute.getFrom(wrapped, direction);
+			if (length && length.pct.isSet()) {
+				var newLength = length.makeWithoutPct();
+				// TODO: This pct2 refers to pct relative to the grandparent.
+				// Eventually, a length will need multiple pct's, relative
+				// to different things. (The em unit will be supported this
+				// way.) Currently, we don't support pct beyond grandparent.
+				// In other words, we can't wrap a wrapped component.
+				assert(!length.pct2);
+				newLength.pct2 = length.pct;
+				results.push({
+					component: wrapped,
+					replaceAttributes: [newLength],
+				});
+			}
+		});
+		return results;
 	}
 }
 

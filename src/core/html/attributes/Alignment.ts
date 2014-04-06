@@ -2,6 +2,7 @@ import assert = require('assert');
 import Attributes = require('../Attributes');
 import StackedChildren = require('./StackedChildren');
 import NodeAttribute = require('./NodeAttribute');
+import LengthAttribute = require('./LengthAttribute');
 import Rules = require('../Rules');
 import c = require('../Component');
 import sinf = require('../../spec/interfaces');
@@ -69,7 +70,7 @@ class Alignment extends Attributes.BaseAttribute {
 			this.isAfterCenterAggregated || this.afterCenter === child,
 			this.isFarAggregated || this.far === child
 		);
-		return [{
+		var results: Rules.RuleResult[] = [{
 			component: this.component,
 			replaceAttributes: [
 				newAttr,
@@ -80,6 +81,8 @@ class Alignment extends Attributes.BaseAttribute {
 				new StackedChildren([child])
 			],
 		}];
+		results.push.apply(results, LengthAttribute.resetPctForNewParent(child, newComponent));
+		return results;
 	}
 
 	static getFrom(component: c.Component, direction: sinf.Direction): Alignment {

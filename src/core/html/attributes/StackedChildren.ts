@@ -105,7 +105,7 @@ class StackedChildren extends Attributes.BaseAttribute {
 				return oldChild;
 			}
 		}));
-		return [{
+		var results: Rules.RuleResult[] = [{
 			component: this.component,
 			replaceAttributes: [
 				newAttr,
@@ -116,6 +116,8 @@ class StackedChildren extends Attributes.BaseAttribute {
 				new StackedChildren([child])
 			],
 		}];
+		results.push.apply(results, LengthAttribute.resetPctForNewParent(child, newComponent));
+		return results;
 	}
 
 	static getNextSibling(component: c.Component): c.Component {
