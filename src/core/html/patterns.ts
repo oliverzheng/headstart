@@ -398,3 +398,86 @@ export function isTableCellInTable(component: c.Component, matches: PatternMatch
 		matches.getMatch(component, isParentsSize)
 	);
 }
+
+export function getNodeDescendents(component: c.Component, matches: PatternMatches): c.Component[] {
+	var direction = matches.getMatch(component, getDirection);
+	var contentChildren = matches.getMatch(component, getContentChildrenInDirection);
+	// TODO support %'s. This assumes every spacing is a px spacing
+	return contentChildren;
+}
+
+function canChildSpacingBeMarginOrPadding(child: c.Component): boolean {
+	assert(Spacing.getFrom(child));
+	var width = LengthAttribute.getFrom(child, sinf.horiz);
+	var height = LengthAttribute.getFrom(child, sinf.vert);
+
+	return (
+		width && (width.px.isSet() || width.pct.isSet()) &&
+		// % values of margin and padding are specified in terms of width of the
+		// container
+		height && height.px.isSet()
+	);
+}
+
+
+// Alignment
+
+export var isHorizontalCenterOrRight = any([
+	isAligned(getOnlyContentChild, sinf.horiz, sinf.center),
+	isAligned(getOnlyContentChild, sinf.horiz, sinf.far),
+]);
+
+export var isVerticalMiddleOrBottom = any([
+	isAligned(getOnlyContentChild, sinf.vert, sinf.center),
+	isAligned(getOnlyContentChild, sinf.vert, sinf.far),
+]);
+
+export var needsAbsolutePositioning = any([
+	all(<Pattern<any>[]>[
+		// Parent has unknown height
+		not(getKnownHeight),
+		// Content has known height
+		is(getOnlyContentChild, getKnownHeight),
+		isVerticalMiddleOrBottom,
+	]),
+	all([
+		isAligned(getOnlyContentChild, sinf.vert, sinf.far),
+		// Content has unknown height
+		not(is(getOnlyContentChild, getKnownHeight)),
+	]),
+]);
+
+export var needsTableCell = any([
+	all([
+		// Content is vertically middle aligned.
+		isAligned(getOnlyContentChild, sinf.vert, sinf.center),
+		// Content has unknown height
+		not(is(getOnlyContentChild, getKnownHeight)),
+	]),
+	all([
+		// Normally, we can use absolute negative margins, but not if
+		// the content has unknown width...
+		any([
+			// Either parent has unknown height
+			not(getKnownHeight),
+			// or content has unknown height (so parent cannot use padding-top)
+			not(is(getOnlyContentChild, getKnownHeight)),
+		]),
+		// Content needs to be horizontally centered
+		isAligned(getOnlyContentChild, sinf.horiz, sinf.center),
+		// and has unknown width
+		not(is(getOnlyContentChild, getKnownWidth)),
+		// and is not text. We can always text-align center text.
+		not(is(getOnlyContentChild, isText)),
+	]),
+]);
+
+export var isHorizontalAligned = all(<Pattern<any>[]>[
+	getOnlyContentChild,
+	isHorizontalCenterOrRight,
+]);
+
+export var isVerticalAligned = all(<Pattern<any>[]>[
+	getOnlyContentChild,
+	isVerticalMiddleOrBottom,
+]);

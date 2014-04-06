@@ -25,63 +25,11 @@ var bucket: Rules.Bucket = {
 	rules: rules,
 };
 
-var isHorizontalCenterOrRight = p.any([
-	p.isAligned(p.getOnlyContentChild, sinf.horiz, sinf.center),
-	p.isAligned(p.getOnlyContentChild, sinf.horiz, sinf.far),
-]);
-
-var isVerticalMiddleOrBottom = p.any([
-	p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.center),
-	p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.far),
-]);
-
-var needsAbsolutePositioning = p.any([
-	p.all(<p.Pattern<any>[]>[
-		// Parent has unknown height
-		p.not(p.getKnownHeight),
-		// Content has known height
-		p.is(p.getOnlyContentChild, p.getKnownHeight),
-		isVerticalMiddleOrBottom,
-	]),
-	p.all([
-		p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.far),
-		// Content has unknown height
-		p.not(p.is(p.getOnlyContentChild, p.getKnownHeight)),
-	]),
-]);
-
-var needsTableCell = p.any([
-	p.all([
-		// Content is vertically middle aligned.
-		p.isAligned(p.getOnlyContentChild, sinf.vert, sinf.center),
-		// Content has unknown height
-		p.not(p.is(p.getOnlyContentChild, p.getKnownHeight)),
-	]),
-	p.all([
-		// Normally, we can use absolute negative margins, but not if
-		// the content has unknown width...
-		p.any([
-			// Either parent has unknown height
-			p.not(p.getKnownHeight),
-			// or content has unknown height (so parent cannot use padding-top)
-			p.not(p.is(p.getOnlyContentChild, p.getKnownHeight)),
-		]),
-		// Content needs to be horizontally centered
-		p.isAligned(p.getOnlyContentChild, sinf.horiz, sinf.center),
-		// and has unknown width
-		p.not(p.is(p.getOnlyContentChild, p.getKnownWidth)),
-		// and is not text. We can always text-align center text.
-		p.not(p.is(p.getOnlyContentChild, p.isText)),
-	]),
-]);
-
-
 var horizontalAlignment: h.RuleHierarchy[] = [{
 	name: 'horizontalAlignment',
 	patterns: [
 		p.isNode,
-		p.getOnlyContentChild,
-		isHorizontalCenterOrRight,
+		p.isHorizontalAligned,
 	],
 	ifMatch: [{
 		// Just text
@@ -93,7 +41,7 @@ var horizontalAlignment: h.RuleHierarchy[] = [{
 		],
 		ifMatch: [{
 			patterns: [
-				needsAbsolutePositioning,
+				p.needsAbsolutePositioning,
 			],
 			ifMatch: [{
 				// Center align
@@ -116,14 +64,14 @@ var horizontalAlignment: h.RuleHierarchy[] = [{
 		otherwise: [{
 			// Table cell positioning
 			patterns: [
-				needsTableCell,
+				p.needsTableCell,
 			],
 			rule: alignment.marginAuto,
 
 			otherwise: [{
 				// Absolute positioning
 				patterns: [
-					needsAbsolutePositioning,
+					p.needsAbsolutePositioning,
 				],
 				ifMatch: [{
 					// Center
@@ -151,20 +99,19 @@ var verticalAlignment: h.RuleHierarchy[] = [{
 	name: 'verticalAlignment',
 	patterns: [
 		p.isNode,
-		p.getOnlyContentChild,
-		isVerticalMiddleOrBottom,
+		p.isVerticalAligned,
 	],
 	ifMatch: [{
 		// Table cell
 		patterns: [
-			needsTableCell,
+			p.needsTableCell,
 		],
 		rule: alignment.tableCell,
 
 		otherwise: [{
 			// Absolute positioning
 			patterns: [
-				needsAbsolutePositioning,
+				p.needsAbsolutePositioning,
 			],
 			ifMatch: [{
 				// Middle
@@ -198,7 +145,23 @@ var verticalAlignment: h.RuleHierarchy[] = [{
 	}],
 }];
 
+var stackNodes: h.RuleHierarchy[] = [{
+	name: 'stackNodes',
+	patterns: [
+		p.isNode,
+		p.not(
+			p.any([
+				p.isHorizontalAligned,
+				p.isVerticalAligned,
+			])
+		),
+		p.getNodeDescendents,
+	],
+	rule: spacing.stackSpacing,
+}];
+
 rules.push({ name: 'horizontalAlignment', rule: h.getRuleFromHierarchies(horizontalAlignment)});
 rules.push({ name: 'verticalAlignment', rule: h.getRuleFromHierarchies(verticalAlignment)});
+rules.push({ name: 'stackNodes', rule: h.getRuleFromHierarchies(stackNodes)});
 
 export = bucket;

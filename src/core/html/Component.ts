@@ -200,13 +200,54 @@ export class Component {
 		return parent !== null;
 	}
 
-	getOrder(component: Component) {
+	getOrder() {
 		var order = 0;
 		var parent = this;
 		while (parent = parent.getParent()) {
 			order++;
 		}
 		return order;
+	}
+
+	static getCommonAncestor(c1: Component, c2: Component): { ancestor: Component; firstParent: Component; secondParent: Component; } {
+		if (c1 === c2)
+			return {
+				ancestor: null,
+				firstParent: null,
+				secondParent: null,
+			};
+
+		var order1 = c1.getOrder();
+		var order2 = c2.getOrder();
+		if (order1 === order2) {
+			var common = Component.getCommonAncestor(c1.getParent(), c2.getParent());
+			if (!common.ancestor) {
+				return {
+					ancestor: c1.getParent(),
+					firstParent: null,
+					secondParent: null,
+				};
+			} else if (!common.firstParent) {
+				return {
+					ancestor: common.ancestor,
+					firstParent: c1.getParent(),
+					secondParent: c2.getParent(),
+				};
+			} else {
+				return common;
+			}
+		} else if (order1 > order2) {
+			while (order1 > order2) {
+				c1 = c1.getParent();
+				order1--;
+			}
+		} else {
+			while (order2 > order1) {
+				c2 = c2.getParent();
+				order2--;
+			}
+		}
+		return Component.getCommonAncestor(c1, c2);
 	}
 
 	repr(): Attributes.Repr {

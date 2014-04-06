@@ -18,6 +18,8 @@ import sinf = require('../../../spec/interfaces');
 import sutil = require('../../../spec/util');
 import reqs = require('../../requirements');
 import patterns = require('./patterns');
+import p = require('../../patterns');
+import layout = require('../../layout');
 
 function marginSpacing(component: c.Component): Rules.RuleResult[] {
 	var parent = component.getParent();
@@ -108,8 +110,54 @@ function isSingleLine(component: c.Component): boolean {
 	return true;
 }
 
-var rules: Rules.RuleWithName[] = [
-	{name: 'marginSpacing', rule: marginSpacing},
-];
+export function stackSpacing(component: c.Component, matches: p.PatternMatches): Rules.RuleResult[] {
+	var direction = matches.getMatch(component, p.getDirection);
+	var nodeDescendents = matches.getMatch(component, p.getNodeDescendents);
 
-export = rules;
+	var results: Rules.RuleResult[] = [];
+	nodeDescendents.forEach((descendent, i) => {
+		results.push({
+			component: descendent,
+			attributes: [
+				new NodeAttribute(),
+			],
+		});
+
+		var pos = component.getChildrenManager().getDescendentPosition(descendent);
+		if (i === 0) {
+			var prevSpacing = sutil.getPosition(pos, direction);
+			assert(prevSpacing && prevSpacing.px.isSet());
+			// TODO we don't know how to deal with margin collapsing yet
+			assert(prevSpacing.px.value === 0);
+		} else {
+			var prev = nodeDescendents[i - 1];
+			var spacing = layout.getSpacingBetween(prev, descendent, direction);
+			assert(spacing && spacing.px.isSet());
+			if (spacing.px.value) {
+				results.push({
+					component: descendent,
+					attributes: [
+						new BoxModel(null, null, {
+							t: (direction === sinf.vert) ? spacing.px.value : null,
+							l: (direction === sinf.horiz) ? spacing.px.value : null,
+						}),
+					],
+				});
+			}
+		}
+		var orthogonalSpacing = sutil.getPosition(pos, sinf.otherDirection(direction));
+		assert(orthogonalSpacing && orthogonalSpacing.px.isSet());
+		if (orthogonalSpacing.px.value) {
+			results.push({
+				component: descendent,
+				attributes: [
+					new BoxModel(null, null, {
+						t: (direction === sinf.vert) ? null : orthogonalSpacing.px.value,
+						l: (direction === sinf.horiz) ? null : orthogonalSpacing.px.value,
+					}),
+				]
+			});
+		}
+	});
+	return results;
+}

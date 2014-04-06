@@ -64,8 +64,7 @@ class StackedChildren extends Attributes.BaseAttribute {
 			}
 
 			var length = LengthAttribute.getFrom(prevChild, direction);
-			var px = 0;
-			if (length && length.px.isSet()) {
+			if (length && (length.px.isSet() || length.pct.isSet())) {
 				// Awesome
 			} else if (unknownDefaultPx != null) {
 				length = new LengthAttribute(direction, Measurement.implicit(unknownDefaultPx));
@@ -79,8 +78,14 @@ class StackedChildren extends Attributes.BaseAttribute {
 			}
 			if (direction === sinf.horiz) {
 				position.x = position.x.add(length);
+				if (!position.x) {
+					return position;
+				}
 			} else {
 				position.y = position.y.add(length);
+				if (!position.y) {
+					return position;
+				}
 			}
 		}
 		return position;

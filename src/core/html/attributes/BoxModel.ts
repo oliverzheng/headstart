@@ -1,15 +1,18 @@
 import Attributes = require('../Attributes');
 import c = require('../Component');
+import Markup = require('../Markup');
 
-class BoxModel extends Attributes.BaseAttribute {
+class BoxModel extends Markup {
 	content: { x?: number; y?: number; };
 	padding: { t?: number; r?: number; b?: number; l?: number; };
+	margin: { t?: number; r?: number; b?: number; l?: number; };
 	lineHeight: number;
 	lines: number;
 
 	constructor(
 		content: { x?: number; y?: number; } = null,
 		padding: { t?: number; r?: number; b?: number; l?: number; } = null,
+		margin: { t?: number; r?: number; b?: number; l?: number; } = null,
 		lineHeight: number = null,
 		lines: number = null
 	) {
@@ -17,8 +20,31 @@ class BoxModel extends Attributes.BaseAttribute {
 
 		this.content = content || {};
 		this.padding = padding || {};
+		this.margin = margin || {};
 		this.lineHeight = lineHeight;
 		this.lines = lines;
+	}
+
+	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
+		var css: { [name: string]: string;} = {};
+		if (this.margin.t) {
+			css['margin-top'] = this.margin.t.toString() + 'px';
+		}
+		if (this.margin.r) {
+			css['margin-right'] = this.margin.r.toString() + 'px';
+		}
+		if (this.margin.b) {
+			css['margin-bottom'] = this.margin.b.toString() + 'px';
+		}
+		if (this.margin.l) {
+			css['margin-left'] = this.margin.l.toString() + 'px';
+		}
+		if (Object.keys(css).length > 0) {
+			return [{
+				component: this.component,
+				css: css,
+			}];
+		}
 	}
 
 	getType() {
@@ -40,6 +66,10 @@ class BoxModel extends Attributes.BaseAttribute {
 			this.padding.r === attr.padding.r &&
 			this.padding.b === attr.padding.b &&
 			this.padding.l === attr.padding.l &&
+			this.margin.t === attr.margin.t &&
+			this.margin.r === attr.margin.r &&
+			this.margin.b === attr.margin.b &&
+			this.margin.l === attr.margin.l &&
 			this.lineHeight === attr.lineHeight &&
 			this.lines === attr.lines
 		);
@@ -55,6 +85,10 @@ class BoxModel extends Attributes.BaseAttribute {
 			attr.padding.r != null && (this.padding.r == null || attr.padding.r !== this.padding.r) ||
 			attr.padding.b != null && (this.padding.b == null || attr.padding.b !== this.padding.b) ||
 			attr.padding.l != null && (this.padding.l == null || attr.padding.l !== this.padding.l) ||
+			attr.margin.t != null && (this.margin.t == null || attr.margin.t !== this.margin.t) ||
+			attr.margin.r != null && (this.margin.r == null || attr.margin.r !== this.margin.r) ||
+			attr.margin.b != null && (this.margin.b == null || attr.margin.b !== this.margin.b) ||
+			attr.margin.l != null && (this.margin.l == null || attr.margin.l !== this.margin.l) ||
 			attr.lineHeight != null && (this.lineHeight == null || attr.lineHeight !== this.lineHeight) ||
 			attr.lines != null && (this.lines == null || attr.lines !== this.lines)) {
 			return false;
@@ -73,6 +107,10 @@ class BoxModel extends Attributes.BaseAttribute {
 			this.padding.r != null && attr.padding.r != null ||
 			this.padding.b != null && attr.padding.b != null ||
 			this.padding.l != null && attr.padding.l != null ||
+			this.margin.t != null && attr.margin.t != null ||
+			this.margin.r != null && attr.margin.r != null ||
+			this.margin.b != null && attr.margin.b != null ||
+			this.margin.l != null && attr.margin.l != null ||
 			this.lineHeight != null && attr.lineHeight != null ||
 			this.lines != null && attr.lines != null) {
 			return;
@@ -90,10 +128,17 @@ class BoxModel extends Attributes.BaseAttribute {
 			l: this.padding.l != null ? this.padding.l : attr.padding.l,
 		};
 
+		var margin = {
+			t: this.margin.t != null ? this.margin.t : attr.margin.t,
+			r: this.margin.r != null ? this.margin.r : attr.margin.r,
+			b: this.margin.b != null ? this.margin.b : attr.margin.b,
+			l: this.margin.l != null ? this.margin.l : attr.margin.l,
+		};
+
 		var lineHeight = this.lineHeight != null ? this.lineHeight : attr.lineHeight;
 		var lines = this.lines != null ? this.lines : attr.lines;
 
-		return new BoxModel(content, padding, lineHeight, lines);
+		return new BoxModel(content, padding, margin, lineHeight, lines);
 	}
 
 	repr(): Attributes.Repr {
@@ -112,6 +157,14 @@ class BoxModel extends Attributes.BaseAttribute {
 			repr.children.push({title: 'paddingBottom: ' + this.padding.b});
 		if (this.padding.l != null)
 			repr.children.push({title: 'paddingLeft: ' + this.padding.l});
+		if (this.margin.t != null)
+			repr.children.push({title: 'marginTop: ' + this.margin.t});
+		if (this.margin.r != null)
+			repr.children.push({title: 'marginRight: ' + this.margin.r});
+		if (this.margin.b != null)
+			repr.children.push({title: 'marginBottom: ' + this.margin.b});
+		if (this.margin.l != null)
+			repr.children.push({title: 'marginLeft: ' + this.margin.l});
 
 		return repr;
 	}
