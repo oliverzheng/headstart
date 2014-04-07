@@ -13,7 +13,7 @@ class InlineFormat extends Markup {
 		return Attributes.Type.INLINE_FORMAT;
 	}
 
-	getCSS() {
+	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
 		return [{
 			component: this.component,
 			css: {

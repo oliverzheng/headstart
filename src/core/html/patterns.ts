@@ -285,7 +285,7 @@ export var getOnlyContentChild: Pattern<c.Component> = function(component: c.Com
 	return children[0];
 }
 
-var isCache = new PatternCache<c.Component>();
+var isCache = new PatternCache<any>();
 export function is<T>(componentPattern: Pattern<c.Component>, matchPattern: Pattern<T>): Pattern<T> {
 	var cache = isCache.get(matchPattern);
 	if (cache)
@@ -399,12 +399,12 @@ export function isTableCellInTable(component: c.Component, matches: PatternMatch
 	);
 }
 
-export function getNodeDescendents(component: c.Component, matches: PatternMatches): c.Component[] {
+export var getNodeDescendents: Pattern<c.Component[]> = function(component: c.Component, matches: PatternMatches): c.Component[] {
 	var direction = matches.getMatch(component, getDirection);
 	var contentChildren = matches.getMatch(component, getContentChildrenInDirection);
 	// TODO support %'s. This assumes every spacing is a px spacing
 	return contentChildren;
-}
+};
 
 function canChildSpacingBeMarginOrPadding(child: c.Component): boolean {
 	assert(Spacing.getFrom(child));

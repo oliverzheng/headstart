@@ -14,7 +14,7 @@ class TextContent extends Markup {
 	}
 
 	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
-		var css = {
+		var css: { [name: string]: string; } = {
 			'font-size': this.getText().fontSize.toString() + 'px',
 		};
 		if (this.getText().fontFamily) {
@@ -40,7 +40,7 @@ class TextContent extends Markup {
 		return repr;
 	}
 
-	getText() {
+	getText(): sinf.StaticText {
 		return this.component.boxAttr().getBox().staticContent.text;
 	}
 

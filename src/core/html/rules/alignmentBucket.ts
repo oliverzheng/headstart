@@ -82,7 +82,7 @@ function expand(component: c.Component): Rules.RuleResult[] {
 	var aggregates = [
 		near, afterNear, center, afterCenter, far
 	].map(
-		(components) => (components && components.some(hasBoxContent)) ? components : null
+		(components) => (components && components.some((comp) => hasBoxContent(comp))) ? components : null
 	).map(
 		StackedChildren.aggregate
 	);
@@ -121,7 +121,7 @@ function isLastChildAtFarEdge(component: c.Component): boolean {
 
 	var lastChild = children[children.length - 1];
 	var lastChildPos = stackedChildren.getChildPosition(lastChild, null);
-	var pos = sutil.getPosition(lastChildPos, direction);
+	var pos = sutil.getPosition<LengthAttribute>(lastChildPos, direction);
 	var lastChildLength = LengthAttribute.getFrom(lastChild, direction);
 
 	assert(pos && pos.px.isSet() && lastChildLength.px.isSet());

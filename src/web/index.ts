@@ -65,7 +65,7 @@ var PageComponent = React.createClass({
 		return {
 			rootBox: root,
 			preview: new Preview(root),
-			selectedBox: null,
+			selectedBox: <any>null,
 			rootComponent: c.Component.fromBox(root),
 			html: '',
 
@@ -74,14 +74,14 @@ var PageComponent = React.createClass({
 			fixtureDisabled: true,
 
 			justLoaded: false,
-			loadError: null,
+			loadError: <any>null,
 
 			justSaved: false,
 			wasSaveOverwrite: false,
 
 			justCompared: false,
 			comparison: false,
-			oldRepr: null,
+			oldRepr: <any>null,
 
 			comparingAll: false,
 			justComparedAll: false,

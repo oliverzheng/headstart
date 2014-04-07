@@ -125,7 +125,7 @@ export function stackSpacing(component: c.Component, matches: p.PatternMatches):
 
 		var pos = component.getChildrenManager().getDescendentPosition(descendent);
 		if (i === 0) {
-			var prevSpacing = sutil.getPosition(pos, direction);
+			var prevSpacing = sutil.getPosition<LengthAttribute>(pos, direction);
 			assert(prevSpacing && prevSpacing.px.isSet());
 			// TODO we don't know how to deal with margin collapsing yet
 			assert(prevSpacing.px.value === 0);
@@ -145,7 +145,7 @@ export function stackSpacing(component: c.Component, matches: p.PatternMatches):
 				});
 			}
 		}
-		var orthogonalSpacing = sutil.getPosition(pos, sinf.otherDirection(direction));
+		var orthogonalSpacing = sutil.getPosition<LengthAttribute>(pos, sinf.otherDirection(direction));
 		assert(orthogonalSpacing && orthogonalSpacing.px.isSet());
 		if (orthogonalSpacing.px.value) {
 			results.push({

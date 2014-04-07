@@ -14,7 +14,7 @@ class BlockFormat extends Markup {
 		return Attributes.Type.BLOCK_FORMAT;
 	}
 
-	getCSS() {
+	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
 		var css = CSSAttribute.getFrom(this.component);
 		if (!css || !css.styles['display']) {
 			return [{

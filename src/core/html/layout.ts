@@ -14,7 +14,7 @@ export function getSpacingBetween(c1: c.Component, c2: c.Component, direction: s
 	assert(common.ancestor);
 
 	var pos1 = common.ancestor.getChildrenManager().getDescendentPosition(c1);
-	var firstDistance = sutil.getPosition(pos1, direction);
+	var firstDistance = sutil.getPosition<LengthAttribute>(pos1, direction);
 	if (!firstDistance || !firstDistance.px.isSet())
 		return null;
 	var firstLength = LengthAttribute.getFrom(c1, direction);
@@ -24,7 +24,7 @@ export function getSpacingBetween(c1: c.Component, c2: c.Component, direction: s
 	firstDistance = firstDistance.add(firstLength);
 
 	var pos2 = common.ancestor.getChildrenManager().getDescendentPosition(c2);
-	var secondDistance = sutil.getPosition(pos2, direction);
+	var secondDistance = sutil.getPosition<LengthAttribute>(pos2, direction);
 	if (!secondDistance || !secondDistance.px.isSet())
 		return null;
 

@@ -11,7 +11,7 @@ class Background extends Markup {
 		return Attributes.Type.BACKGROUND;
 	}
 
-	getCSS() {
+	getCSS(): { component: c.Component; css: { [name: string]: string; }; }[] {
 		return [{
 			component: this.component,
 			css: {

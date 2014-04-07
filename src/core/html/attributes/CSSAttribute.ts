@@ -22,22 +22,6 @@ var INHERITED_DEFAULTS: { [styleName: string]: string; } = {
 
 var INHERITED_PROPERTIES = Object.keys(INHERITED_DEFAULTS);
 
-var dependentStyles = [{
-	first: {
-		'text-align': null,
-	},
-	requires: [{
-		styles: {
-			'display': 'block',
-		},
-		attributes: () => {
-			return [
-				new BlockFormat(),
-			];
-		},
-	}],
-}];
-
 class CSSAttribute extends Attributes.BaseAttribute {
 	isRendering: boolean;
 	styles: { [styleName: string]: string; } = {};

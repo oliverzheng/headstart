@@ -1,6 +1,6 @@
 import assert = require('assert');
 
-import Attributes = require('../Attributes');
+import Attributes = require('../../Attributes');
 import c = require('../../Component');
 import Rules = require('../../Rules');
 import NodeAttribute = require('../../attributes/NodeAttribute');
@@ -53,7 +53,7 @@ export function textAlignExtendWidth(component: c.Component, matches: p.PatternM
 export function marginAuto(component: c.Component, matches: p.PatternMatches): Rules.RuleResult[] {
 	var content = matches.getMatch(component, p.getOnlyContentChild);
 
-	var styles = {
+	var styles: { [name: string]: string; } = {
 		'margin-left': 'auto',
 	};
 	if (matches.getMatch(component, p.isAligned(p.getOnlyContentChild, sinf.horiz, sinf.center))) {

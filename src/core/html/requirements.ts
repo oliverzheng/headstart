@@ -435,7 +435,7 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 	var box = component.getBox();
 	util.forEachDirection((direction: inf.Direction) => {
 		var runtime = (direction === inf.horiz) ? requirement.wRuntime : requirement.hRuntime;
-		if (runtime && (!box || !util.getLength(box, direction).runtime))
+		if (runtime && (!box || !util.getLength<inf.Length>(box, direction).runtime))
 			ok = false;
 
 		var length = LengthAttribute.getFrom(component, direction);
@@ -450,11 +450,11 @@ function satisfiesForTarget(component: comp.Component, requirement: Requirement)
 					ok = ok && length && length.pct.isSet();
 					break;
 				case inf.expandUnit:
-					if (!box || util.getLength(box, direction).unit !== inf.expandUnit)
+					if (!box || util.getLength<inf.Length>(box, direction).unit !== inf.expandUnit)
 						ok = false;
 					break;
 				case inf.shrinkUnit:
-					if (!box || util.getLength(box, direction).unit !== inf.shrinkUnit)
+					if (!box || util.getLength<inf.Length>(box, direction).unit !== inf.shrinkUnit)
 						ok = false;
 					break;
 				default:

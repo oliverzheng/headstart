@@ -28,7 +28,7 @@ function cloneTreeAny(obj: any): any {
 
     // Handle Object
     if (obj instanceof Object) {
-        var copy = {};
+        var copy: any = {};
         for (var attr in obj) {
             if (obj.hasOwnProperty(attr) && attr !== 'parent')
 				copy[attr] = cloneTreeAny(obj[attr]);
