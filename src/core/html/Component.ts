@@ -193,11 +193,12 @@ export class Component {
 	}
 
 	isDescendentOf(component: Component) {
+		assert(component);
 		var parent = this;
 		while (parent && parent !== component) {
 			parent = parent.getParent();
 		}
-		return parent !== null;
+		return parent != null;
 	}
 
 	getOrder() {
