@@ -212,7 +212,7 @@ export class BaseAttribute {
 		return descendentPosition;
 	}
 
-	wrapChild(child: c.Component): Rules.RuleResult[] {
+	wrapChildren(children: c.Component[]): Rules.RuleResult[] {
 		throw new Error(this.getName() + ' did not implement this');
 	}
 }

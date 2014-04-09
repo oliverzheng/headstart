@@ -100,9 +100,9 @@ function coalesceSpaces(component: c.Component): Rules.RuleResult[] {
 	groupedChildren.forEach((group) => {
 		if (!group.matched && // !hasBoxContent
 			havePxSizes(group.components, direction)) {
-			var result = StackedChildren.aggregate(group.components);
-			newChildren.push(result.component);
-			results.push(result);
+			var aggregated = StackedChildren.aggregate(group.components);
+			newChildren.push(aggregated[0].component);
+			results.push.apply(results, aggregated);
 		} else {
 			newChildren.push.apply(newChildren, group.components);
 		}

@@ -53,7 +53,11 @@ class Alignment extends Attributes.BaseAttribute {
 		this.isFarAggregated = isFarAggregated;
 	}
 
-	wrapChild(child: c.Component): Rules.RuleResult[] {
+	wrapChildren(children: c.Component[]): Rules.RuleResult[] {
+		// TODO? support wrapping just 1 now
+		assert(children.length === 1);
+		var child = children[0];
+
 		assert(this.getComponentChildren().indexOf(child) !== -1);
 
 		var newComponent = new c.Component;

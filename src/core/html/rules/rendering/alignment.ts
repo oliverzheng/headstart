@@ -207,7 +207,7 @@ export function tableCell(component: c.Component, matches: p.PatternMatches): Ru
 		cell = component;
 		table = component.getParent();
 	} else {
-		results = component.getParent().getChildrenManager().wrapChild(component);
+		results = component.getParent().getChildrenManager().wrapChildren([component]);
 		table = results[1].component;
 		cell = component;
 	}

@@ -99,29 +99,49 @@ class StackedChildren extends Attributes.BaseAttribute {
 		};
 	}
 
-	wrapChild(child: c.Component): Rules.RuleResult[] {
-		assert(this.getComponentChildren().indexOf(child) !== -1);
+	wrapChildren(children: c.Component[]): Rules.RuleResult[] {
+		assert(children.length > 0);
+
+		var childrenIndices = children.map((child) => this.getComponentChildren().indexOf(child));
+		assert(childrenIndices.every((childIndex) => childIndex !== -1));
+
+		childrenIndices.sort((a, b) => a - b);
+		childrenIndices.forEach((childIndex, i) => {
+			if (i !== 0) {
+				// Has to be a continuous block of children
+				assert(childIndex === (childrenIndices[i - 1] + 1));
+			}
+		});
+
+		var minChildIndex = childrenIndices[0];
 
 		var newComponent = new c.Component;
-		var newAttr = new StackedChildren(this.children.map((oldChild) => {
-			if (oldChild === child) {
-				return newComponent;
+		var newChildren: c.Component[] = [];
+		var newGrandChildren: c.Component[] = [];
+		this.children.forEach((child, i) => {
+			if (i >= minChildIndex && i < (minChildIndex + children.length)) {
+				if (i === minChildIndex) {
+					newChildren.push(newComponent);
+				}
+				newGrandChildren.push(child);
 			} else {
-				return oldChild;
+				newChildren.push(child);
 			}
-		}));
+		});
 		var results: Rules.RuleResult[] = [{
 			component: this.component,
 			replaceAttributes: [
-				newAttr,
+				new StackedChildren(newChildren),
 			],
 		}, {
 			component: newComponent,
 			attributes: [
-				new StackedChildren([child])
+				new StackedChildren(newGrandChildren),
 			],
 		}];
-		results.push.apply(results, LengthAttribute.resetPctForNewParent(child, newComponent));
+		newGrandChildren.forEach((child) => {
+			results.push.apply(results, LengthAttribute.resetPctForNewParent(child, newComponent));
+		});
 		return results;
 	}
 
@@ -159,21 +179,16 @@ class StackedChildren extends Attributes.BaseAttribute {
 		return null;
 	}
 
-	static aggregate(components: c.Component[]): Rules.RuleResult {
-		return StackedChildren.forceAggregate(components, false);
-	}
-
-	static forceAggregate(components: c.Component[], forceAggregate: boolean): Rules.RuleResult {
+	static aggregate(components: c.Component[]): Rules.RuleResult[] {
 		if (!components || components.length === 0)
 			return null;
 
-		if (components.length === 1 && !forceAggregate)
-			return {component: components[0], attributes: []};
+		if (components.length === 1)
+			return [{component: components[0], attributes: []}];
 
-		return {
-			component: new c.Component,
-			attributes: [new StackedChildren(components)],
-		};
+		var results = components[0].getParent().getChildrenManager().wrapChildren(components);
+		results.shift(); // drop parent;
+		return results;
 	}
 }
 

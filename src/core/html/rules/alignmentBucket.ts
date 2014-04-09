@@ -79,14 +79,20 @@ function expand(component: c.Component): Rules.RuleResult[] {
 		}
 	});
 
+	var results: Rules.RuleResult[] = [];
 	var aggregates = [
 		near, afterNear, center, afterCenter, far
 	].map(
 		(components) => (components && components.some((comp) => hasBoxContent(comp))) ? components : null
 	).map(
-		StackedChildren.aggregate
+		(components) => {
+			if (components) {
+				var aggregated = StackedChildren.aggregate(components);
+				results.push.apply(results, aggregated);
+				return aggregated[0];
+			}
+		}
 	);
-	var results = aggregates.filter((result) => !!result);
 
 	var alignment = new Alignment(
 		direction === sinf.horiz,
@@ -208,12 +214,18 @@ function equalSizes(component: c.Component): Rules.RuleResult[] {
 		}
 	}
 
+	var results: Rules.RuleResult[] = [];
 	var aggregates = [
 		near, afterNear, center, afterCenter, far
 	].map(
-		StackedChildren.aggregate
+		(children) => {
+			if (children) {
+				var aggregated = StackedChildren.aggregate(children);
+				results.push.apply(results, aggregated);
+				return aggregated[0];
+			}
+		}
 	);
-	var results = aggregates.filter((result) => !!result);
 
 	if (results.length === 0)
 		return;

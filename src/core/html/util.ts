@@ -10,6 +10,6 @@ export function wrapComponent(component: c.Component): Rules.RuleResult[] {
 	} else {
 		var parent = component.getParent();
 		var childrenManager = parent.getChildrenManager();
-		return childrenManager.wrapChild(component);
+		return childrenManager.wrapChildren([component]);
 	}
 }
