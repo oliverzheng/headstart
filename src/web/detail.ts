@@ -4,7 +4,7 @@ import inf = require('../core/spec/interfaces');
 import sutil = require('../core/spec/util');
 import add = require('./add');
 
-var window: { [name: string]: any };
+declare var window: { [name: string]: any };
 
 var LengthComponent = React.createClass({
 	onValueChanged(event: any) {

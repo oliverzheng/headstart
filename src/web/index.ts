@@ -216,6 +216,8 @@ var PageComponent = React.createClass({
 	},
 
 	loadAndCompareAll() {
+		var prefix = this.refs.fixtureName.getDOMNode().value;
+
 		this.setState({
 			oldRepr: null,
 		});
@@ -230,7 +232,7 @@ var PageComponent = React.createClass({
 				setTimeout(() => {
 					this.setState({justComparedAll: false});
 				}, 1000);
-				this.refs.fixtureName.getDOMNode().value = '';
+				this.refs.fixtureName.getDOMNode().value = prefix;
 				this.onFixtureNameChange();
 				return;
 			} else {
@@ -240,14 +242,26 @@ var PageComponent = React.createClass({
 				});
 			}
 
-			var fixtureName = this.state.fixtureNames[index];
 			var tmpSuffix = '.tmp';
-			if (fixtureName.indexOf(tmpSuffix, fixtureName.length - tmpSuffix.length) !== -1) {
+			var fixtureName: string;
+			for (; index < this.state.fixtureNames.length; ++index) {
+				fixtureName = this.state.fixtureNames[index];
+				if (fixtureName.indexOf(tmpSuffix, fixtureName.length - tmpSuffix.length) !== -1)
+					continue;
+
+				if (prefix && fixtureName.indexOf(prefix) !== 0)
+					continue;
+
+				break;
+			}
+			fixtureName = this.state.fixtureNames[index];
+			if (!fixtureName) {
 				setTimeout(() => {
 					loadNext.bind(this)(index + 1);
 				}, 0);
 				return;
 			}
+
 			this.refs.fixtureName.getDOMNode().value = fixtureName;
 			this.onFixtureNameChange();
 

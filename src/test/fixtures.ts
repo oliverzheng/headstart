@@ -24,6 +24,9 @@ export function load(
 
 		var maxComponentID = 0;
 		(function getMaxID(repr: Attributes.Repr) {
+			if (!repr)
+				return;
+
 			if (repr.id) {
 				var id = parseInt(repr.id, 10);
 				if (id > maxComponentID)
@@ -48,7 +51,7 @@ export function save(
 	) {
 	writeFunc(name, {
 		spec: sutil.cloneTree(root),
-		componentRepr: component.repr(),
+		componentRepr: null,
 		domRepr: html.DOMNode.fromComponentToRepr(component),
 	}, successCb, errorCb);
 }
