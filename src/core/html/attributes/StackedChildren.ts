@@ -49,16 +49,58 @@ class StackedChildren extends Attributes.BaseAttribute {
 		return this.children;
 	}
 
-	getChildPosition(child: c.Component, unknownDefaultPx: number): Attributes.ChildPosition {
+	getChildPosition(child: c.Component, unknownDefaultPx: number, bottomRight: boolean = false): Attributes.ChildPosition {
 		assert(this.getComponentChildren().indexOf(child) !== -1);
 
 		var direction = getDirection(this.component);
-		var position: Attributes.ChildPosition = {
-			x: LengthAttribute.getHorizZeroPx(),
-			y: LengthAttribute.getVertZeroPx(),
-		};
-		for (var i = 0; i < this.getComponentChildren().length; ++i) {
-			var prevChild = this.getComponentChildren()[i];
+		var position: Attributes.ChildPosition;
+		if (!bottomRight) {
+			position = {
+				x: LengthAttribute.getHorizZeroPx(),
+				y: LengthAttribute.getVertZeroPx(),
+			};
+		} else {
+			position = {
+				x: null,
+				y: null,
+			};
+		}
+		var children = this.getComponentChildren();
+		if (bottomRight) {
+			var totalLength = children.map(
+				(child) => LengthAttribute.getFrom(child, direction)
+			).reduce(LengthAttribute.add);
+			var parentLength = LengthAttribute.getFrom(this.component, direction);
+			var leftOver = LengthAttribute.subtractChild(parentLength, totalLength);
+			if (leftOver) {
+				if (direction === sinf.horiz) {
+					position.x = leftOver;
+				} else {
+					position.y = leftOver;
+				}
+			}
+
+			var parentLengthOther = LengthAttribute.getFrom(this.component, sinf.otherDirection(direction));
+			var otherChildLength = LengthAttribute.getFrom(child, sinf.otherDirection(direction));
+			var leftOverOther = LengthAttribute.subtractChild(parentLength, otherChildLength);
+			if (leftOverOther) {
+				if (direction === sinf.horiz) {
+					position.y = leftOverOther;
+				} else {
+					position.x = leftOverOther;
+				}
+			}
+
+			if (direction === sinf.horiz && !position.x ||
+				direction === sinf.vert && !position.y) {
+				return position;
+			}
+
+			children.reverse();
+		}
+
+		for (var i = 0; i < children.length; ++i) {
+			var prevChild = children[i];
 			if (prevChild === child) {
 				break;
 			}

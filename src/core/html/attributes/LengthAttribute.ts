@@ -194,6 +194,9 @@ class LengthAttribute extends Markup {
 	}
 
 	static add(l1: LengthAttribute, l2: LengthAttribute): LengthAttribute {
+		if (!l1 || !l2)
+			return;
+
 		assert(l1.direction === l2.direction);
 		var sum = new LengthAttribute(l1.direction);
 
@@ -241,6 +244,50 @@ class LengthAttribute extends Markup {
 
 	subtract(other: LengthAttribute) {
 		return LengthAttribute.subtract(this, other);
+	}
+
+	// parentLength + childLength. Return % is at the parent's level.
+	static addChild(parentLength: LengthAttribute, childLength: LengthAttribute): LengthAttribute {
+		if (!parentLength || !childLength)
+			return;
+
+		assert(parentLength.direction === childLength.direction);
+
+		var px: Measurement;
+		if (childLength.px.isSet() && parentLength.px.isSet()) {
+			px = parentLength.px.add(childLength.px);
+		}
+		var pct: Measurement;
+		if (childLength.pct.isSet() && parentLength.pct.isSet()) {
+			pct = Measurement.implicit(childLength.pct.value * parentLength.pct.value);
+		} else if (parentLength.pct.isSet() && px) {
+			// If both px are set, then the added % is scaled up from the
+			// original parent %.
+			pct = Measurement.implicit(parentLength.pct.value * px.value / parentLength.px.value);
+		}
+		if (px || pct) {
+			return new LengthAttribute(parentLength.direction, px, pct);
+		}
+	}
+
+	// parentLength - childLength. Return % is at the child's level.
+	static subtractChild(parentLength: LengthAttribute, childLength: LengthAttribute): LengthAttribute {
+		if (!parentLength || !childLength)
+			return;
+
+		assert(parentLength.direction === childLength.direction);
+
+		var px: Measurement;
+		if (childLength.px.isSet() && parentLength.px.isSet()) {
+			px = parentLength.px.subtract(childLength.px);
+		}
+		var pct: Measurement;
+		if (childLength.pct.isSet()) {
+			pct = Measurement.implicit(1).subtract(childLength.pct);
+		}
+		if (px || pct) {
+			return new LengthAttribute(parentLength.direction, px, pct);
+		}
 	}
 
 	isSet() {

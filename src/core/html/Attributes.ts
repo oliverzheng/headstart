@@ -186,30 +186,8 @@ export class BaseAttribute {
 		return;
 	}
 
-	getChildPosition(child: c.Component, unknownDefaultPx: number): ChildPosition {
+	getChildPosition(child: c.Component, unknownDefaultPx: number, bottomRight: boolean = false): ChildPosition {
 		throw new Error(this.getName() + ' does not implement this');
-	}
-
-	getDescendentPosition(descendent: c.Component): ChildPosition {
-		assert(descendent.isDescendentOf(this.component));
-		var descendentPosition: ChildPosition;
-		while (descendent !== this.component) {
-			var position = descendent.getParent().getChildrenManager().getChildPosition(descendent, null);
-			if (!descendentPosition) {
-				descendentPosition = position;
-			} else {
-				if (descendentPosition.x)
-					descendentPosition.x = descendentPosition.x.add(position.x);
-				if (descendentPosition.y)
-					descendentPosition.y = descendentPosition.y.add(position.y);
-			}
-
-			if (!descendentPosition.x && !descendentPosition.y)
-				break;
-
-			descendent = descendent.getParent();
-		}
-		return descendentPosition;
 	}
 
 	wrapChildren(children: c.Component[]): Rules.RuleResult[] {

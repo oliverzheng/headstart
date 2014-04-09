@@ -8,6 +8,7 @@ import Alignment = require('./attributes/Alignment');
 import CSSAttribute = require('./attributes/CSSAttribute');
 import sinf = require('../spec/interfaces');
 import sutil = require('../spec/util');
+import layout = require('./layout');
 
 export interface Pattern<MatchType> {
 	(component: c.Component, matches?: PatternMatches, ...whatever: any[]): MatchType;
@@ -399,11 +400,91 @@ export function isTableCellInTable(component: c.Component, matches: PatternMatch
 	);
 }
 
+function addNodeChildToArray(nodeChildren: c.Component[], nodeChild: c.Component): c.Component[] {
+	// An ancestor is already going to be a node.
+	if (nodeChildren.some((n) => nodeChild.isDescendentOf(n)))
+		return nodeChildren;
+
+	// Remove any nodes that would become a descendent.
+	nodeChildren = nodeChildren.filter((n) => !n.isDescendentOf(nodeChild));
+
+	nodeChildren.push(nodeChild);
+	return nodeChildren;
+}
+
+// Return a node that is either descendent or an ancestor of descendent, such
+// that its distance from the passed in ancestor is of only 1 type of length:
+// only px or %. This ancestor is the closest ancestor to the descendent that
+// matches this description.
+function getFirstAncestorWithKnownDistanceFrom(ancestor: c.Component, descendent: c.Component, direction: sinf.Direction): c.Component {
+	assert(descendent.isDescendentOf(ancestor));
+	var position = layout.getDescendentPosition(ancestor, descendent);
+	var length = sutil.getPosition<LengthAttribute>(position, direction);
+	if (length) {
+		assert(length.px.isSet() || length.pct.isSet());
+		return descendent;
+	}
+
+	assert(descendent.getParent() !== ancestor);
+	return getFirstAncestorWithKnownDistanceFrom(ancestor, descendent.getParent(), direction);
+}
+
+// The distance between two components is the summation of a number of lengths.
+// If all lengths are of the same unit, this distance can be expressed in terms
+// of a CSS unit; otherwise, it cannot. This function returns two components,
+// such that they are ancestors of the two input components, and their distance
+// can be expressed as a CSS unit. These two ancestors are the two youngest
+// ancestors that satisfy this.
+function getFirstAncestorsWithKnownDistanceFromEachOther(
+	c1: c.Component, c2: c.Component, direction: sinf.Direction
+): { first: c.Component; second: c.Component; } {
+	assert(!c1.isDescendentOf(c2) && !c2.isDescendentOf(c1));
+
+	var spacing = layout.getSpacingBetween(c1, c2, direction);
+	if (spacing) {
+		assert(spacing.px.isSet() || spacing.pct.isSet());
+		return { first: c1, second: c2 };
+	}
+
+	if (c1.getOrder() >= c2.getOrder()) {
+		return getFirstAncestorsWithKnownDistanceFromEachOther(c1.getParent(), c2, direction);
+	} else {
+		return getFirstAncestorsWithKnownDistanceFromEachOther(c1, c2.getParent(), direction);
+	}
+}
+
 export var getNodeDescendents: Pattern<c.Component[]> = function(component: c.Component, matches: PatternMatches): c.Component[] {
 	var direction = matches.getMatch(component, getDirection);
 	var contentChildren = matches.getMatch(component, getContentChildrenInDirection);
-	// TODO support %'s. This assumes every spacing is a px spacing
-	return contentChildren;
+	if (!contentChildren)
+		return;
+
+	var direction = getDirection(component);
+	var nodeChildren = contentChildren.slice(0);
+
+	// Make sure the node can specify a margin from the parent node.
+	nodeChildren.forEach((node) => {
+		// If component flows vert, we want to know the horiz distance away.
+		node = getFirstAncestorWithKnownDistanceFrom(component, node, sinf.otherDirection(direction));
+		// Modifications to the array are fine as long as we whole sale replace them entirely
+		nodeChildren = addNodeChildToArray(nodeChildren, node);
+	});
+
+	// Make sure each pair of nodes can have a margin away from each other.
+	nodeChildren.forEach((node, i, originalNodeChildren) => {
+		if (i === 0) {
+			node = getFirstAncestorWithKnownDistanceFrom(component, node, direction);
+			nodeChildren = addNodeChildToArray(nodeChildren, node);
+		} else {
+			var prevNode = nodeChildren[i - 1];
+			var ancestors = getFirstAncestorsWithKnownDistanceFromEachOther(prevNode, node, direction);
+			assert(ancestors.first.isDescendentOf(component) && ancestors.second.isDescendentOf(component));
+			nodeChildren = addNodeChildToArray(nodeChildren, ancestors.first);
+			nodeChildren = addNodeChildToArray(nodeChildren, ancestors.second);
+		}
+	});
+
+	return nodeChildren;
 };
 
 function canChildSpacingBeMarginOrPadding(child: c.Component): boolean {

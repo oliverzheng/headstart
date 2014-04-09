@@ -1,0 +1,149 @@
+{
+	"spec": {
+		"id": "0",
+		"w": {
+			"unit": 0,
+			"value": 600
+		},
+		"h": {
+			"unit": 0,
+			"value": 600
+		},
+		"direction": 2,
+		"children": [
+			{
+				"id": "7",
+				"w": {
+					"unit": 4,
+					"value": 40
+				},
+				"h": {
+					"unit": 4,
+					"value": 40
+				},
+				"direction": 1,
+				"children": [
+					{
+						"id": "8",
+						"w": {
+							"unit": 0,
+							"value": 40
+						},
+						"h": {
+							"unit": 0,
+							"value": 40
+						},
+						"direction": 2
+					},
+					{
+						"id": "1",
+						"w": {
+							"unit": 0,
+							"value": 40
+						},
+						"h": {
+							"unit": 0,
+							"value": 40
+						},
+						"direction": 2,
+						"staticContent": {
+							"text": null,
+							"image": null,
+							"fill": {
+								"color": "#61FFAB"
+							}
+						},
+						"children": []
+					}
+				]
+			},
+			{
+				"id": "2",
+				"w": {
+					"unit": 0,
+					"value": 40
+				},
+				"h": {
+					"unit": 0,
+					"value": 40
+				},
+				"direction": 2,
+				"staticContent": {
+					"text": null,
+					"image": null,
+					"fill": {
+						"color": "#7075FF"
+					}
+				},
+				"children": []
+			}
+		]
+	},
+	"componentRepr": null,
+	"domRepr": {
+		"title": "DOM",
+		"children": [
+			{
+				"title": "Tag: div",
+				"ordered": false,
+				"children": [
+					{
+						"title": "Content: "
+					},
+					{
+						"title": "Styles",
+						"ordered": false,
+						"children": [
+							{
+								"title": "height: 40px"
+							},
+							{
+								"title": "width: 40px"
+							},
+							{
+								"title": "background: #61FFAB"
+							},
+							{
+								"title": "margin-left: 40px"
+							}
+						]
+					},
+					{
+						"title": "Children",
+						"ordered": true,
+						"children": []
+					}
+				]
+			},
+			{
+				"title": "Tag: div",
+				"ordered": false,
+				"children": [
+					{
+						"title": "Content: "
+					},
+					{
+						"title": "Styles",
+						"ordered": false,
+						"children": [
+							{
+								"title": "height: 40px"
+							},
+							{
+								"title": "width: 40px"
+							},
+							{
+								"title": "background: #7075FF"
+							}
+						]
+					},
+					{
+						"title": "Children",
+						"ordered": true,
+						"children": []
+					}
+				]
+			}
+		]
+	}
+}

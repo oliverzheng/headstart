@@ -123,7 +123,7 @@ export function stackSpacing(component: c.Component, matches: p.PatternMatches):
 			],
 		});
 
-		var pos = component.getChildrenManager().getDescendentPosition(descendent);
+		var pos = layout.getDescendentPosition(component, descendent);
 		if (i === 0) {
 			var prevSpacing = sutil.getPosition<LengthAttribute>(pos, direction);
 			assert(prevSpacing && prevSpacing.px.isSet());
