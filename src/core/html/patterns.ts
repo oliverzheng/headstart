@@ -145,6 +145,14 @@ export var getDirection: Pattern<sinf.Direction> = function(component: c.Compone
 	assert(false);
 }
 
+export var alignsChildrenHoriz: Pattern<boolean> = function(component: c.Component): boolean {
+	return getDirection(component) === sinf.horiz;
+}
+
+export var alignsChildrenVert: Pattern<boolean> = function(component: c.Component): boolean {
+	return getDirection(component) === sinf.vert;
+}
+
 export var isNode: Pattern<boolean> = function(component: c.Component): boolean {
 	return !!component.nodeAttr();
 }
@@ -562,3 +570,23 @@ export var isVerticalAligned = all(<Pattern<any>[]>[
 	getOnlyContentChild,
 	isVerticalMiddleOrBottom,
 ]);
+
+export var isStack = all([
+	isNode,
+	not(
+		any([
+			isHorizontalAligned,
+			isVerticalAligned,
+		])
+	),
+	getNodeDescendents,
+]);
+
+export function firstAncestor(component: c.Component, pattern: Pattern<boolean>): c.Component {
+	var ancestor = component;
+	while (ancestor = ancestor.getParent()) {
+		if (pattern(ancestor, null))
+			return ancestor;
+	}
+	return null;
+}

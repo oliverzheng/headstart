@@ -63,6 +63,8 @@ export enum Type {
 	TAG_NAME,
 
 	RENDERING_VALUES,
+
+	COLLAPSE_WHITESPACE,
 }
 
 export interface Repr {

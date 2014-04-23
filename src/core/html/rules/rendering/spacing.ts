@@ -13,6 +13,7 @@ import Spacing = require('../../attributes/Spacing');
 import LengthAttribute = require('../../attributes/LengthAttribute');
 import CSSAttribute = require('../../attributes/CSSAttribute');
 import BlockFormat = require('../../attributes/BlockFormat');
+import CollapseWhitespace = require('../../attributes/CollapseWhitespace');
 import getDirection = require('../../patterns/getDirection');
 import sinf = require('../../../spec/interfaces');
 import sutil = require('../../../spec/util');
@@ -158,6 +159,29 @@ export function stackSpacing(component: c.Component, matches: p.PatternMatches):
 				]
 			});
 		}
+	});
+	return results;
+}
+
+export function inlineBlock(component: c.Component, matches: p.PatternMatches): Rules.RuleResult[] {
+	var nodeDescendents = matches.getMatch(component, p.getNodeDescendents);
+
+	var results: Rules.RuleResult[] = nodeDescendents.map((descendent) => {
+		return {
+			component: descendent,
+			attributes: [
+				new CSSAttribute({
+					'display': 'inline-block',
+					'vertical-align': 'top', // TODO: not necessarily top
+				}),
+			],
+		};
+	});
+	results.push({
+		component: component,
+		attributes: [
+			new CollapseWhitespace(),
+		],
 	});
 	return results;
 }

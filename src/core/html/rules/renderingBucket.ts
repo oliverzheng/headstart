@@ -148,20 +148,24 @@ var verticalAlignment: h.RuleHierarchy[] = [{
 var stackNodes: h.RuleHierarchy[] = [{
 	name: 'stackNodes',
 	patterns: [
-		p.isNode,
-		p.not(
-			p.any([
-				p.isHorizontalAligned,
-				p.isVerticalAligned,
-			])
-		),
-		p.getNodeDescendents,
+		p.isStack,
 	],
 	rule: spacing.stackSpacing,
 }];
 
+var horizontalStack: h.RuleHierarchy[] = [{
+	name: 'horizontalStack',
+	patterns: [
+		p.isStack,
+		p.alignsChildrenHoriz,
+	],
+	rule: spacing.inlineBlock,
+}];
+
+
 rules.push({ name: 'horizontalAlignment', rule: h.getRuleFromHierarchies(horizontalAlignment)});
 rules.push({ name: 'verticalAlignment', rule: h.getRuleFromHierarchies(verticalAlignment)});
 rules.push({ name: 'stackNodes', rule: h.getRuleFromHierarchies(stackNodes)});
+rules.push({ name: 'horizontalStack', rule: h.getRuleFromHierarchies(horizontalStack)});
 
 export = bucket;

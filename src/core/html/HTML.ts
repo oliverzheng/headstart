@@ -6,6 +6,8 @@ import CSSAttribute = require('./attributes/CSSAttribute');
 import TextContent = require('./attributes/TextContent');
 import TagName = require('./attributes/TagName');
 import NodeAttribute = require('./attributes/NodeAttribute');
+import CollapseWhitespace = require('./attributes/CollapseWhitespace');
+import p = require('./patterns');
 
 var DISPLAYS_FOR_DIV = [
 	'block',
@@ -21,10 +23,12 @@ export class DOMNode {
 	tagName: string;
 	children: DOMNode[] = [];
 	content: string;
+	useWhitespace: boolean;
 	styles: { [styleName: string]: string; } = {};
 
 	constructor(tagName: string) {
 		this.tagName = tagName;
+		this.useWhitespace = true;
 	}
 
 	repr(): Attributes.Repr {
@@ -45,15 +49,21 @@ export class DOMNode {
 			ordered: true,
 			children: this.children.map((child) => child.repr()),
 		};
+		var children = [
+			contentRepr,
+			stylesRepr,
+			childrenRepr,
+		];
+		if (!this.useWhitespace) {
+			children.push({
+				title: 'Whitespace collapsed',
+			});
+		}
 		return {
 			title: 'Tag: ' + this.tagName,
 			ordered: false,
-			children: [
-				contentRepr,
-				stylesRepr, 
-				childrenRepr,
-			],
-		}
+			children: children,
+		};
 	}
 
 	private stylesList(): {name: string; value: string;}[] {
@@ -78,7 +88,13 @@ export class DOMNode {
 	toString(depth: number = 0): string {
 		var spaces = Array(depth + 1).join('  ');
 
-		var str = spaces + '<' + this.tagName;
+		var str: string = '';
+
+		if (this.useWhitespace) {
+			str += spaces;
+		}
+
+		str += '<' + this.tagName;
 		var css = this.reprCss();
 		if (css) {
 			str += ' style="' + css + '"';
@@ -88,15 +104,33 @@ export class DOMNode {
 			str += '/>';
 			return str;
 		}
-		str += '>\n';
+		str += '>';
+
+		if (this.useWhitespace) {
+			str += '\n';
+		}
 
 		if (this.content) {
-			str += spaces + '  ' + this.content + '\n';
+			if (this.useWhitespace) {
+				str += spaces + '  ';
+			}
+			str += this.content;
+			if (this.useWhitespace) {
+				str += '\n';
+			}
 		} else {
 			str += this.children.map((child) => child.toString(depth + 1)).join('');
 		}
 
-		str += spaces + '</' + this.tagName + '>\n';
+		if (this.useWhitespace) {
+			str += spaces;
+		}
+
+		str += '</' + this.tagName + '>';
+
+		if (this.useWhitespace) {
+			str += '\n';
+		}
 
 		return str;
 	}
@@ -153,6 +187,10 @@ export class DOMNode {
 				});
 			} else {
 				node.content = text;
+			}
+			var firstNodeAncestor = p.firstAncestor(component, p.isNode);
+			if (firstNodeAncestor && CollapseWhitespace.getFrom(firstNodeAncestor)) {
+				node.useWhitespace = false;
 			}
 			return [node];
 		} else {
